@@ -1,0 +1,67 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+docker/.env
+
+# Logs
+*.log
+
+# Output directory (ignore all except 404.html)
+output/*
+!output/404.html
+
+# Version file
+version
+
+# Docker
+
+# GitHub
+.github/
+
+# Temporary files
+_image/
+*.tmp
+*.bak
+
+# Node.js
+node_modules/
+news_server/node_modules/
+*.tsbuildinfo
+dist/
+
+# Example Project
+Sjgz-Admin/
+Sjgz-Backend/
+newsnow/
+
+# Will be moved to a separate repository
+# TrendRadar-Panel/
+# TrendRadar-Panel-old/

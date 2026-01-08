@@ -1,0 +1,20 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# 安装 mcp_server 依赖
+COPY mcp_server/requirements.txt ./mcp_server/
+RUN pip install --no-cache-dir -r mcp_server/requirements.txt
+
+# 复制 MCP 服务器代码
+COPY mcp_server/ ./mcp_server/
+
+# 创建必要的目录
+RUN mkdir -p /app/config /app/output
+
+ENV PYTHONUNBUFFERED=1
+ENV PROJECT_ROOT=/app
+
+# MCP 服务器启动命令（指定项目根目录为 /app）
+CMD ["python", "-m", "mcp_server.server", "--transport", "http", "--host", "0.0.0.0", "--port", "10200", "--project-root", "/app"]
+

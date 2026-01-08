@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>热点新闻分析</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+        /*css_content*/
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="save-buttons">
+                <button class="save-btn" onclick="saveAsImage()">保存为图片</button>
+                <button class="save-btn" onclick="saveAsMultipleImages()">分段保存</button>
+            </div>
+            <div class="header-title">热点新闻分析</div>
+            <div class="header-info">
+                <div class="info-item">
+                    <span class="info-label">报告类型</span>
+                    <span class="info-value">{report_type}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">新闻总数</span>
+                    <span class="info-value">{total_titles} 条</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">热点新闻</span>
+                    <span class="info-value">{hot_news_count} 条</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">生成时间</span>
+                    <span class="info-value">{generate_time}</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="content-wrapper">
+                {content_section}
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        //js_content
+    </script>
+</body>
+</html>

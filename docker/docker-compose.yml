@@ -1,0 +1,336 @@
+services:      
+  trend-radar:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.crawl
+    container_name: TrendRadar-Crawler
+    restart: always
+    networks:
+      - trendradar
+      - resources
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+    volumes:
+      - ../config:/app/config:ro
+      - ../output:/app/output
+      # 挂载 crawl_server 目录以支持代码热更新（修改代码无需重启容器）
+      - ../crawl_server:/app/crawl_server
+    environment:
+      - TZ=Asia/Shanghai
+      # 核心配置
+      - ENABLE_CRAWLER=${ENABLE_CRAWLER:-}
+      - ENABLE_NOTIFICATION=${ENABLE_NOTIFICATION:-}
+      - REPORT_MODE=${REPORT_MODE:-}
+      - SORT_BY_POSITION_FIRST=${SORT_BY_POSITION_FIRST:-}
+      - MAX_NEWS_PER_KEYWORD=${MAX_NEWS_PER_KEYWORD:-}
+      - REQUEST_INTERVAL=${REQUEST_INTERVAL:-}
+      - RANK_THRESHOLD=${RANK_THRESHOLD:-}
+      - USE_PROXY=${USE_PROXY:-}
+      - DEFAULT_PROXY=${DEFAULT_PROXY:-}
+      - VERSION_CHECK_URL=${VERSION_CHECK_URL:-}
+      - SHOW_VERSION_UPDATE=${SHOW_VERSION_UPDATE:-}
+      # 推送时间窗口
+      - PUSH_WINDOW_ENABLED=${PUSH_WINDOW_ENABLED:-}
+      - PUSH_WINDOW_START=${PUSH_WINDOW_START:-}
+      - PUSH_WINDOW_END=${PUSH_WINDOW_END:-}
+      - PUSH_WINDOW_ONCE_PER_DAY=${PUSH_WINDOW_ONCE_PER_DAY:-}
+      - PUSH_WINDOW_RETENTION_DAYS=${PUSH_WINDOW_RETENTION_DAYS:-}
+      # 通知渠道
+      - FEISHU_WEBHOOK_URL=${FEISHU_WEBHOOK_URL:-}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-}
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID:-}
+      - DINGTALK_WEBHOOK_URL=${DINGTALK_WEBHOOK_URL:-}
+      - WEWORK_WEBHOOK_URL=${WEWORK_WEBHOOK_URL:-}
+      - WEWORK_MSG_TYPE=${WEWORK_MSG_TYPE:-}
+      # 邮件配置
+      - EMAIL_FROM=${EMAIL_FROM:-}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD:-}
+      - EMAIL_TO=${EMAIL_TO:-}
+      - EMAIL_SMTP_SERVER=${EMAIL_SMTP_SERVER:-}
+      - EMAIL_SMTP_PORT=${EMAIL_SMTP_PORT:-}
+      # ntfy配置
+      - NTFY_SERVER_URL=${NTFY_SERVER_URL:-https://ntfy.sh}
+      - NTFY_TOPIC=${NTFY_TOPIC:-}
+      - NTFY_TOKEN=${NTFY_TOKEN:-}
+      # Bark配置
+      - BARK_URL=${BARK_URL:-}
+      # Slack配置
+      - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL:-}
+      # Kafka配置
+      - KAFKA_ENABLED=${KAFKA_ENABLED}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS}
+      - KAFKA_EVENT_TOPIC=${KAFKA_EVENT_TOPIC}
+      - KAFKA_EVENT_POISON_TOPIC=${KAFKA_EVENT_POISON_TOPIC}
+      - KAFKA_CONSUMER_GROUP_ID=${KAFKA_CONSUMER_GROUP_ID}
+      # PostgreSQL配置
+      - POSTGRESQL_ENABLED=${POSTGRESQL_ENABLED}
+      - POSTGRESQL_HOST=${POSTGRESQL_HOST}
+      - POSTGRESQL_PORT=${POSTGRESQL_PORT}
+      - POSTGRESQL_DATABASE=${POSTGRESQL_DATABASE}
+      - POSTGRESQL_USER=${POSTGRESQL_USER}
+      - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
+      # Redis配置
+      - REDIS_ENABLED=${REDIS_ENABLED}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_DB=${REDIS_DB}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      # 定时任务配置（分钟数）
+      - SCHEDULE_MINUTES=${SCHEDULE_MINUTES}
+      # 消息批处理配置
+      - MESSAGE_BATCH_SIZE=${MESSAGE_BATCH_SIZE:-}
+      - DINGTALK_BATCH_SIZE=${DINGTALK_BATCH_SIZE:-}
+      - FEISHU_BATCH_SIZE=${FEISHU_BATCH_SIZE:-}
+      - BARK_BATCH_SIZE=${BARK_BATCH_SIZE:-}
+      - BATCH_SEND_INTERVAL=${BATCH_SEND_INTERVAL:-}
+      - FEISHU_MESSAGE_SEPARATOR=${FEISHU_MESSAGE_SEPARATOR:-}
+      # 权重配置
+      - RANK_WEIGHT=${RANK_WEIGHT:-}
+      - FREQUENCY_WEIGHT=${FREQUENCY_WEIGHT:-}
+      - HOTNESS_WEIGHT=${HOTNESS_WEIGHT:-}
+
+  trend-mcp:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.mcp
+    container_name: TrendRadar-MCP
+    restart: always
+    volumes:
+      - ../config:/app/config:ro
+      - ../output:/app/output
+    ports:
+      - "10200:10200"
+    environment:
+      - TZ=Asia/Shanghai
+      - PROJECT_ROOT=/app
+    networks:
+      - trendradar
+      - resources
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+
+  trendradar-static:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.static
+    container_name: TrendRadar-Static
+    restart: always
+    volumes:
+      - ../config:/app/config:ro
+      - ../output:/app/output
+    expose:
+      - "10199"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.report.rule=PathPrefix(`/report`)"
+      - "traefik.http.routers.report.entrypoints=web"
+      - "traefik.http.services.report.loadbalancer.server.port=10199"
+    environment:
+      - TZ=Asia/Shanghai
+      - PROJECT_ROOT=/app
+      - HOST=0.0.0.0
+      - PORT=10199
+      - DEBUG=${DEBUG:-false}
+    networks:
+      - trendradar
+      - resources
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+
+  reverse-proxy:
+    image: traefik:v3.4
+    container_name: TrendRadar-Reverse-Proxy
+    restart: always
+    env_file:
+      - .env
+    command:
+      - --api.insecure=true
+      - --providers.docker
+      - --providers.docker.exposedByDefault=false
+      - --entrypoints.web.address=:80
+    ports:
+      - "10031:80"
+      - "10030:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - trendradar
+      - resources
+
+  # Auth API 服务
+  auth-api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.news.auth
+    image: trend-news-auth-api:prod
+    container_name: TrendRadar-News-Auth-API
+    restart: always
+    command: ["npm", "run", "dev:auth:api"]
+    environment:
+      - NODE_ENV=production
+      - KAFKAJS_NO_PARTITIONER_WARNING=1
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+    expose:
+      - "3001"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.auth.rule=PathPrefix(`/auth`)"
+      - "traefik.http.routers.auth.entrypoints=web"
+      - "traefik.http.services.auth.loadbalancer.server.port=3001"
+    volumes:
+      - ../news_server:/app
+      # 排除 node_modules，使用镜像中安装的依赖
+      - /app/node_modules
+    depends_on: []
+    networks:
+      - trendradar
+      - resources
+
+  # Auth Pipeline 服务（Kafka Worker）
+  auth-pipeline:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.news.auth
+    image: trend-news-auth-pipeline:prod
+    container_name: TrendRadar-News-Auth-Pipeline
+    restart: always
+    command: ["npm", "run", "dev:auth:pipeline"]
+    environment:
+      - NODE_ENV=production
+      - KAFKAJS_NO_PARTITIONER_WARNING=1
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+    volumes:
+      - ../news_server:/app
+      # 排除 node_modules，使用镜像中安装的依赖
+      - /app/node_modules
+    depends_on: []
+    networks:
+      - trendradar
+      - resources
+
+  # Source API 服务
+  source-api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.news.source
+    image: trend-news-source-api:prod
+    container_name: TrendRadar-News-Source-API
+    restart: always
+    command: ["npm", "run", "dev:source:api"]
+    environment:
+      - NODE_ENV=production
+      - KAFKAJS_NO_PARTITIONER_WARNING=1
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+    expose:
+      - "3002"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.source.rule=PathPrefix(`/source`)"
+      - "traefik.http.routers.source.entrypoints=web"
+      - "traefik.http.services.source.loadbalancer.server.port=3002"
+    volumes:
+      - ../news_server:/app
+      # 排除 node_modules，使用镜像中安装的依赖
+      - /app/node_modules
+    depends_on: []
+    networks:
+      - trendradar
+      - resources
+
+  # Source Pipeline 服务（Kafka Worker）
+  source-pipeline:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.news.source
+    image: trend-news-source-pipeline:prod
+    container_name: TrendRadar-News-Source-Pipeline
+    restart: always
+    command: ["npm", "run", "dev:source:pipeline"]
+    environment:
+      - NODE_ENV=production
+      - KAFKAJS_NO_PARTITIONER_WARNING=1
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+    volumes:
+      - ../news_server:/app
+      # 排除 node_modules，使用镜像中安装的依赖
+      - /app/node_modules
+    depends_on: []
+    networks:
+      - trendradar
+      - resources
+
+  # News API 服务
+  news-api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.news.news
+    image: trend-news-news-api:prod
+    container_name: TrendRadar-News-News-API
+    restart: always
+    command: ["npm", "run", "dev:news:api"]
+    environment:
+      - NODE_ENV=production
+      - KAFKAJS_NO_PARTITIONER_WARNING=1
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+    expose:
+      - "3003"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.news.rule=PathPrefix(`/news`)"
+      - "traefik.http.routers.news.entrypoints=web"
+      - "traefik.http.services.news.loadbalancer.server.port=3003"
+    volumes:
+      - ../news_server:/app
+      # 排除 node_modules，使用镜像中安装的依赖
+      - /app/node_modules
+    depends_on: []
+    networks:
+      - trendradar
+      - resources
+
+  # News Pipeline 服务（Kafka Worker）
+  news-pipeline:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.news.news
+    image: trend-news-news-pipeline:prod
+    container_name: TrendRadar-News-News-Pipeline
+    restart: always
+    command: ["npm", "run", "dev:news:pipeline"]
+    environment:
+      - NODE_ENV=production
+      - KAFKAJS_NO_PARTITIONER_WARNING=1
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+    volumes:
+      - ../news_server:/app
+      # 排除 node_modules，使用镜像中安装的依赖
+      - /app/node_modules
+    depends_on: []
+    networks:
+      - trendradar
+      - resources
+
+
+networks:
+  trendradar:
+    driver: bridge
+    enable_ipv6: false
+    driver_opts:
+      com.docker.network.bridge.enable_ip_masquerade: "true"
+  resources:
+    external: true

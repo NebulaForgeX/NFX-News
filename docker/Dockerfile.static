@@ -1,0 +1,22 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# 安装 web_server 依赖
+COPY web_server/requirements.txt ./web_server/
+RUN pip install --no-cache-dir -r web_server/requirements.txt
+
+# 复制 Web 服务器代码
+COPY web_server/ ./web_server/
+
+# 创建必要的目录
+RUN mkdir -p /app/config /app/output
+
+ENV PYTHONUNBUFFERED=1
+ENV PROJECT_ROOT=/app
+ENV HOST=0.0.0.0
+ENV PORT=10199
+
+# Web 服务器启动命令
+CMD ["python", "-m", "web_server.server"]
+
