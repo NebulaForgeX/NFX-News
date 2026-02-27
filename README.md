@@ -1,7 +1,7 @@
 <div align="center" id="nfx-news">
 
 <a href="https://github.com/NebulaForgeX/NFX-News" title="NFX-News">
-  <img src="logo_g.png" alt="NFX-News Logo" width="120" height="120">
+  <img src="image.png" alt="NFX-News Logo" width="120" height="120">
 </a>
 
 <h1>NFX-News</h1>
@@ -45,7 +45,7 @@ NFX-News consists of four main services:
 ```
 NFX-News/
 ├── crawl_server/      # Python - News crawler service
-├── news_server/       # TypeScript - News aggregation API service  
+├── news_server/       # TypeScript - News aggregation API service
 ├── web_server/        # Python - HTML report web service
 ├── mcp_server/        # Python - AI analysis service (MCP)
 ├── config/            # Configuration files
@@ -59,12 +59,12 @@ NFX-News/
 
 ### Service Overview
 
-| Service | Language | Framework | Purpose | Port |
-|---------|----------|-----------|---------|------|
-| **Crawl Server** | Python | Custom | Crawl trending news from multiple platforms | - |
-| **News Server** | TypeScript | Fastify | RESTful API for news data access | 3000+ |
-| **Web Server** | Python | FastAPI | HTML report viewing interface | 10199 |
-| **MCP Server** | Python | FastMCP | AI analysis and query interface | 3333 (HTTP) |
+| Service          | Language   | Framework | Purpose                                     | Port        |
+| ---------------- | ---------- | --------- | ------------------------------------------- | ----------- |
+| **Crawl Server** | Python     | Custom    | Crawl trending news from multiple platforms | -           |
+| **News Server**  | TypeScript | Fastify   | RESTful API for news data access            | 3000+       |
+| **Web Server**   | Python     | FastAPI   | HTML report viewing interface               | 10199       |
+| **MCP Server**   | Python     | FastMCP   | AI analysis and query interface             | 3333 (HTTP) |
 
 ## 🚀 Quick Start
 
@@ -88,6 +88,7 @@ cd NFX-News
 Create `.env` files for each service:
 
 **Crawl Server** (`crawl_server/.env`):
+
 ```bash
 POSTGRES_HOST=localhost
 POSTGRES_PORT=5432
@@ -98,6 +99,7 @@ SCHEDULE_MINUTES=30
 ```
 
 **News Server** (`news_server/.env`):
+
 ```bash
 NODE_ENV=development
 PORT=3000
@@ -110,6 +112,7 @@ POSTGRES_PASSWORD=your_password
 ```
 
 **Web Server** (`web_server/.env`):
+
 ```bash
 PROJECT_ROOT=/path/to/NFX-News
 HOST=0.0.0.0
@@ -118,6 +121,7 @@ DEBUG=false
 ```
 
 **MCP Server** (`mcp_server/.env`):
+
 ```bash
 NFX_NEWS_PROJECT_ROOT=/path/to/NFX-News
 ```
@@ -206,6 +210,7 @@ Detailed documentation for each service:
 ### 1. Multi-Platform Crawling
 
 Automatically crawl trending content from:
+
 - Zhihu (知乎)
 - Weibo (微博)
 - Douyin (抖音)
@@ -221,6 +226,7 @@ Automatically crawl trending content from:
 ### 2. Smart Filtering
 
 Advanced keyword filtering syntax:
+
 - **Normal keywords**: Basic matching
 - **Required words** (`+keyword`): Narrow scope
 - **Filter words** (`!keyword`): Exclude noise
@@ -229,6 +235,7 @@ Advanced keyword filtering syntax:
 ### 3. AI-Powered Analysis
 
 Query and analyze news data using natural language:
+
 - "Get the latest news about AI from Zhihu"
 - "Analyze the popularity trend of 'Bitcoin' over the past 30 days"
 - "Search for news related to 'Tesla' and 'Musk'"
@@ -258,7 +265,7 @@ platforms:
   # ... more platforms
 
 report:
-  mode: "current"  # daily, current, incremental
+  mode: "current" # daily, current, incremental
 
 database:
   host: localhost
@@ -314,6 +321,7 @@ docker-compose down
 ### Individual Service Deployment
 
 See individual service documentation for Docker deployment instructions:
+
 - [Crawl Server Docker](docs/crawl_server/README.md#docker-deployment)
 - [News Server Docker](docs/news_server/README.md#docker-deployment)
 - [Web Server Docker](docs/web_server/README.md#docker-deployment)
@@ -335,6 +343,7 @@ See individual service documentation for Docker deployment instructions:
    - **Mac**: `~/Library/Application Support/Claude/claude_desktop_config.json`
 
 2. Add configuration:
+
 ```json
 {
   "mcpServers": {
