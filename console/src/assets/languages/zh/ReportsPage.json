@@ -1,9 +1,12 @@
 {
   "title": "关键词报告",
+  "subtitle": "维护包含/排除词，并生成快照。",
   "keywords": "关键词",
   "add": "添加",
   "snapshots": "快照",
   "daily": "日报",
   "current": "当前",
-  "incremental": "增量"
+  "incremental": "增量",
+  "emptyKeywords": "还没有关键词",
+  "emptySnapshots": "还没有快照"
 }

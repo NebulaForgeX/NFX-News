@@ -10,6 +10,8 @@ import (
 	notifyapp "nfxnews/modules/notify/application/notify"
 	resourceApp "nfxnews/modules/notify/application/resource"
 	"nfxnews/modules/notify/config"
+	notifyQuery "nfxnews/modules/notify/infrastructure/query/notify"
+	repofactory "nfxnews/modules/notify/infrastructure/repository/factory"
 	"nfxnews/pkgs/cachex"
 	"nfxnews/pkgs/health"
 	"nfxnews/pkgs/kafkax"
@@ -84,7 +86,7 @@ func NewDeps(ctx context.Context, cfg *config.Config) (*Dependencies, error) {
 		userTokenVerifier: userTokenVerifier, serverTokenVerifier: serverTokenVerifier, errorsLangsPath: errorsLangsPath,
 		identityAuth: identityClient,
 	}
-	d.appSvc = notifyapp.NewService(postgres.DB())
+	d.appSvc = notifyapp.NewService(repofactory.NewTxRepoFactory(postgres.DB()), notifyQuery.NewQuery(postgres.DB()))
 	_ = provider
 	return d, nil
 }

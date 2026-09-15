@@ -1,5 +1,9 @@
 {
   "title": "Sessions de crawl",
+  "subtitle": "Lancer un crawl pour une source ou toutes.",
   "sourceId": "ID source (optionnel)",
-  "trigger": "Lancer"
+  "trigger": "Lancer",
+  "sessions": "Sessions récentes",
+  "emptySessions": "Aucune session",
+  "emptySessionsHint": "Lancez un crawl pour voir le statut."
 }

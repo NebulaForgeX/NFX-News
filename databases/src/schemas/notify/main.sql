@@ -1,3 +1,5 @@
 -- atlas:import schema.sql
 -- atlas:import tables/channels.sql
 -- atlas:import tables/deliveries.sql
+-- atlas:import views/channels_active_view.sql
+-- atlas:import views/deliveries_active_view.sql

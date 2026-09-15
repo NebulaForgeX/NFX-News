@@ -1,6 +1,11 @@
 {
   "title": "Reader",
+  "subtitle": "Drag columns to reorder. Refresh pulls the first visible source.",
   "search": "Search headlines",
   "refresh": "Refresh column",
-  "results": "Search results"
+  "results": "Search results",
+  "emptySources": "No sources yet",
+  "emptySourcesHint": "Sources appear after crawl or seed.",
+  "emptyColumn": "No headlines",
+  "emptySearch": "No matching headlines"
 }

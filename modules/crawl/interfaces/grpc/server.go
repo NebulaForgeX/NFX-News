@@ -1,8 +1,8 @@
 package grpc
 
 import (
-	"nfxnews/modules/crawl/application/resource"
 	crawlapp "nfxnews/modules/crawl/application/crawl"
+	"nfxnews/modules/crawl/application/resource"
 	grpcHandler "nfxnews/modules/crawl/interfaces/grpc/handler"
 	"nfxnews/pkgs/grpcx/interceptor"
 	"nfxnews/pkgs/security/token"

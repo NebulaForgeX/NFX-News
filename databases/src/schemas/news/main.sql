@@ -1,3 +1,5 @@
 -- atlas:import schema.sql
 -- atlas:import tables/items.sql
 -- atlas:import tables/profile_preferences.sql
+-- atlas:import views/items_active_view.sql
+-- atlas:import views/profile_preferences_active_view.sql

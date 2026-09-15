@@ -4,34 +4,29 @@ import (
 	"context"
 	"encoding/json"
 
+	toolcallDomain "nfxnews/modules/mcp/domain/toolcall"
 	"nfxnews/pkgs/errx"
 	newspb "nfxnews/protos/gen/news"
 	reportpb "nfxnews/protos/gen/report"
 	sourcepb "nfxnews/protos/gen/source"
 
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
-type ToolCall struct {
-	ID           uuid.UUID `gorm:"type:uuid;primaryKey"`
-	ToolName     string
-	Arguments    []byte `gorm:"type:jsonb"`
-	OK           bool
-	ErrorMessage *string
-}
-
-func (ToolCall) TableName() string { return "mcp.tool_calls" }
-
 type Service struct {
-	db     *gorm.DB
+	calls  *toolcallDomain.Repo
 	news   newspb.NewsServiceClient
 	report reportpb.ReportServiceClient
 	source sourcepb.SourceServiceClient
 }
 
-func NewService(db *gorm.DB, news newspb.NewsServiceClient, report reportpb.ReportServiceClient, source sourcepb.SourceServiceClient) *Service {
-	return &Service{db: db, news: news, report: report, source: source}
+func NewService(
+	calls *toolcallDomain.Repo,
+	news newspb.NewsServiceClient,
+	report reportpb.ReportServiceClient,
+	source sourcepb.SourceServiceClient,
+) *Service {
+	return &Service{calls: calls, news: news, report: report, source: source}
 }
 
 func (s *Service) RunTool(ctx context.Context, name, argsJSON string) (map[string]any, error) {
@@ -40,7 +35,8 @@ func (s *Service) RunTool(ctx context.Context, name, argsJSON string) (map[strin
 		_ = json.Unmarshal([]byte(argsJSON), &args)
 	}
 	raw, _ := json.Marshal(args)
-	call := ToolCall{ID: uuid.Must(uuid.NewV7()), ToolName: name, Arguments: raw, OK: true}
+	ok := true
+	var errMsg *string
 	var result map[string]any
 	var runErr error
 	switch name {
@@ -110,12 +106,15 @@ func (s *Service) RunTool(ctx context.Context, name, argsJSON string) (map[strin
 	}
 	if runErr != nil {
 		msg := runErr.Error()
-		call.OK = false
-		call.ErrorMessage = &msg
-		_ = s.db.WithContext(ctx).Create(&call).Error
+		ok = false
+		errMsg = &msg
+	}
+	_ = s.calls.Create.New(ctx, toolcallDomain.NewFromState(toolcallDomain.State{
+		ID: uuid.Must(uuid.NewV7()), ToolName: name, Arguments: raw, OK: ok, ErrorMessage: errMsg,
+	}))
+	if runErr != nil {
 		return nil, runErr
 	}
-	_ = s.db.WithContext(ctx).Create(&call).Error
 	if result == nil {
 		result = map[string]any{}
 	}

@@ -1,6 +1,11 @@
 {
   "title": "阅读器",
+  "subtitle": "拖动栏目排序。刷新会拉取当前第一列来源。",
   "search": "搜索标题",
   "refresh": "刷新栏目",
-  "results": "搜索结果"
+  "results": "搜索结果",
+  "emptySources": "还没有来源",
+  "emptySourcesHint": "爬取或写入来源后会出现栏目。",
+  "emptyColumn": "暂无标题",
+  "emptySearch": "没有匹配的标题"
 }

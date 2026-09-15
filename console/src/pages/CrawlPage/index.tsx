@@ -1,44 +1,54 @@
-import { Button, Card, Flex, Heading, Text, TextField } from "@radix-ui/themes";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { memo, useState } from "react";
+import { Button, Card, Flex, Text, TextField } from "@radix-ui/themes";
+import { Play, List } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { PageFrame } from "nfx-ui/layouts";
+import { CardHeader, EmptyState, PageHeader } from "nfx-ui/components";
 
-import { useCrawlSessions, useSources } from "@/hooks/news";
-import { useNewsRepositories } from "@/apis/repositories";
+import { useCrawlSessions, useSources, useTriggerCrawl } from "@/hooks/news";
 
-export default function CrawlPage() {
+const CrawlPage = memo(() => {
   const { t } = useTranslation("CrawlPage");
   const { data: sessions } = useCrawlSessions();
   const { data: sources } = useSources();
   const [sourceId, setSourceId] = useState("");
-  const repos = useNewsRepositories();
-  const qc = useQueryClient();
-  const trigger = useMutation({
-    mutationFn: () => repos.crawl.TriggerCrawl(sourceId || undefined),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["crawl-sessions"] }),
-  });
+  const trigger = useTriggerCrawl();
 
   return (
-    <Flex direction="column" gap="4" p="4">
-      <Heading size="6">{t("title")}</Heading>
-      <Flex gap="2">
-        <TextField.Root value={sourceId} onChange={(e) => setSourceId(e.target.value)} placeholder={t("sourceId")} list="source-ids" />
-        <datalist id="source-ids">
-          {(sources ?? []).map((s) => (
-            <option key={s.id} value={s.id} />
-          ))}
-        </datalist>
-        <Button onClick={() => trigger.mutate()}>{t("trigger")}</Button>
-      </Flex>
+    <PageFrame>
+      <PageHeader
+        icon={Play}
+        title={t("title")}
+        description={t("subtitle")}
+        actions={
+          <Flex gap="2">
+            <TextField.Root value={sourceId} onChange={(e) => setSourceId(e.target.value)} placeholder={t("sourceId")} list="source-ids" />
+            <datalist id="source-ids">
+              {(sources ?? []).map((s) => (
+                <option key={s.id} value={s.id} />
+              ))}
+            </datalist>
+            <Button onClick={() => trigger.mutate(sourceId || undefined)}>{t("trigger")}</Button>
+          </Flex>
+        }
+      />
       <Card>
-        <Flex direction="column" gap="2">
-          {(sessions ?? []).map((s) => (
-            <Text key={s.id} size="2">
-              {s.status} · {s.sourceId || "*"} · {s.itemCount} · {s.startedAt}
-            </Text>
-          ))}
-        </Flex>
+        <CardHeader icon={<List size={18} />} title={t("sessions")} />
+        {(sessions ?? []).length === 0 ? (
+          <EmptyState icon={Play} title={t("emptySessions")} description={t("emptySessionsHint")} />
+        ) : (
+          <Flex direction="column" gap="2">
+            {(sessions ?? []).map((s) => (
+              <Text key={s.id} size="2">
+                {s.status} · {s.sourceId || "*"} · {s.itemCount} · {s.startedAt}
+              </Text>
+            ))}
+          </Flex>
+        )}
       </Card>
-    </Flex>
+    </PageFrame>
   );
-}
+});
+
+CrawlPage.displayName = "CrawlPage";
+export default CrawlPage;

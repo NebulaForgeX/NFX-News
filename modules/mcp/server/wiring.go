@@ -12,6 +12,7 @@ import (
 	mcpapp "nfxnews/modules/mcp/application/mcp"
 	resourceApp "nfxnews/modules/mcp/application/resource"
 	"nfxnews/modules/mcp/config"
+	toolcallRepo "nfxnews/modules/mcp/infrastructure/repository/toolcall"
 	"nfxnews/pkgs/cachex"
 	"nfxnews/pkgs/grpcx"
 	"nfxnews/pkgs/health"
@@ -107,7 +108,7 @@ func NewDeps(ctx context.Context, cfg *config.Config) (*Dependencies, error) {
 		d.conns = append(d.conns, conn)
 		sourceClient = sourceconn.New(conn)
 	}
-	d.appSvc = mcpapp.NewService(postgres.DB(), newsClient, reportClient, sourceClient)
+	d.appSvc = mcpapp.NewService(toolcallRepo.NewRepo(postgres.DB()), newsClient, reportClient, sourceClient)
 	_ = provider
 	return d, nil
 }

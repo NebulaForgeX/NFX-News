@@ -10,6 +10,8 @@ import (
 	crawlapp "nfxnews/modules/crawl/application/crawl"
 	resourceApp "nfxnews/modules/crawl/application/resource"
 	"nfxnews/modules/crawl/config"
+	sessionQuery "nfxnews/modules/crawl/infrastructure/query/session"
+	repofactory "nfxnews/modules/crawl/infrastructure/repository/factory"
 	"nfxnews/pkgs/cachex"
 	"nfxnews/pkgs/grpcx"
 	"nfxnews/pkgs/health"
@@ -19,6 +21,7 @@ import (
 	"nfxnews/pkgs/security/token"
 	"nfxnews/pkgs/security/token/servertoken"
 	"nfxnews/pkgs/tokenx"
+	"nfxnews/pkgs/transaction"
 	sourcepb "nfxnews/protos/gen/source"
 
 	"google.golang.org/grpc"
@@ -93,7 +96,12 @@ func NewDeps(ctx context.Context, cfg *config.Config) (*Dependencies, error) {
 		d.conns = append(d.conns, conn)
 		sourceClient = sourceconn.New(conn)
 	}
-	d.appSvc = crawlapp.NewService(postgres.DB(), sourceClient)
+	d.appSvc = crawlapp.NewService(
+		transaction.NewGormTxManager(postgres.DB()),
+		repofactory.NewTxRepoFactory(postgres.DB()),
+		sessionQuery.NewQuery(postgres.DB()),
+		sourceClient,
+	)
 	_ = provider
 	return d, nil
 }

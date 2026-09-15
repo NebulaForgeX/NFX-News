@@ -11,53 +11,33 @@ import (
 	"time"
 
 	"nfxnews/events"
+	channelDomain "nfxnews/modules/notify/domain/channel"
+	deliveryDomain "nfxnews/modules/notify/domain/delivery"
+	repofactory "nfxnews/modules/notify/infrastructure/repository/factory"
+	notifyQuery "nfxnews/modules/notify/query/notify"
 	"nfxnews/pkgs/errx"
+	"nfxnews/pkgs/transaction"
 
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
-type Channel struct {
-	ID        uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
-	Kind      string     `gorm:"type:varchar(32)" json:"kind"`
-	Name      string     `gorm:"type:varchar(128)" json:"name"`
-	Enabled   bool       `json:"enabled"`
-	Config    []byte     `gorm:"type:jsonb" json:"-"`
-	CreatedAt time.Time  `gorm:"autoCreateTime" json:"created_at"`
-	UpdatedAt time.Time  `gorm:"autoUpdateTime" json:"updated_at"`
-	ConfigObj map[string]any `gorm:"-" json:"config"`
-}
-
-func (Channel) TableName() string { return "notify.channels" }
-
-type Delivery struct {
-	ID           uuid.UUID  `gorm:"type:uuid;primaryKey" json:"id"`
-	ChannelID    uuid.UUID  `json:"channel_id"`
-	ReportID     *uuid.UUID `json:"report_id"`
-	Status       string      `json:"status"`
-	ErrorMessage *string     `json:"error_message"`
-	CreatedAt    time.Time   `gorm:"autoCreateTime" json:"created_at"`
-	SentAt       *time.Time  `json:"sent_at"`
-}
-
-func (Delivery) TableName() string { return "notify.deliveries" }
+type Channel = notifyQuery.ChannelVO
+type Delivery = notifyQuery.DeliveryVO
 
 type Service struct {
-	db     *gorm.DB
+	repos  *repofactory.TxRepoFactory
+	query  *notifyQuery.Query
 	client *http.Client
 }
 
-func NewService(db *gorm.DB) *Service {
-	return &Service{db: db, client: &http.Client{Timeout: 15 * time.Second}}
+func NewService(repos *repofactory.TxRepoFactory, query *notifyQuery.Query) *Service {
+	return &Service{repos: repos, query: query, client: &http.Client{Timeout: 15 * time.Second}}
 }
 
 func (s *Service) ListChannels(ctx context.Context) ([]Channel, error) {
-	var rows []Channel
-	if err := s.db.WithContext(ctx).Find(&rows).Error; err != nil {
+	rows, err := s.query.Channels.All(ctx)
+	if err != nil {
 		return nil, errx.ErrInternal.WithCause(err)
-	}
-	for i := range rows {
-		_ = json.Unmarshal(rows[i].Config, &rows[i].ConfigObj)
 	}
 	return rows, nil
 }
@@ -66,21 +46,19 @@ func (s *Service) ListDeliveries(ctx context.Context, limit int) ([]Delivery, er
 	if limit <= 0 || limit > 200 {
 		limit = 50
 	}
-	var rows []Delivery
-	if err := s.db.WithContext(ctx).Order("created_at DESC").Limit(limit).Find(&rows).Error; err != nil {
-		return nil, errx.ErrInternal.WithCause(err)
-	}
-	return rows, nil
+	return s.query.Deliveries.Recent(ctx, limit)
 }
 
 func (s *Service) UpsertChannel(ctx context.Context, kind, name string, enabled bool, cfg map[string]any) (*Channel, error) {
 	raw, _ := json.Marshal(cfg)
-	row := Channel{ID: uuid.Must(uuid.NewV7()), Kind: kind, Name: name, Enabled: enabled, Config: raw}
-	if err := s.db.WithContext(ctx).Create(&row).Error; err != nil {
+	now := time.Now()
+	id := uuid.Must(uuid.NewV7())
+	if err := s.repos.Channel(transaction.UoW{}).Create.New(ctx, channelDomain.NewFromState(channelDomain.State{
+		ID: id, Kind: kind, Name: name, Enabled: enabled, Config: raw, CreatedAt: now, UpdatedAt: now,
+	})); err != nil {
 		return nil, errx.ErrInternal.WithCause(err)
 	}
-	row.ConfigObj = cfg
-	return &row, nil
+	return &Channel{ID: id, Kind: kind, Name: name, Enabled: enabled, Config: raw, ConfigObj: cfg, CreatedAt: now, UpdatedAt: now}, nil
 }
 
 func (s *Service) DispatchReport(ctx context.Context, ev events.ReportGeneratedEvent) (int, error) {
@@ -90,28 +68,32 @@ func (s *Service) DispatchReport(ctx context.Context, ev events.ReportGeneratedE
 	}
 	queued := 0
 	body := fmt.Sprintf("%s\n%s\nitems=%d", ev.Title, ev.Mode, ev.ItemCount)
+	deliveries := s.repos.Delivery(transaction.UoW{})
 	for _, ch := range channels {
 		if !ch.Enabled {
 			continue
 		}
-		d := Delivery{ID: uuid.Must(uuid.NewV7()), ChannelID: ch.ID, Status: "pending"}
+		now := time.Now()
+		d := deliveryDomain.NewFromState(deliveryDomain.State{
+			ID: uuid.Must(uuid.NewV7()), ChannelID: ch.ID, Status: "pending", CreatedAt: now,
+		})
 		if ev.ReportID != "" {
 			if id, err := uuid.Parse(ev.ReportID); err == nil {
-				d.ReportID = &id
+				st := d.State()
+				st.ReportID = &id
+				d = deliveryDomain.NewFromState(st)
 			}
 		}
-		_ = s.db.WithContext(ctx).Create(&d).Error
+		_ = deliveries.Create.New(ctx, d)
 		if err := s.send(ctx, ch, body); err != nil {
 			msg := err.Error()
-			d.Status = "failed"
-			d.ErrorMessage = &msg
+			d.Mark("failed", &msg, nil)
 		} else {
-			now := time.Now()
-			d.Status = "sent"
-			d.SentAt = &now
+			sent := time.Now()
+			d.Mark("sent", nil, &sent)
 			queued++
 		}
-		_ = s.db.WithContext(ctx).Save(&d).Error
+		_ = deliveries.Update.Generic(ctx, d)
 	}
 	return queued, nil
 }

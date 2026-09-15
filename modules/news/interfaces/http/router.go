@@ -1,8 +1,8 @@
 package http
 
 import (
-	"nfxnews/pkgs/security/token"
 	"nfxnews/pkgs/fiberx/middleware"
+	"nfxnews/pkgs/security/token"
 
 	"github.com/gofiber/fiber/v3"
 )

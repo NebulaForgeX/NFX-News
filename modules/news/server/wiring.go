@@ -10,6 +10,8 @@ import (
 	newsapp "nfxnews/modules/news/application/news"
 	resourceApp "nfxnews/modules/news/application/resource"
 	"nfxnews/modules/news/config"
+	itemQuery "nfxnews/modules/news/infrastructure/query/item"
+	repofactory "nfxnews/modules/news/infrastructure/repository/factory"
 	"nfxnews/pkgs/cachex"
 	"nfxnews/pkgs/health"
 	"nfxnews/pkgs/kafkax"
@@ -18,6 +20,7 @@ import (
 	"nfxnews/pkgs/security/token"
 	"nfxnews/pkgs/security/token/servertoken"
 	"nfxnews/pkgs/tokenx"
+	"nfxnews/pkgs/transaction"
 )
 
 type Dependencies struct {
@@ -84,7 +87,12 @@ func NewDeps(ctx context.Context, cfg *config.Config) (*Dependencies, error) {
 		userTokenVerifier: userTokenVerifier, serverTokenVerifier: serverTokenVerifier, errorsLangsPath: errorsLangsPath,
 		identityAuth: identityClient,
 	}
-	d.appSvc = newsapp.NewService(postgres.DB(), cacheConn)
+	d.appSvc = newsapp.NewService(
+		transaction.NewGormTxManager(postgres.DB()),
+		repofactory.NewTxRepoFactory(postgres.DB()),
+		itemQuery.NewQuery(postgres.DB()),
+		cacheConn,
+	)
 	_ = provider
 	return d, nil
 }

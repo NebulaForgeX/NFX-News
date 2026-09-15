@@ -1,5 +1,9 @@
 {
   "title": "爬取会话",
+  "subtitle": "对单个来源或全部来源立即爬取。",
   "sourceId": "来源 ID（可选）",
-  "trigger": "立即爬取"
+  "trigger": "立即爬取",
+  "sessions": "最近会话",
+  "emptySessions": "还没有爬取会话",
+  "emptySessionsHint": "触发一次爬取后会出现状态。"
 }

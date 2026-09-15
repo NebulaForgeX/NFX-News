@@ -1,8 +1,8 @@
 package grpc
 
 import (
-	"nfxnews/modules/notify/application/resource"
 	notifyapp "nfxnews/modules/notify/application/notify"
+	"nfxnews/modules/notify/application/resource"
 	grpcHandler "nfxnews/modules/notify/interfaces/grpc/handler"
 	"nfxnews/pkgs/grpcx/interceptor"
 	"nfxnews/pkgs/security/token"

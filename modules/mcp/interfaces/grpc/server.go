@@ -1,8 +1,8 @@
 package grpc
 
 import (
-	"nfxnews/modules/mcp/application/resource"
 	mcpapp "nfxnews/modules/mcp/application/mcp"
+	"nfxnews/modules/mcp/application/resource"
 	grpcHandler "nfxnews/modules/mcp/interfaces/grpc/handler"
 	"nfxnews/pkgs/grpcx/interceptor"
 	"nfxnews/pkgs/security/token"

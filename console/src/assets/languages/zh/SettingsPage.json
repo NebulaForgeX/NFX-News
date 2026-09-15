@@ -4,5 +4,8 @@
   "name": "渠道名称",
   "enabled": "启用",
   "save": "保存",
-  "webhookHint": "Webhook 只写在服务器 .env，禁止提交到仓库。"
+  "webhookHint": "Webhook 只写在服务器 .env，禁止提交到仓库。",
+  "deliveries": "投递记录",
+  "emptyChannels": "还没有渠道",
+  "emptyDeliveries": "还没有投递记录"
 }

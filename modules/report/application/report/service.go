@@ -7,50 +7,42 @@ import (
 	"time"
 
 	"nfxnews/events"
+	keywordDomain "nfxnews/modules/report/domain/keyword"
+	snapshotDomain "nfxnews/modules/report/domain/snapshot"
+	repofactory "nfxnews/modules/report/infrastructure/repository/factory"
+	reportQuery "nfxnews/modules/report/query/report"
 	"nfxnews/pkgs/errx"
 	"nfxnews/pkgs/kafkax/eventbus"
+	"nfxnews/pkgs/transaction"
 	newspb "nfxnews/protos/gen/news"
 
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
-type Keyword struct {
-	ID         uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
-	GroupName  string     `gorm:"type:varchar(128)" json:"group_name"`
-	Word       string     `gorm:"type:varchar(255)" json:"word"`
-	Kind       string     `gorm:"type:varchar(16)" json:"kind"`
-	CountLimit int        `json:"count_limit"`
-	CreatedAt  time.Time  `gorm:"autoCreateTime" json:"created_at"`
-}
-
-func (Keyword) TableName() string { return "report.keywords" }
-
-type Snapshot struct {
-	ID        uuid.UUID `gorm:"type:uuid;primaryKey" json:"id"`
-	Mode      string     `gorm:"type:varchar(32)" json:"mode"`
-	Title     string     `gorm:"type:varchar(255)" json:"title"`
-	Payload   []byte    `gorm:"type:jsonb" json:"-"`
-	ItemCount int        `json:"item_count"`
-	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
-	PayloadObj any      `gorm:"-" json:"payload"`
-}
-
-func (Snapshot) TableName() string { return "report.snapshots" }
+type Keyword = reportQuery.KeywordVO
+type Snapshot = reportQuery.SnapshotVO
 
 type Service struct {
-	db   *gorm.DB
-	news newspb.NewsServiceClient
-	pub  *eventbus.BusPublisher
+	tx    transaction.TxManager
+	repos *repofactory.TxRepoFactory
+	query *reportQuery.Query
+	news  newspb.NewsServiceClient
+	pub   *eventbus.BusPublisher
 }
 
-func NewService(db *gorm.DB, news newspb.NewsServiceClient, pub *eventbus.BusPublisher) *Service {
-	return &Service{db: db, news: news, pub: pub}
+func NewService(
+	tx transaction.TxManager,
+	repos *repofactory.TxRepoFactory,
+	query *reportQuery.Query,
+	news newspb.NewsServiceClient,
+	pub *eventbus.BusPublisher,
+) *Service {
+	return &Service{tx: tx, repos: repos, query: query, news: news, pub: pub}
 }
 
 func (s *Service) ListKeywords(ctx context.Context) ([]Keyword, error) {
-	var rows []Keyword
-	if err := s.db.WithContext(ctx).Order("created_at").Find(&rows).Error; err != nil {
+	rows, err := s.query.Keywords.All(ctx)
+	if err != nil {
 		return nil, errx.ErrInternal.WithCause(err)
 	}
 	return rows, nil
@@ -64,14 +56,18 @@ func (s *Service) AddKeyword(ctx context.Context, group, word, kind string, limi
 	if kind == "" {
 		kind = "include"
 	}
-	row := Keyword{ID: uuid.Must(uuid.NewV7()), GroupName: group, Word: word, Kind: kind, CountLimit: limit}
-	if row.GroupName == "" {
-		row.GroupName = "default"
+	if group == "" {
+		group = "default"
 	}
-	if err := s.db.WithContext(ctx).Create(&row).Error; err != nil {
+	now := time.Now()
+	id := uuid.Must(uuid.NewV7())
+	ent := keywordDomain.NewFromState(keywordDomain.State{
+		ID: id, GroupName: group, Word: word, Kind: kind, CountLimit: limit, CreatedAt: now,
+	})
+	if err := s.repos.Keyword(transaction.UoW{}).Create.New(ctx, ent); err != nil {
 		return nil, errx.ErrInternal.WithCause(err)
 	}
-	return &row, nil
+	return &Keyword{ID: id, GroupName: group, Word: word, Kind: kind, CountLimit: limit, CreatedAt: now}, nil
 }
 
 func (s *Service) Generate(ctx context.Context, mode string) (*Snapshot, error) {
@@ -96,17 +92,21 @@ func (s *Service) Generate(ctx context.Context, mode string) (*Snapshot, error) 
 		}
 	}
 	payload, _ := json.Marshal(map[string]any{"mode": mode, "items": matched})
-	snap := Snapshot{
-		ID: uuid.Must(uuid.NewV7()), Mode: mode, Title: strings.ToUpper(mode) + " report",
-		Payload: payload, ItemCount: len(matched),
-	}
-	if err := s.db.WithContext(ctx).Create(&snap).Error; err != nil {
+	now := time.Now()
+	id := uuid.Must(uuid.NewV7())
+	title := strings.ToUpper(mode) + " report"
+	ent := snapshotDomain.NewFromState(snapshotDomain.State{
+		ID: id, Mode: mode, Title: title, Payload: payload, ItemCount: len(matched), CreatedAt: now,
+	})
+	if err := s.repos.Snapshot(transaction.UoW{}).Create.New(ctx, ent); err != nil {
 		return nil, errx.ErrInternal.WithCause(err)
 	}
-	_ = json.Unmarshal(snap.Payload, &snap.PayloadObj)
+	var payloadObj any
+	_ = json.Unmarshal(payload, &payloadObj)
+	snap := Snapshot{ID: id, Mode: mode, Title: title, Payload: payload, PayloadObj: payloadObj, ItemCount: len(matched), CreatedAt: now}
 	if s.pub != nil {
 		_ = eventbus.PublishEvent(ctx, s.pub, events.ReportGeneratedEvent{
-			ReportID: snap.ID.String(), Mode: mode, Title: snap.Title, ItemCount: snap.ItemCount, Payload: string(payload),
+			ReportID: id.String(), Mode: mode, Title: title, ItemCount: len(matched), Payload: string(payload),
 		})
 	}
 	return &snap, nil
@@ -116,14 +116,7 @@ func (s *Service) ListSnapshots(ctx context.Context, limit int) ([]Snapshot, err
 	if limit <= 0 {
 		limit = 20
 	}
-	var rows []Snapshot
-	if err := s.db.WithContext(ctx).Order("created_at desc").Limit(limit).Find(&rows).Error; err != nil {
-		return nil, errx.ErrInternal.WithCause(err)
-	}
-	for i := range rows {
-		_ = json.Unmarshal(rows[i].Payload, &rows[i].PayloadObj)
-	}
-	return rows, nil
+	return s.query.Snapshots.Recent(ctx, limit)
 }
 
 func (s *Service) Get(ctx context.Context, id string) (*Snapshot, error) {
@@ -131,12 +124,7 @@ func (s *Service) Get(ctx context.Context, id string) (*Snapshot, error) {
 	if err != nil {
 		return nil, errx.ErrInvalidParams.WithCause(err)
 	}
-	var row Snapshot
-	if err := s.db.WithContext(ctx).First(&row, "id = ?", uid).Error; err != nil {
-		return nil, errx.NotFound("REPORT_NOT_FOUND", "report not found")
-	}
-	_ = json.Unmarshal(row.Payload, &row.PayloadObj)
-	return &row, nil
+	return s.query.Snapshots.ByID(ctx, uid)
 }
 
 func matchKeywords(title string, keywords []Keyword) bool {

@@ -1,3 +1,5 @@
 -- atlas:import schema.sql
 -- atlas:import tables/keywords.sql
 -- atlas:import tables/snapshots.sql
+-- atlas:import views/keywords_active_view.sql
+-- atlas:import views/snapshots_active_view.sql

@@ -10,6 +10,8 @@ import (
 	reportapp "nfxnews/modules/report/application/report"
 	resourceApp "nfxnews/modules/report/application/resource"
 	"nfxnews/modules/report/config"
+	reportQuery "nfxnews/modules/report/infrastructure/query/report"
+	repofactory "nfxnews/modules/report/infrastructure/repository/factory"
 	"nfxnews/pkgs/cachex"
 	"nfxnews/pkgs/grpcx"
 	"nfxnews/pkgs/health"
@@ -19,6 +21,7 @@ import (
 	"nfxnews/pkgs/security/token"
 	"nfxnews/pkgs/security/token/servertoken"
 	"nfxnews/pkgs/tokenx"
+	"nfxnews/pkgs/transaction"
 	newspb "nfxnews/protos/gen/news"
 
 	"google.golang.org/grpc"
@@ -93,7 +96,13 @@ func NewDeps(ctx context.Context, cfg *config.Config) (*Dependencies, error) {
 		d.conns = append(d.conns, conn)
 		newsClient = newsconn.New(conn)
 	}
-	d.appSvc = reportapp.NewService(postgres.DB(), newsClient, busPublisher)
+	d.appSvc = reportapp.NewService(
+		transaction.NewGormTxManager(postgres.DB()),
+		repofactory.NewTxRepoFactory(postgres.DB()),
+		reportQuery.NewQuery(postgres.DB()),
+		newsClient,
+		busPublisher,
+	)
 	_ = provider
 	return d, nil
 }

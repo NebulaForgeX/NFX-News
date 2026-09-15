@@ -1,8 +1,8 @@
 package grpc
 
 import (
-	"nfxnews/modules/report/application/resource"
 	reportapp "nfxnews/modules/report/application/report"
+	"nfxnews/modules/report/application/resource"
 	grpcHandler "nfxnews/modules/report/interfaces/grpc/handler"
 	"nfxnews/pkgs/grpcx/interceptor"
 	"nfxnews/pkgs/security/token"

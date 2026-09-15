@@ -1,9 +1,12 @@
 {
   "title": "Keyword reports",
+  "subtitle": "Track include/exclude keywords and generate snapshots.",
   "keywords": "Keywords",
   "add": "Add",
   "snapshots": "Snapshots",
   "daily": "Daily",
   "current": "Current",
-  "incremental": "Incremental"
+  "incremental": "Incremental",
+  "emptyKeywords": "No keywords yet",
+  "emptySnapshots": "No snapshots yet"
 }

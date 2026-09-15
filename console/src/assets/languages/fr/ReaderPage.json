@@ -1,6 +1,11 @@
 {
   "title": "Lecteur",
+  "subtitle": "Glissez les colonnes pour réordonner. Actualiser tire la première source visible.",
   "search": "Rechercher",
   "refresh": "Actualiser",
-  "results": "Résultats"
+  "results": "Résultats",
+  "emptySources": "Aucune source",
+  "emptySourcesHint": "Les sources apparaissent après un crawl.",
+  "emptyColumn": "Aucun titre",
+  "emptySearch": "Aucun résultat"
 }

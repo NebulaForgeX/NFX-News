@@ -7,58 +7,62 @@ import (
 	"time"
 
 	"nfxnews/events"
-	"nfxnews/modules/news/infrastructure/rdb/models"
+	itemDomain "nfxnews/modules/news/domain/item"
+	prefDomain "nfxnews/modules/news/domain/preference"
+	repofactory "nfxnews/modules/news/infrastructure/repository/factory"
+	itemQuery "nfxnews/modules/news/query/item"
 	"nfxnews/pkgs/cachex"
 	"nfxnews/pkgs/errx"
-
-	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
+	"nfxnews/pkgs/transaction"
 )
 
 type Service struct {
-	db    *gorm.DB
+	tx    transaction.TxManager
+	repos *repofactory.TxRepoFactory
+	query *itemQuery.Query
 	cache *cachex.Connection
 }
 
-func NewService(db *gorm.DB, cache *cachex.Connection) *Service {
-	return &Service{db: db, cache: cache}
+func NewService(
+	tx transaction.TxManager,
+	repos *repofactory.TxRepoFactory,
+	query *itemQuery.Query,
+	cache *cachex.Connection,
+) *Service {
+	return &Service{tx: tx, repos: repos, query: query, cache: cache}
 }
 
-type ItemView struct {
-	ID         string         `json:"id"`
-	SourceID   string         `json:"source_id"`
-	OriginalID string         `json:"original_id"`
-	Title      string         `json:"title"`
-	URL        string         `json:"url"`
-	MobileURL  string         `json:"mobile_url,omitempty"`
-	PubDate    int64          `json:"pub_date,omitempty"`
-	Extra      map[string]any `json:"extra,omitempty"`
-}
+type ItemView = itemQuery.ItemVO
+type PreferenceView = itemQuery.PreferenceVO
 
 func (s *Service) UpsertFromEvent(ctx context.Context, ev events.SourceFetchedEvent) (int, error) {
 	count := 0
-	for _, it := range ev.Items {
-		original := it.ID
-		id := ev.SourceID + ":" + original
-		row := models.Item{
-			ID: id, SourceID: ev.SourceID, OriginalID: original, Title: it.Title, URL: it.URL, Extra: []byte(it.ExtraJSON),
+	err := s.tx.WithUoW(ctx, func(ctx context.Context, uow transaction.UoW) error {
+		items := s.repos.Item(uow)
+		for _, it := range ev.Items {
+			original := it.ID
+			id := ev.SourceID + ":" + original
+			extra := []byte(it.ExtraJSON)
+			if len(extra) == 0 {
+				extra = []byte("{}")
+			}
+			st := itemDomain.State{ID: id, SourceID: ev.SourceID, OriginalID: original, Title: it.Title, URL: it.URL, Extra: extra}
+			if it.MobileURL != "" {
+				st.MobileURL = &it.MobileURL
+			}
+			if it.PubDate > 0 {
+				t := time.Unix(it.PubDate, 0)
+				st.PubDate = &t
+			}
+			if err := items.Create.Upsert(ctx, itemDomain.NewFromState(st)); err != nil {
+				return err
+			}
+			count++
 		}
-		if it.MobileURL != "" {
-			row.MobileURL = &it.MobileURL
-		}
-		if it.PubDate > 0 {
-			t := time.Unix(it.PubDate, 0)
-			row.PubDate = &t
-		}
-		if len(row.Extra) == 0 {
-			row.Extra = []byte("{}")
-		}
-		if err := s.db.WithContext(ctx).Clauses(clause.OnConflict{
-			UpdateAll: true,
-		}).Create(&row).Error; err != nil {
-			return count, errx.ErrInternal.WithCause(err)
-		}
-		count++
+		return nil
+	})
+	if err != nil {
+		return count, errx.ErrInternal.WithCause(err)
 	}
 	if s.cache != nil && s.cache.Client() != nil && ev.SourceID != "" {
 		_ = s.cache.Client().Del(ctx, "news:source:"+ev.SourceID).Err()
@@ -82,85 +86,37 @@ func (s *Service) ListBySource(ctx context.Context, sourceID string, limit int) 
 			}
 		}
 	}
-	var rows []models.Item
-	q := s.db.WithContext(ctx).Order("updated_at desc").Limit(limit)
-	if sourceID != "" {
-		q = q.Where("source_id = ?", sourceID)
-	}
-	if err := q.Find(&rows).Error; err != nil {
+	rows, err := s.query.List.BySource(ctx, sourceID, limit)
+	if err != nil {
 		return nil, errx.ErrInternal.WithCause(err)
 	}
-	return toViews(rows), nil
+	return rows, nil
 }
 
 func (s *Service) Search(ctx context.Context, query string, limit int) ([]ItemView, error) {
 	if limit <= 0 || limit > 200 {
 		limit = 50
 	}
-	query = strings.TrimSpace(query)
-	var rows []models.Item
-	tx := s.db.WithContext(ctx).Order("updated_at desc").Limit(limit)
-	if query != "" {
-		tx = tx.Where("title ILIKE ?", "%"+query+"%")
-	}
-	if err := tx.Find(&rows).Error; err != nil {
+	rows, err := s.query.List.Search(ctx, strings.TrimSpace(query), limit)
+	if err != nil {
 		return nil, errx.ErrInternal.WithCause(err)
 	}
-	return toViews(rows), nil
-}
-
-func toViews(rows []models.Item) []ItemView {
-	out := make([]ItemView, 0, len(rows))
-	for _, r := range rows {
-		v := ItemView{ID: r.ID, SourceID: r.SourceID, OriginalID: r.OriginalID, Title: r.Title, URL: r.URL}
-		if r.MobileURL != nil {
-			v.MobileURL = *r.MobileURL
-		}
-		if r.PubDate != nil {
-			v.PubDate = r.PubDate.Unix()
-		}
-		if len(r.Extra) > 0 {
-			_ = json.Unmarshal(r.Extra, &v.Extra)
-		}
-		out = append(out, v)
-	}
-	return out
-}
-
-type Preference struct {
-	AccountID   string          `gorm:"column:account_id;type:uuid;primaryKey"`
-	ProfileID   string          `gorm:"column:profile_id;type:uuid;primaryKey"`
-	ColumnOrder json.RawMessage `gorm:"column:column_order;type:jsonb"`
-	Payload     json.RawMessage `gorm:"column:payload;type:jsonb"`
-	UpdatedAt   time.Time       `gorm:"column:updated_at"`
-}
-
-func (Preference) TableName() string { return "news.profile_preferences" }
-
-type PreferenceView struct {
-	ColumnOrder json.RawMessage `json:"column_order"`
-	Payload     json.RawMessage `json:"payload"`
+	return rows, nil
 }
 
 func (s *Service) GetPreferences(ctx context.Context, accountID, profileID string) (PreferenceView, error) {
-	var pref Preference
-	err := s.db.WithContext(ctx).First(&pref, "account_id = ? AND profile_id = ?", accountID, profileID).Error
-	if err == gorm.ErrRecordNotFound {
-		return PreferenceView{ColumnOrder: json.RawMessage("[]"), Payload: json.RawMessage("{}")}, nil
-	}
+	pref, err := s.query.Pref.ByAccountProfile(ctx, accountID, profileID)
 	if err != nil {
 		return PreferenceView{}, err
 	}
-	return PreferenceView{ColumnOrder: pref.ColumnOrder, Payload: pref.Payload}, nil
+	if pref == nil {
+		return PreferenceView{ColumnOrder: json.RawMessage("[]"), Payload: json.RawMessage("{}")}, nil
+	}
+	return *pref, nil
 }
 
 func (s *Service) SetPreferences(ctx context.Context, accountID, profileID string, columnOrder, payload json.RawMessage) error {
-	pref := Preference{
-		AccountID: accountID, ProfileID: profileID,
-		ColumnOrder: columnOrder, Payload: payload, UpdatedAt: time.Now(),
-	}
-	return s.db.WithContext(ctx).Clauses(clause.OnConflict{
-		Columns:   []clause.Column{{Name: "account_id"}, {Name: "profile_id"}},
-		DoUpdates: clause.AssignmentColumns([]string{"column_order", "payload", "updated_at"}),
-	}).Create(&pref).Error
+	return s.repos.Preference(transaction.UoW{}).Create.Upsert(ctx, prefDomain.NewFromState(prefDomain.State{
+		AccountID: accountID, ProfileID: profileID, ColumnOrder: columnOrder, Payload: payload, UpdatedAt: time.Now(),
+	}))
 }

@@ -1,2 +1,3 @@
 -- atlas:import schema.sql
 -- atlas:import tables/sessions.sql
+-- atlas:import views/sessions_active_view.sql

@@ -1,9 +1,12 @@
 {
   "title": "Rapports",
+  "subtitle": "Mots-clés d'inclusion/exclusion et instantanés.",
   "keywords": "Mots-clés",
   "add": "Ajouter",
   "snapshots": "Instantanés",
   "daily": "Quotidien",
   "current": "Actuel",
-  "incremental": "Incrémental"
+  "incremental": "Incrémental",
+  "emptyKeywords": "Aucun mot-clé",
+  "emptySnapshots": "Aucun instantané"
 }

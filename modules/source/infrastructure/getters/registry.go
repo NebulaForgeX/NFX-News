@@ -234,10 +234,18 @@ func (r *Registry) zhihu(ctx context.Context) ([]Item, error) {
 	var res struct {
 		Data []struct {
 			Target struct {
-				TitleArea   struct{ Text string `json:"text"` } `json:"title_area"`
-				ExcerptArea struct{ Text string `json:"text"` } `json:"excerpt_area"`
-				MetricsArea struct{ Text string `json:"text"` } `json:"metrics_area"`
-				Link        struct{ URL string `json:"url"` }   `json:"link"`
+				TitleArea struct {
+					Text string `json:"text"`
+				} `json:"title_area"`
+				ExcerptArea struct {
+					Text string `json:"text"`
+				} `json:"excerpt_area"`
+				MetricsArea struct {
+					Text string `json:"text"`
+				} `json:"metrics_area"`
+				Link struct {
+					URL string `json:"url"`
+				} `json:"link"`
 			} `json:"target"`
 		} `json:"data"`
 	}

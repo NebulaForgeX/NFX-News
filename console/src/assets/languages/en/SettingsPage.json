@@ -4,5 +4,8 @@
   "name": "Channel name",
   "enabled": "Enabled",
   "save": "Save",
-  "webhookHint": "Webhook URLs stay in server .env, never in git."
+  "webhookHint": "Webhook URLs stay in server .env, never in git.",
+  "deliveries": "Deliveries",
+  "emptyChannels": "No channels yet",
+  "emptyDeliveries": "No deliveries yet"
 }

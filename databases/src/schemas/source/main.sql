@@ -1,2 +1,3 @@
 -- atlas:import schema.sql
 -- atlas:import tables/sources.sql
+-- atlas:import views/sources_active_view.sql
