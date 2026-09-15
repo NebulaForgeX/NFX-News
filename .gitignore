@@ -1,67 +1,176 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
+# NFX-News — Go API + Vite console
+# Canonical ignore list vs Example PulsoLink-API, plus product secrets/console/Atlas.
+
+## Go build artifacts
+*.exe
+*.exe~
+*.dll
 *.so
-.Python
-*.egg-info/
+*.dylib
+bin/
 dist/
-build/
-.pytest_cache/
-*.egg
+tmp/
+*.test
+*.out
+*.prof
+*.pprof
+*.cover
+cover.out
+coverage/
 
-# Virtual Environment
-venv/
-env/
-ENV/
-.venv
+## Go module overrides
+vendor/
+go.work
+go.work.sum
 
-# IDE
-.vscode/
+## Tooling & temporary files
+.air.toml.local
+.buildcache/
+.cache/
+cache/
+.task/
+*.pid
+*.sock
+*.tmp
+*.temp
+*.cache
+*.orig
+*.rej
+
+## Secrets — ignore real env, keep examples
+.env
+.env.*
+.env.local
+.env.*.local
+*.env
+!.example.env
+!.env.example
+
+# Redis SSH tunnel (task run / scripts/redis_ssh_tunnel.sh)
+.env.redis-tunnel
+.redis-ssh-tunnel.pid
+
+## Logs
+logs/
+*.log
+log/
+
+## Uploaded assets
+assets/**/*
+!assets/**/.gitkeep
+static/images/pictures/*
+!static/images/pictures/.gitkeep
+
+## Runtime data (never push)
+stores/
+stores/mysql/
+stores/redis/
+stores/kafka/
+data/
+data/postgresql/
+data/redis/
+data/kafka/
+dump.rdb
+*.rdb
+*.sqlite
+*.db
+*.db-journal
+!data/**/.gitkeep
+
+## Secrets & certificates
+*.key
+*.pem
+*.crt
+*.cer
+*.p12
+*.pfx
+*.jks
+*.keystore
+static/keys/*
+!static/keys/.gitkeep
+certs/
+certificates/
+ssl/
+
+## Docker & local overrides
+docker-compose.override.yml
+.dockerignore.local
+
+## IDE, editor & OS files
 .idea/
+.vscode/
 *.swp
 *.swo
 *~
+.project
+.classpath
+.settings/
+*.iml
+*.ipr
+*.iws
 .DS_Store
 Thumbs.db
+ehthumbs.db
+Desktop.ini
 
-# Environment variables
-.env
-.env.local
-.env.*.local
-docker/.env
-
-# Logs
-*.log
-
-# Output directory (ignore all except 404.html)
-output/*
-!output/404.html
-
-# Version file
-version
-
-# Docker
-
-# GitHub
-.github/
-
-# Temporary files
-_image/
-*.tmp
+## Database dumps (keep Atlas migrations)
+*.sql
+*.dump
 *.bak
+*.backup
+!databases/
+!databases/**
+databases/build/
+databases/gen/
+databases/debug.txt
+databases/bin/
 
-# Node.js
-node_modules/
-news_server/node_modules/
-*.tsbuildinfo
-dist/
+## Protect source trees (never exclude pkgs)
+!scripts/
+!scripts/**
+!pkg/
+!pkg/**
+!pkg/cachex/
+!pkg/cachex/**
+!pkgs/
+!pkgs/**
+!pkgs/cachex/
+!pkgs/cachex/**
+!atlas/
+!atlas/**
+!enums/
+!enums/**
+!inputs/
+!inputs/**
+!modules/
+!modules/**
+!protos/
+!protos/**
+!events/
+!events/**
+!connections/
+!connections/**
+!errors/
+!errors/**
+!certs/
+!certs/**
+!ssl/
+!ssl/**
+!docker-compose.yml
+!docker-compose.dev.yml
+!go.mod
+!go.sum
+!Taskfile.yml
+!README.md
+!STRUCTURE.md
+!LICENSE
+!CONTRIBUTING.md
 
-# Example Project
-Sjgz-Admin/
-Sjgz-Backend/
-newsnow/
-
-# Will be moved to a separate repository
-# TrendRadar-Panel/
-# TrendRadar-Panel-old/
+## Console (Vite)
+/console/dist/
+/console/node_modules/
+/console/.turbo/
+!/console/.env.dev
+!/console/.env.prod
+!/console/.env.example
+!/console/.example.env

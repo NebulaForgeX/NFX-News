@@ -1,0 +1,161 @@
+# https://taskfile.dev
+
+version: "3"
+
+dotenv:
+  - ".env"
+
+vars:
+  PROTO_SRC_DIR: protos
+  PROTO_OUT_DIR: protos/gen
+  GO_VERSION: "1.26.0"
+  POSTGRES_HOST: "192.168.1.64"
+  POSTGRES_PORT: "10105"
+  POSTGRES_USER: "postgres"
+  POSTGRES_PASSWORD: "Lucas127."
+  POSTGRES_DB_DEV: "nfxnews_dev"
+  POSTGRES_DB_PROD: "nfxnews"
+  POSTGRES_DB_SHADOW: "nfxnews_diff"
+  POSTGRES_CONTAINER_NAME: "NFX-Stack-PostgreSQL"
+  ATLAS_ENV: "{{default \"dev\" .ATLAS_ENV}}"
+  ATLAS_CONFIG_PATH: "file://databases/atlas.hcl"
+  ATLAS_MIGRATIONS_DIR_DEV: "file://databases/migrations/development"
+  ATLAS_MIGRATIONS_DIR_PROD: "file://databases/migrations/production"
+  ATLAS_MIGRATIONS_DIR: "{{if eq .ATLAS_ENV \"prod\"}}{{.ATLAS_MIGRATIONS_DIR_PROD}}{{else}}{{.ATLAS_MIGRATIONS_DIR_DEV}}{{end}}"
+  RESOURCES_DOCKER_COMPOSE: "../NFX-Stack/docker-compose.yml"
+  ERRORS_DIR: errors
+
+tasks:
+  install:
+    desc: "Install required Go dev tools"
+    cmds:
+      - go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+      - go install github.com/air-verse/air@latest
+      - go install golang.org/x/tools/cmd/goimports@latest
+      - go install github.com/segmentio/golines@latest
+      - go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+      - go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+
+  proto:gen:
+    desc: "Generate gRPC & Protobuf code using buf"
+    dir: "{{.PROTO_SRC_DIR}}"
+    cmds:
+      - buf dep update
+      - buf generate
+    sources:
+      - "{{.PROTO_SRC_DIR}}/**/*.proto"
+    generates:
+      - "{{.PROTO_OUT_DIR}}/**/*.pb.go"
+
+  lint:
+    desc: "Run golangci-lint"
+    cmds:
+      - golangci-lint run --timeout=5m
+
+  fmt:
+    desc: "Format Go code (goimports + golines)"
+    cmds:
+      - goimports -w .
+      - golines -m 160 -w .
+    silent: true
+
+  atlas:gen-models:
+    desc: "Generate Go models from the database schema"
+    cmds:
+      - |
+        POSTGRES_USER="{{.POSTGRES_USER}}" \
+        POSTGRES_PASSWORD="{{.POSTGRES_PASSWORD}}" \
+        POSTGRES_HOST="{{.POSTGRES_HOST}}" \
+        POSTGRES_PORT="{{.POSTGRES_PORT}}" \
+        POSTGRES_DB_DEV="{{.POSTGRES_DB_DEV}}" \
+        POSTGRES_DB_PROD="{{.POSTGRES_DB_PROD}}" \
+        POSTGRES_DB_SHADOW="{{.POSTGRES_DB_SHADOW}}" \
+        POSTGRES_CONTAINER_NAME="{{.POSTGRES_CONTAINER_NAME}}" \
+        RESOURCES_DOCKER_COMPOSE="{{.RESOURCES_DOCKER_COMPOSE}}" \
+        ATLAS_ENV="{{.ATLAS_ENV}}" \
+        bash databases/scripts/gen_models.sh
+
+  atlas:gen-views:
+    desc: "Generate Go views from the database schema"
+    cmds:
+      - |
+        POSTGRES_USER="{{.POSTGRES_USER}}" \
+        POSTGRES_PASSWORD="{{.POSTGRES_PASSWORD}}" \
+        POSTGRES_HOST="{{.POSTGRES_HOST}}" \
+        POSTGRES_PORT="{{.POSTGRES_PORT}}" \
+        POSTGRES_DB_DEV="{{.POSTGRES_DB_DEV}}" \
+        POSTGRES_DB_PROD="{{.POSTGRES_DB_PROD}}" \
+        POSTGRES_DB_SHADOW="{{.POSTGRES_DB_SHADOW}}" \
+        POSTGRES_CONTAINER_NAME="{{.POSTGRES_CONTAINER_NAME}}" \
+        RESOURCES_DOCKER_COMPOSE="{{.RESOURCES_DOCKER_COMPOSE}}" \
+        ATLAS_ENV="{{.ATLAS_ENV}}" \
+        bash databases/scripts/gen_views.sh
+
+  atlas:gen-enums:
+    desc: "Generate Go enums from the database schema"
+    cmds:
+      - |
+        POSTGRES_USER="{{.POSTGRES_USER}}" \
+        POSTGRES_PASSWORD="{{.POSTGRES_PASSWORD}}" \
+        POSTGRES_HOST="{{.POSTGRES_HOST}}" \
+        POSTGRES_PORT="{{.POSTGRES_PORT}}" \
+        POSTGRES_DB_DEV="{{.POSTGRES_DB_DEV}}" \
+        POSTGRES_DB_PROD="{{.POSTGRES_DB_PROD}}" \
+        POSTGRES_DB_SHADOW="{{.POSTGRES_DB_SHADOW}}" \
+        ATLAS_ENV="{{.ATLAS_ENV}}" \
+        bash databases/scripts/gen_enums.sh
+
+  atlas:gen:
+    desc: "Generate Go models, enums and views from the database schema"
+    cmds:
+      - task: atlas:gen-enums
+      - task: atlas:gen-models
+      - task: atlas:gen-views
+
+  atlas:pipeline:run:sh:
+    desc: "Run Atlas pipeline using bash"
+    env:
+      POSTGRES_USER: "{{.POSTGRES_USER}}"
+      POSTGRES_PASSWORD: "{{.POSTGRES_PASSWORD}}"
+      POSTGRES_HOST: "{{.POSTGRES_HOST}}"
+      POSTGRES_PORT: "{{.POSTGRES_PORT}}"
+      POSTGRES_DB_DEV: "{{.POSTGRES_DB_DEV}}"
+      POSTGRES_DB_PROD: "{{.POSTGRES_DB_PROD}}"
+      POSTGRES_DB_SHADOW: "{{.POSTGRES_DB_SHADOW}}"
+      POSTGRES_CONTAINER_NAME: "{{.POSTGRES_CONTAINER_NAME}}"
+      RESOURCES_DOCKER_COMPOSE: "{{.RESOURCES_DOCKER_COMPOSE}}"
+      ATLAS_CONFIG_PATH: "{{.ATLAS_CONFIG_PATH}}"
+    cmds:
+      - bash run_atlas_pipeline.sh
+
+  errors:gen-langs:
+    desc: "Generate frontend i18n JSON from errors/src"
+    cmds:
+      - go run ./errors/cmd/gen_langs/ {{.ERRORS_DIR}}
+
+  console:
+    desc: "Run console dev server"
+    dir: console
+    cmds:
+      - npm run dev
+
+  console:i:
+    desc: "Install console dependencies"
+    dir: console
+    cmds:
+      - npm install
+
+  db:create:
+    desc: "Create nfxnews_dev / nfxnews / nfxnews_diff on Stack Postgres"
+    cmds:
+      - bash scripts/create_databases.sh
+
+  go:ub:
+    desc: "Up go dev server and build"
+    cmds:
+      - sudo docker compose -f docker-compose.dev.yml up --build
+
+  go:up:
+    desc: "Up go dev server"
+    cmds:
+      - sudo docker compose -f docker-compose.dev.yml up

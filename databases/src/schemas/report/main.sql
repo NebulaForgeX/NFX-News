@@ -1,0 +1,3 @@
+-- atlas:import schema.sql
+-- atlas:import tables/keywords.sql
+-- atlas:import tables/snapshots.sql

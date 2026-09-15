@@ -1,0 +1,9 @@
+-- atlas:import extensions/pgcrypto.sql
+-- atlas:import extensions/btree_gist.sql
+-- atlas:import schemas/source/main.sql
+-- atlas:import schemas/news/main.sql
+-- atlas:import schemas/crawl/main.sql
+-- atlas:import schemas/report/main.sql
+-- atlas:import schemas/notify/main.sql
+-- atlas:import schemas/mcp/main.sql
+-- atlas:import schemas/system/main.sql

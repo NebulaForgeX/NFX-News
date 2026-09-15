@@ -1,0 +1,20 @@
+api:
+  dashboard: true
+  insecure: false
+
+entryPoints:
+  web:
+    address: ":80"
+  websecure:
+    address: ":443"
+
+providers:
+  docker:
+    exposedByDefault: false
+  file:
+    directory: /etc/traefik/dynamic
+    watch: true
+
+# ✅ 不再使用自动证书申请，改为使用文件证书
+# certificatesResolvers 配置已移除，因为现在使用文件证书
+# 证书配置在 dynamic/certs.yml 中统一管理

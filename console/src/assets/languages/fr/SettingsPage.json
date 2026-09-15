@@ -1,0 +1,8 @@
+{
+  "title": "Canaux de notification",
+  "channels": "Canaux",
+  "name": "Nom",
+  "enabled": "Actif",
+  "save": "Enregistrer",
+  "webhookHint": "Les webhooks restent dans le .env serveur, jamais dans git."
+}

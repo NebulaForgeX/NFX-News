@@ -1,0 +1,3 @@
+-- atlas:import schema.sql
+-- atlas:import tables/channels.sql
+-- atlas:import tables/deliveries.sql

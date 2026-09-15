@@ -1,0 +1,4 @@
+{
+  "header": { "logout": "Logout" },
+  "sidebar": { "reader": "Reader", "reports": "Reports", "crawl": "Crawl", "settings": "Settings" }
+}

@@ -1,0 +1,3 @@
+-- atlas:import schema.sql
+-- atlas:import tables/items.sql
+-- atlas:import tables/profile_preferences.sql

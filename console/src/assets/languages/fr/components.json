@@ -1,0 +1,4 @@
+{
+  "header": { "logout": "Déconnexion" },
+  "sidebar": { "reader": "Lecteur", "reports": "Rapports", "crawl": "Crawl", "settings": "Réglages" }
+}

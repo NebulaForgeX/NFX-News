@@ -1,0 +1,60 @@
+import en_components from "./en/components.json";
+import en_LoginPage from "./en/LoginPage.json";
+import en_ReaderPage from "./en/ReaderPage.json";
+import en_ReportsPage from "./en/ReportsPage.json";
+import en_CrawlPage from "./en/CrawlPage.json";
+import en_SettingsPage from "./en/SettingsPage.json";
+import zh_components from "./zh/components.json";
+import zh_LoginPage from "./zh/LoginPage.json";
+import zh_ReaderPage from "./zh/ReaderPage.json";
+import zh_ReportsPage from "./zh/ReportsPage.json";
+import zh_CrawlPage from "./zh/CrawlPage.json";
+import zh_SettingsPage from "./zh/SettingsPage.json";
+import fr_components from "./fr/components.json";
+import fr_LoginPage from "./fr/LoginPage.json";
+import fr_ReaderPage from "./fr/ReaderPage.json";
+import fr_ReportsPage from "./fr/ReportsPage.json";
+import fr_CrawlPage from "./fr/CrawlPage.json";
+import fr_SettingsPage from "./fr/SettingsPage.json";
+
+export const RESOURCES = {
+  en: {
+    components: en_components,
+    LoginPage: en_LoginPage,
+    ReaderPage: en_ReaderPage,
+    ReportsPage: en_ReportsPage,
+    CrawlPage: en_CrawlPage,
+    SettingsPage: en_SettingsPage,
+  },
+  zh: {
+    components: zh_components,
+    LoginPage: zh_LoginPage,
+    ReaderPage: zh_ReaderPage,
+    ReportsPage: zh_ReportsPage,
+    CrawlPage: zh_CrawlPage,
+    SettingsPage: zh_SettingsPage,
+  },
+  fr: {
+    components: fr_components,
+    LoginPage: fr_LoginPage,
+    ReaderPage: fr_ReaderPage,
+    ReportsPage: fr_ReportsPage,
+    CrawlPage: fr_CrawlPage,
+    SettingsPage: fr_SettingsPage,
+  },
+};
+
+export const NAME_SPACES_MAP = {
+  components: "components",
+  LoginPage: "LoginPage",
+  ReaderPage: "ReaderPage",
+  ReportsPage: "ReportsPage",
+  CrawlPage: "CrawlPage",
+  SettingsPage: "SettingsPage",
+};
+
+export const NAME_SPACES = Object.values(NAME_SPACES_MAP);
+
+export function getBuiltinI18nBundles() {
+  return { RESOURCES, NAME_SPACES_MAP, NAME_SPACES };
+}

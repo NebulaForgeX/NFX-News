@@ -1,0 +1,2 @@
+-- atlas:import schema.sql
+-- atlas:import tables/tool_calls.sql

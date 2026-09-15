@@ -1,0 +1,48 @@
+syntax = "proto3";
+package news;
+
+option go_package = "nfxnews/protos/gen/news;newspb";
+
+message NewsItem {
+  string id = 1;
+  string source_id = 2;
+  string original_id = 3;
+  string title = 4;
+  string url = 5;
+  string mobile_url = 6;
+  int64 pub_date_unix = 7;
+  string extra_json = 8;
+}
+
+message UpsertItemsRequest {
+  string source_id = 1;
+  repeated NewsItem items = 2;
+}
+
+message UpsertItemsResponse {
+  int32 upserted = 1;
+}
+
+message ListBySourceRequest {
+  string source_id = 1;
+  int32 limit = 2;
+}
+
+message ListBySourceResponse {
+  repeated NewsItem items = 1;
+}
+
+message SearchNewsRequest {
+  string query = 1;
+  int32 limit = 2;
+}
+
+message SearchNewsResponse {
+  repeated NewsItem items = 1;
+}
+
+service NewsService {
+  rpc UpsertItems (UpsertItemsRequest) returns (UpsertItemsResponse);
+  rpc ListBySource (ListBySourceRequest) returns (ListBySourceResponse);
+  rpc SearchNews (SearchNewsRequest) returns (SearchNewsResponse);
+}

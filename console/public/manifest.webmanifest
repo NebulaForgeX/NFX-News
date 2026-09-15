@@ -1,0 +1,11 @@
+{
+  "name": "NFX News",
+  "short_name": "NFX News",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#111111",
+  "theme_color": "#ef4444",
+  "icons": [
+    { "src": "/image.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

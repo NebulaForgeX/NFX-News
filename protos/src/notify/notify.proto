@@ -1,0 +1,16 @@
+syntax = "proto3";
+package notify;
+
+option go_package = "nfxnews/protos/gen/notify;notifypb";
+
+message DispatchReportRequest {
+  string report_id = 1;
+}
+
+message DispatchReportResponse {
+  int32 queued = 1;
+}
+
+service NotifyService {
+  rpc DispatchReport (DispatchReportRequest) returns (DispatchReportResponse);
+}

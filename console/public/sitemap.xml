@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <!-- Homepage / Login Portal -->
+  <url>
+    <loc>https://console.nfx.com/</loc>
+    <lastmod>2024-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://console.nfx.com/name.png</image:loc>
+      <image:title>NFX Console - System Management</image:title>
+      <image:caption>NFX Console - Administrative control panel</image:caption>
+    </image:image>
+    <!-- Alternate languages -->
+    <xhtml:link rel="alternate" hreflang="en" href="https://console.nfx.com/" />
+    <xhtml:link rel="alternate" hreflang="zh" href="https://console.nfx.com/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://console.nfx.com/" />
+  </url>
+
+  <!-- Login Page -->
+  <url>
+    <loc>https://console.nfx.com/login</loc>
+    <lastmod>2024-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://console.nfx.com/name.png</image:loc>
+      <image:title>Login - NFX Console</image:title>
+      <image:caption>Access your NFX console account</image:caption>
+    </image:image>
+    <xhtml:link rel="alternate" hreflang="en" href="https://console.nfx.com/login" />
+    <xhtml:link rel="alternate" hreflang="zh" href="https://console.nfx.com/login" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://console.nfx.com/login" />
+  </url>
+
+  <!-- 404 Error Page -->
+  <url>
+    <loc>https://console.nfx.com/404.html</loc>
+    <lastmod>2024-12</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.1</priority>
+  </url>
+
+</urlset>
+

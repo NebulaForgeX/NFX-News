@@ -1,0 +1,8 @@
+{
+  "title": "Notification channels",
+  "channels": "Channels",
+  "name": "Channel name",
+  "enabled": "Enabled",
+  "save": "Save",
+  "webhookHint": "Webhook URLs stay in server .env, never in git."
+}

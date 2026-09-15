@@ -1,0 +1,15 @@
+{
+  "title": "Bon retour",
+  "subtitle": "Connectez-vous pour lire, crawler et rapporter",
+  "login": "Connexion",
+  "register": "Créer un compte",
+  "email": "E-mail",
+  "password": "Mot de passe",
+  "displayName": "Nom affiché",
+  "verificationCode": "Code de vérification",
+  "sendCode": "Envoyer le code",
+  "noAccount": "Pas de compte ?",
+  "registerNow": "S'inscrire",
+  "hasAccount": "Déjà un compte ?",
+  "signInNow": "Se connecter"
+}

@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS "notify"."channels" (
+  "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  "kind" VARCHAR(32) NOT NULL,
+  "name" VARCHAR(128) NOT NULL,
+  "enabled" BOOLEAN NOT NULL DEFAULT true,
+  "config" JSONB NOT NULL DEFAULT '{}'::jsonb,
+  "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "updated_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

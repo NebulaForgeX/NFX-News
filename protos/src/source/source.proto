@@ -1,0 +1,54 @@
+syntax = "proto3";
+package source;
+
+option go_package = "nfxnews/protos/gen/source;sourcepb";
+
+message NewsItem {
+  string id = 1;
+  string title = 2;
+  string url = 3;
+  string mobile_url = 4;
+  int64 pub_date_unix = 5;
+  string extra_json = 6;
+}
+
+message SourceMeta {
+  string id = 1;
+  string name = 2;
+  string title = 3;
+  string column = 4;
+  string home = 5;
+  string color = 6;
+  int32 interval_ms = 7;
+  string type = 8;
+  string redirect = 9;
+}
+
+message FetchSourceRequest {
+  string source_id = 1;
+}
+
+message FetchSourceResponse {
+  string source_id = 1;
+  repeated NewsItem items = 2;
+}
+
+message ListSourcesRequest {}
+
+message ListSourcesResponse {
+  repeated SourceMeta sources = 1;
+}
+
+message GetSourceMetaRequest {
+  string source_id = 1;
+}
+
+message GetSourceMetaResponse {
+  SourceMeta source = 1;
+}
+
+service SourceService {
+  rpc FetchSource (FetchSourceRequest) returns (FetchSourceResponse);
+  rpc ListSources (ListSourcesRequest) returns (ListSourcesResponse);
+  rpc GetSourceMeta (GetSourceMetaRequest) returns (GetSourceMetaResponse);
+}

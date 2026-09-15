@@ -1,0 +1,289 @@
+name: nfx-news-dev
+
+services:
+  reverse-proxy:
+    image: traefik:latest
+    container_name: NFX-News-Reverse-Proxy-Dev
+    command:
+      - --api.insecure=true
+      - --providers.docker
+      - --providers.docker.exposedByDefault=false
+      - --providers.docker.constraints=Label(`traefik.project`, `nfx-news`)
+      - --entrypoints.web.address=:${TRAEFIK_HTTP_INTERNAL_PORT}
+      - --entrypoints.traefik.address=:${TRAEFIK_DASHBOARD_INTERNAL_PORT}
+    ports:
+      - "${TRAEFIK_HTTP_PORT}:${TRAEFIK_HTTP_INTERNAL_PORT}"
+      - "${TRAEFIK_HTTPS_PORT}:${TRAEFIK_HTTPS_INTERNAL_PORT}"
+      - "${TRAEFIK_DASHBOARD_PORT}:${TRAEFIK_DASHBOARD_INTERNAL_PORT}"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - nfx-news
+    restart: unless-stopped
+
+
+  source-base:
+    image: nfx-news-source-base:dev
+    container_name: NFX-News-Source-Base-Dev
+    build:
+      context: .
+      dockerfile: inputs/source/base/Dockerfile
+      target: dev
+    environment:
+      - ENV=dev
+    command: [ "air", "-c", "inputs/source/base/.air.toml" ]
+    expose:
+      - "${HTTP_PORT}"
+      - "${GRPC_PORT_SOURCE}"
+    ports:
+      - "${GRPC_PORT_SOURCE}:${GRPC_PORT_SOURCE}"
+    labels:
+      traefik.enable: "true"
+      traefik.project: "nfx-news"
+      traefik.http.routers.source-base.entrypoints: web
+      traefik.http.routers.source-base.rule: PathPrefix(`${API_PREFIX_PATH_SOURCE}`)
+      traefik.http.services.source-base.loadbalancer.server.port: "${HTTP_PORT}"
+    volumes:
+      - ./static:/app/static
+      - ./data:/app/data
+      - ./assets:/app/assets
+      - ./errors/langs:/app/errors/langs
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - nfx-news
+    depends_on:
+      reverse-proxy:
+        condition: service_started
+
+  news-base:
+    image: nfx-news-news-base:dev
+    container_name: NFX-News-News-Base-Dev
+    build:
+      context: .
+      dockerfile: inputs/news/base/Dockerfile
+      target: dev
+    environment:
+      - ENV=dev
+    command: [ "air", "-c", "inputs/news/base/.air.toml" ]
+    expose:
+      - "${HTTP_PORT}"
+      - "${GRPC_PORT_NEWS}"
+    ports:
+      - "${GRPC_PORT_NEWS}:${GRPC_PORT_NEWS}"
+    labels:
+      traefik.enable: "true"
+      traefik.project: "nfx-news"
+      traefik.http.routers.news-base.entrypoints: web
+      traefik.http.routers.news-base.rule: PathPrefix(`${API_PREFIX_PATH_NEWS}`)
+      traefik.http.services.news-base.loadbalancer.server.port: "${HTTP_PORT}"
+    volumes:
+      - ./static:/app/static
+      - ./data:/app/data
+      - ./assets:/app/assets
+      - ./errors/langs:/app/errors/langs
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - nfx-news
+    depends_on:
+      reverse-proxy:
+        condition: service_started
+
+  crawl-base:
+    image: nfx-news-crawl-base:dev
+    container_name: NFX-News-Crawl-Base-Dev
+    build:
+      context: .
+      dockerfile: inputs/crawl/base/Dockerfile
+      target: dev
+    environment:
+      - ENV=dev
+    command: [ "air", "-c", "inputs/crawl/base/.air.toml" ]
+    expose:
+      - "${HTTP_PORT}"
+      - "${GRPC_PORT_CRAWL}"
+    ports:
+      - "${GRPC_PORT_CRAWL}:${GRPC_PORT_CRAWL}"
+    labels:
+      traefik.enable: "true"
+      traefik.project: "nfx-news"
+      traefik.http.routers.crawl-base.entrypoints: web
+      traefik.http.routers.crawl-base.rule: PathPrefix(`${API_PREFIX_PATH_CRAWL}`)
+      traefik.http.services.crawl-base.loadbalancer.server.port: "${HTTP_PORT}"
+    volumes:
+      - ./static:/app/static
+      - ./data:/app/data
+      - ./assets:/app/assets
+      - ./errors/langs:/app/errors/langs
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - nfx-news
+    depends_on:
+      reverse-proxy:
+        condition: service_started
+
+  report-base:
+    image: nfx-news-report-base:dev
+    container_name: NFX-News-Report-Base-Dev
+    build:
+      context: .
+      dockerfile: inputs/report/base/Dockerfile
+      target: dev
+    environment:
+      - ENV=dev
+    command: [ "air", "-c", "inputs/report/base/.air.toml" ]
+    expose:
+      - "${HTTP_PORT}"
+      - "${GRPC_PORT_REPORT}"
+    ports:
+      - "${GRPC_PORT_REPORT}:${GRPC_PORT_REPORT}"
+    labels:
+      traefik.enable: "true"
+      traefik.project: "nfx-news"
+      traefik.http.routers.report-base.entrypoints: web
+      traefik.http.routers.report-base.rule: PathPrefix(`${API_PREFIX_PATH_REPORT}`)
+      traefik.http.services.report-base.loadbalancer.server.port: "${HTTP_PORT}"
+    volumes:
+      - ./static:/app/static
+      - ./data:/app/data
+      - ./assets:/app/assets
+      - ./errors/langs:/app/errors/langs
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - nfx-news
+    depends_on:
+      reverse-proxy:
+        condition: service_started
+
+  notify-base:
+    image: nfx-news-notify-base:dev
+    container_name: NFX-News-Notify-Base-Dev
+    build:
+      context: .
+      dockerfile: inputs/notify/base/Dockerfile
+      target: dev
+    environment:
+      - ENV=dev
+    command: [ "air", "-c", "inputs/notify/base/.air.toml" ]
+    expose:
+      - "${HTTP_PORT}"
+      - "${GRPC_PORT_NOTIFY}"
+    ports:
+      - "${GRPC_PORT_NOTIFY}:${GRPC_PORT_NOTIFY}"
+    labels:
+      traefik.enable: "true"
+      traefik.project: "nfx-news"
+      traefik.http.routers.notify-base.entrypoints: web
+      traefik.http.routers.notify-base.rule: PathPrefix(`${API_PREFIX_PATH_NOTIFY}`)
+      traefik.http.services.notify-base.loadbalancer.server.port: "${HTTP_PORT}"
+    volumes:
+      - ./static:/app/static
+      - ./data:/app/data
+      - ./assets:/app/assets
+      - ./errors/langs:/app/errors/langs
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - nfx-news
+    depends_on:
+      reverse-proxy:
+        condition: service_started
+
+  mcp-base:
+    image: nfx-news-mcp-base:dev
+    container_name: NFX-News-Mcp-Base-Dev
+    build:
+      context: .
+      dockerfile: inputs/mcp/base/Dockerfile
+      target: dev
+    environment:
+      - ENV=dev
+    command: [ "air", "-c", "inputs/mcp/base/.air.toml" ]
+    expose:
+      - "${HTTP_PORT}"
+      - "${GRPC_PORT_MCP}"
+    ports:
+      - "${GRPC_PORT_MCP}:${GRPC_PORT_MCP}"
+    labels:
+      traefik.enable: "true"
+      traefik.project: "nfx-news"
+      traefik.http.routers.mcp-base.entrypoints: web
+      traefik.http.routers.mcp-base.rule: PathPrefix(`${API_PREFIX_PATH_MCP}`)
+      traefik.http.services.mcp-base.loadbalancer.server.port: "${HTTP_PORT}"
+    volumes:
+      - ./static:/app/static
+      - ./data:/app/data
+      - ./assets:/app/assets
+      - ./errors/langs:/app/errors/langs
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - nfx-news
+    depends_on:
+      reverse-proxy:
+        condition: service_started
+
+  system-base:
+    image: nfx-news-system-base:dev
+    container_name: NFX-News-System-Base-Dev
+    build:
+      context: .
+      dockerfile: inputs/system/base/Dockerfile
+      target: dev
+    environment:
+      - ENV=dev
+    command: [ "air", "-c", "inputs/system/base/.air.toml" ]
+    expose:
+      - "${HTTP_PORT}"
+      - "${GRPC_PORT_SYSTEM}"
+    ports:
+      - "${GRPC_PORT_SYSTEM}:${GRPC_PORT_SYSTEM}"
+    labels:
+      traefik.enable: "true"
+      traefik.project: "nfx-news"
+      traefik.http.routers.system-base.entrypoints: web
+      traefik.http.routers.system-base.rule: PathPrefix(`${API_PREFIX_PATH_SYSTEM}`)
+      traefik.http.services.system-base.loadbalancer.server.port: "${HTTP_PORT}"
+    volumes:
+      - ./static:/app/static
+      - ./data:/app/data
+      - ./assets:/app/assets
+      - ./errors/langs:/app/errors/langs
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - nfx-news
+    depends_on:
+      reverse-proxy:
+        condition: service_started
+
+  console:
+    image: nfx-news-console:dev
+    container_name: NFX-News-Console-Dev
+    build:
+      context: ./console
+      dockerfile: Dockerfile
+      additional_contexts:
+        nfx-ui: ../NFX-UI
+      target: prod
+    ports:
+      - "${CONSOLE_EXTERNAL_PORT}:${CONSOLE_PORT}"
+    labels:
+      traefik.enable: "true"
+      traefik.project: "nfx-news"
+      traefik.http.routers.console.entrypoints: web
+      traefik.http.routers.console.rule: PathPrefix(`/`)
+      traefik.http.routers.console.priority: "1"
+      traefik.http.services.console.loadbalancer.server.port: "${CONSOLE_PORT}"
+    networks:
+      - nfx-news
+
+networks:
+  nfx-news:
+    name: nfx-news
+    driver: bridge

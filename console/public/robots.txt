@@ -1,0 +1,56 @@
+# NFX Console - Robots.txt
+# Updated: 2024-12
+# Site: https://console.nfx.com
+
+User-agent: *
+
+# Disallow all pages (admin dashboard should not be indexed)
+Disallow: /
+
+# Block all authenticated/private pages
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /profile-edit
+Disallow: /account-security
+Disallow: /view-profile
+
+# Disallow admin and sensitive areas
+Disallow: /admin/
+Disallow: /private/
+Disallow: /api/
+
+# Block development/build files
+Disallow: /src/
+Disallow: /node_modules/
+Disallow: /dist/
+Disallow: /build/
+Disallow: /*.map$
+Disallow: /*.env$
+Disallow: /package*.json$
+
+# Block version control
+Disallow: /.git/
+Disallow: /.github/
+Disallow: /.vscode/
+Disallow: /.idea/
+
+# Security - prevent indexing of user data and query parameters
+Disallow: /*?*userId=*
+Disallow: /*?*id=*
+Disallow: /*/edit*
+Disallow: /*/add*
+Disallow: /*/delete*
+
+# Block bad bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+

@@ -1,474 +1,76 @@
-<div align="center" id="nfx-news">
+# NFX-News
 
-<a href="https://github.com/NebulaForgeX/NFX-News" title="NFX-News">
-  <img src="image.png" alt="NFX-News Logo" width="120" height="120">
-</a>
+中文 / English
 
-<h1>NFX-News</h1>
+Identity-shaped Go microservices for news reading, crawling, keyword reports, MCP, and multi-channel notify. Browser talks **HTTP REST**; services talk **native gRPC**; Kafka sits on **NFX-Stack**. Login is **NFX-Identity** via `nfx-ui` AuthRepository + product `connections/auth` gRPC.
 
-🚀 **Your Smart Trending News Aggregation Platform** — Deploy in minutes, track what matters
+以 [NFX-Identity](../NFX-Identity) 为目录/协议模板：`console/` 对浏览器走 Fiber HTTP；模块间走原生 gRPC；异步用 Kafka `nfxnews.*`。登录走 Identity（不再有本地 auth 模块）。数据面全部接已运行的 NFX-Stack。
 
-[![License](https://img.shields.io/badge/license-GPL--3.0-blue.svg?style=flat-square)](LICENSE)
-[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg?style=flat-square&logo=python)](https://www.python.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-green.svg?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com/)
-[![Fastify](https://img.shields.io/badge/Fastify-5.6+-green.svg?style=flat-square&logo=fastify)](https://www.fastify.io/)
-
-</div>
-
-<div align="center">
-
-**[English](README.md)** | **中文**
-
-</div>
-
----
-
-## 📋 Overview
-
-**NFX-News** is a comprehensive trending news aggregation platform built with microservices architecture. It automatically crawls trending content from multiple news platforms, processes and analyzes the data, and provides various interfaces for viewing and interacting with trending news.
-
-### ✨ Key Features
-
-- 🔍 **Multi-Platform Aggregation**: Automatically crawl trending content from 11+ major platforms (Zhihu, Weibo, Douyin, Bilibili, Baidu, etc.)
-- 🤖 **AI-Powered Analysis**: Natural language query and analysis using MCP (Model Context Protocol)
-- 📊 **Smart Filtering**: Keyword-based filtering with advanced syntax (required words, filter words, count limits)
-- 🌐 **Multiple Interfaces**: RESTful API, HTML reports, and AI conversational interface
-- ⚡ **High Performance**: Built with FastAPI, Fastify, and optimized data processing
-- 🏗️ **Microservices Architecture**: Independent, scalable services for different functions
-- 🔔 **Event-Driven**: Kafka-based event system for real-time data processing
-
-## 🏗️ Architecture
-
-NFX-News consists of four main services:
+## Layout / 目录
 
 ```
 NFX-News/
-├── crawl_server/      # Python - News crawler service
-├── news_server/       # TypeScript - News aggregation API service
-├── web_server/        # Python - HTML report web service
-├── mcp_server/        # Python - AI analysis service (MCP)
-├── config/            # Configuration files
-├── output/            # Crawled news data storage
-└── docs/              # Documentation
-    ├── crawl_server/  # Detailed docs for crawl server
-    ├── news_server/   # Detailed docs for news server
-    ├── web_server/    # Detailed docs for web server
-    └── mcp_server/    # Detailed docs for MCP server
+├── console/                 # React + Vite SPA (login, select-profile, reader, reports, crawl, settings)
+├── modules/{source,news,crawl,report,notify,mcp,system}/
+├── inputs/{module}/{api,connection,pipeline,messaging,base}/
+├── connections/auth         # Identity gRPC client (copied gen; do not hand-edit)
+├── protos/                  # buf src → gen (module nfxnews)
+├── databases/               # Atlas SQL (`news.profile_preferences` keyed by account_id+profile_id)
+├── events/ pkgs/ errors/
+├── docker-compose.yml
+├── docker-compose.dev.yml
+└── Taskfile.yml
 ```
 
-### Service Overview
+## Ports / 端口
 
-| Service          | Language   | Framework | Purpose                                     | Port        |
-| ---------------- | ---------- | --------- | ------------------------------------------- | ----------- |
-| **Crawl Server** | Python     | Custom    | Crawl trending news from multiple platforms | -           |
-| **News Server**  | TypeScript | Fastify   | RESTful API for news data access            | 3000+       |
-| **Web Server**   | Python     | FastAPI   | HTML report viewing interface               | 10199       |
-| **MCP Server**   | Python     | FastMCP   | AI analysis and query interface             | 3333 (HTTP) |
+Avoid Stack MinIO Console `10188`. News Traefik HTTP is `10178`.
 
-## 🚀 Quick Start
+| Use | Variable | Port |
+|-----|----------|------|
+| Identity auth gRPC | `GRPC_PORT_AUTH` | 10156 (Identity) |
+| gRPC source…system | `GRPC_PORT_*` | 10171–10177 |
+| Traefik HTTP/HTTPS | `TRAEFIK_HTTP/HTTPS_PORT` | 10178 / 10179 |
+| Console | `CONSOLE_EXTERNAL_PORT` | 10190 |
+| Traefik dashboard | `TRAEFIK_DASHBOARD_PORT` | 10191 |
 
-### Prerequisites
+HTTP prefixes: `/source` `/news` `/crawl` `/report` `/notify` `/mcp` `/system`.
 
-- **Python 3.8+** for Python services
-- **Node.js 18+** for TypeScript services
-- **PostgreSQL 14+** for data storage
-- **Redis 6+** (optional) for caching
-- **Kafka** (optional) for event streaming
+Console: `VITE_API_URL=http://127.0.0.1:10178`, `VITE_IDENTITY_API_URL=http://127.0.0.1:10166`.
 
-### 1. Clone Repository
+Token secret/issuer **must match NFX-Identity** (`TOKEN_ISSUER=nfxidentity`) so product APIs can verify user JWTs locally.
+
+Stack: Postgres `192.168.1.64:10105`, Redis `10181`, Kafka `10183`, OTEL `10192`. Databases: `nfxnews_dev` / `nfxnews` / `nfxnews_diff`.
+
+## Run / 运行
 
 ```bash
-git clone https://github.com/NebulaForgeX/NFX-News.git
-cd NFX-News
+cp .example.env .env   # fill Stack passwords + the same TOKEN_SECRET_KEY as Identity
+# Create nfxnews_dev / nfxnews / nfxnews_diff on Stack Postgres, then:
+task proto:gen
+task errors:gen-langs
+task atlas:pipeline:run:sh
+task console:i
+task console                  # Vite on VITE_PORT (5174)
+sudo docker compose -f docker-compose.dev.yml up --build
 ```
 
-### 2. Configure Environment
+MCP Streamable HTTP: `POST/GET http://127.0.0.1:10178/mcp/protocol`. REST tools: `/mcp/tools`, `/mcp/run`.
 
-Create `.env` files for each service:
+Console Docker uses `additional_contexts.nfx-ui: ../NFX-UI` and `"nfx-ui": "file:../../NFX-UI"`. Build NFX-UI (`npm run build` in that repo) first.
 
-**Crawl Server** (`crawl_server/.env`):
+## Modules / 模块
 
-```bash
-POSTGRES_HOST=localhost
-POSTGRES_PORT=5432
-POSTGRES_DB=nfx_news
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=your_password
-SCHEDULE_MINUTES=30
-```
+1. **source** — catalog + Go getters (RSS / RSSHub / major sites).
+2. **news** — persist items, search, Redis source snapshot TTL, column preferences; consumes `nfxnews.source`.
+3. **crawl** — sessions + scheduled FetchSource.
+4. **report** — keyword DSL in Postgres (`+required` / `!exclude`), daily/current/incremental snapshots.
+5. **notify** — feishu/dingtalk/wework/telegram/ntfy/bark/slack; webhooks only in `.env`.
+6. **mcp** — MCP protocol + gRPC to news/report/source.
+7. **system** — health / bootstrap state.
 
-**News Server** (`news_server/.env`):
+Auth is not a News module. Consoles log in through Identity; product APIs verify the user JWT and call Identity `EnsureOwnedProfile` / `HasForgerRole` over gRPC.
 
-```bash
-NODE_ENV=development
-PORT=3000
-HOST=0.0.0.0
-POSTGRES_HOST=localhost
-POSTGRES_PORT=5432
-POSTGRES_DB=nfx_news
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=your_password
-```
+## NFX-UI
 
-**Web Server** (`web_server/.env`):
-
-```bash
-PROJECT_ROOT=/path/to/NFX-News
-HOST=0.0.0.0
-PORT=10199
-DEBUG=false
-```
-
-**MCP Server** (`mcp_server/.env`):
-
-```bash
-NFX_NEWS_PROJECT_ROOT=/path/to/NFX-News
-```
-
-### 3. Install Dependencies
-
-```bash
-# Install Python dependencies
-cd crawl_server && pip install -r requirements.txt && cd ..
-cd web_server && pip install -r requirements.txt && cd ..
-cd mcp_server && pip install -r requirements.txt && cd ..
-
-# Install Node.js dependencies
-cd news_server && npm install && cd ..
-```
-
-### 4. Initialize Database
-
-```bash
-# Run database migrations (if applicable)
-cd news_server
-npm run db:migrate
-cd ..
-```
-
-### 5. Start Services
-
-```bash
-# Terminal 1: Start Crawl Server
-cd crawl_server
-python -m crawl_server.main
-
-# Terminal 2: Start News Server
-cd news_server
-npm run dev:news:api
-
-# Terminal 3: Start Web Server
-cd web_server
-python -m web_server.main
-
-# Terminal 4: Start MCP Server (optional, for AI features)
-cd mcp_server
-python -m mcp_server.server --transport http --port 3333
-```
-
-### 6. Access Services
-
-- **Web Interface**: http://localhost:10199/report
-- **News API**: http://localhost:3000/api/news
-- **MCP Server**: http://localhost:3333/mcp (if HTTP mode enabled)
-- **API Documentation**:
-  - Web Server: http://localhost:10199/docs (if debug enabled)
-  - News Server: Check service-specific documentation
-
-## 📚 Documentation
-
-Detailed documentation for each service:
-
-### Core Services
-
-- 📖 **[Crawl Server Documentation](docs/crawl_server/README.md)** - News crawler service
-  - Architecture and configuration
-  - Multi-platform crawling
-  - Event-driven crawling
-  - Docker deployment
-
-- 📖 **[News Server Documentation](docs/news_server/README.md)** - News aggregation API
-  - DDD architecture
-  - RESTful API endpoints
-  - Kafka event processing
-  - Database schema
-
-- 📖 **[Web Server Documentation](docs/web_server/README.md)** - HTML report service
-  - MVC architecture
-  - Report generation
-  - API endpoints
-
-- 📖 **[MCP Server Documentation](docs/mcp_server/README.md)** - AI analysis service
-  - MCP protocol implementation
-  - Natural language queries
-  - Client integration (Claude Desktop, Cursor, etc.)
-  - Tool usage examples
-
-## 🎯 Features
-
-### 1. Multi-Platform Crawling
-
-Automatically crawl trending content from:
-
-- Zhihu (知乎)
-- Weibo (微博)
-- Douyin (抖音)
-- Bilibili (哔哩哔哩)
-- Baidu (百度)
-- Toutiao (今日头条)
-- Tieba (贴吧)
-- The Paper (澎湃新闻)
-- Yicai (财联社)
-- Ifeng (凤凰网)
-- Wallstreetcn (华尔街见闻)
-
-### 2. Smart Filtering
-
-Advanced keyword filtering syntax:
-
-- **Normal keywords**: Basic matching
-- **Required words** (`+keyword`): Narrow scope
-- **Filter words** (`!keyword`): Exclude noise
-- **Count limits** (`@number`): Control display count
-
-### 3. AI-Powered Analysis
-
-Query and analyze news data using natural language:
-
-- "Get the latest news about AI from Zhihu"
-- "Analyze the popularity trend of 'Bitcoin' over the past 30 days"
-- "Search for news related to 'Tesla' and 'Musk'"
-
-### 4. Multiple Interfaces
-
-- **RESTful API**: Programmatic access to news data
-- **HTML Reports**: Beautiful, mobile-responsive web interface
-- **AI Interface**: Natural language query interface via MCP
-
-## 🔧 Configuration
-
-### Main Configuration
-
-Edit `config/config.yaml`:
-
-```yaml
-crawler:
-  enable_crawler: true
-  schedule_minutes: 30
-
-platforms:
-  - id: "zhihu"
-    name: "Zhihu"
-  - id: "weibo"
-    name: "Weibo"
-  # ... more platforms
-
-report:
-  mode: "current" # daily, current, incremental
-
-database:
-  host: localhost
-  port: 5432
-  dbname: nfx_news
-  user: postgres
-  password: ${POSTGRES_PASSWORD}
-```
-
-### Keyword Configuration
-
-Edit `config/frequency_words.txt`:
-
-```txt
-AI
-ChatGPT
-OpenAI
-+technology
-
-Tesla
-Musk
-@10
-
-Bitcoin
-Cryptocurrency
-!advertisement
-```
-
-## 📦 Docker Deployment
-
-### Using Docker Compose (Recommended)
-
-```bash
-# Clone repository
-git clone https://github.com/NebulaForgeX/NFX-News.git
-cd NFX-News
-
-# Copy and configure .env files
-cp docker/.env.example docker/.env
-# Edit docker/.env with your configuration
-
-# Start all services
-cd docker
-docker-compose up -d
-
-# View logs
-docker-compose logs -f
-
-# Stop services
-docker-compose down
-```
-
-### Individual Service Deployment
-
-See individual service documentation for Docker deployment instructions:
-
-- [Crawl Server Docker](docs/crawl_server/README.md#docker-deployment)
-- [News Server Docker](docs/news_server/README.md#docker-deployment)
-- [Web Server Docker](docs/web_server/README.md#docker-deployment)
-- [MCP Server Docker](docs/mcp_server/README.md#docker-deployment)
-
-## 🤖 AI Integration
-
-### Supported Clients
-
-- **Claude Desktop**: Native MCP support
-- **Cursor**: HTTP or STDIO mode
-- **VSCode (Cline/Continue)**: Full MCP integration
-- **Any MCP-compatible client**: Standard MCP protocol
-
-### Quick Setup (Claude Desktop)
-
-1. Edit Claude Desktop config:
-   - **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
-   - **Mac**: `~/Library/Application Support/Claude/claude_desktop_config.json`
-
-2. Add configuration:
-
-```json
-{
-  "mcpServers": {
-    "nfx-news": {
-      "command": "uv",
-      "args": [
-        "--directory",
-        "/path/to/NFX-News",
-        "run",
-        "python",
-        "-m",
-        "mcp_server.server"
-      ]
-    }
-  }
-}
-```
-
-3. Restart Claude Desktop and start querying!
-
-See [MCP Server Documentation](docs/mcp_server/README.md) for detailed setup instructions.
-
-## 🔄 Data Flow
-
-```
-┌─────────────────┐
-│  News Platforms │ (Zhihu, Weibo, etc.)
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│  Crawl Server   │ ──► Crawls trending content
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│   PostgreSQL    │ ──► Stores news data
-└────────┬────────┘
-         │
-    ┌────┴────┐
-    │         │
-    ▼         ▼
-┌─────────┐ ┌──────────┐
-│  News   │ │   Web    │
-│ Server  │ │  Server  │
-│  (API)  │ │ (Reports)│
-└─────────┘ └──────────┘
-    │
-    ▼
-┌──────────┐
-│   MCP    │ ──► AI Analysis
-│  Server  │
-└──────────┘
-```
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-1. **Database Connection Failed**
-   - Verify PostgreSQL is running
-   - Check connection credentials
-   - Ensure database exists
-
-2. **Service Won't Start**
-   - Check port availability
-   - Verify dependencies are installed
-   - Check logs for detailed errors
-
-3. **No Data in Reports**
-   - Ensure crawl server has run
-   - Check `output/` directory exists
-   - Verify crawler configuration
-
-### Getting Help
-
-- Check service-specific documentation in `docs/`
-- Review logs: Each service outputs logs to stdout
-- Check configuration files: Ensure all required settings are present
-
-## 📊 Project Structure
-
-```
-NFX-News/
-├── config/                 # Configuration files
-│   ├── config.yaml        # Main configuration
-│   └── frequency_words.txt # Keyword configuration
-├── crawl_server/           # Crawler service (Python)
-├── news_server/            # News API service (TypeScript)
-├── web_server/             # Web report service (Python)
-├── mcp_server/             # AI analysis service (Python)
-├── output/                 # Crawled news data (generated)
-├── docs/                   # Documentation
-│   ├── crawl_server/
-│   ├── news_server/
-│   ├── web_server/
-│   └── mcp_server/
-├── docker/                 # Docker configuration
-├── data/                   # Additional data files
-└── README.md              # This file
-```
-
-## 🔗 Related Projects
-
-- **NewsNow**: News aggregation service that powers platform data
-- **FastMCP**: MCP protocol implementation framework
-
-## 📄 License
-
-GPL-3.0 License
-
-See [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Built with [FastAPI](https://fastapi.tiangolo.com/) and [Fastify](https://www.fastify.io/)
-- Powered by [PostgreSQL](https://www.postgresql.org/) and [Redis](https://redis.io/)
-- AI capabilities via [Model Context Protocol](https://modelcontextprotocol.io/)
-
----
-
-<div align="center">
-
-**[🔝 Back to Top](#nfx-news)**
-
-Made with ❤️ for the open-source community
-
-</div>
+Until publish: `"nfx-ui": "file:../../NFX-UI"` only. Do not add a registry version alongside `file:`.
