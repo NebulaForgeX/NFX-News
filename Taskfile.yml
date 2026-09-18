@@ -124,9 +124,13 @@ tasks:
         export POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-$POSTGRESQL_PASSWORD}"
         export POSTGRES_HOST="${POSTGRES_HOST:-$POSTGRESQL_HOST}"
         export POSTGRES_PORT="${POSTGRES_PORT:-$POSTGRESQL_PORT}"
-        export POSTGRES_DB_DEV="${POSTGRES_DB_DEV:-$POSTGRESQL_NAME_DEV}"
-        export POSTGRES_DB_PROD="${POSTGRES_DB_PROD:-$POSTGRESQL_NAME_PROD}"
-        export POSTGRES_DB_SHADOW="${POSTGRES_DB_SHADOW:-$POSTGRESQL_NAME_SHADOW}"
+        if [[ "{{.ENV}}" == "secure" ]]; then
+          export POSTGRES_DB="${POSTGRES_DB:-${POSTGRESQL_NAME:-$POSTGRESQL_NAME_PROD}}"
+        else
+          export POSTGRES_DB="${POSTGRES_DB:-${POSTGRESQL_NAME:-$POSTGRESQL_NAME_DEV}}"
+        fi
+        export POSTGRES_DB_SHADOW="${POSTGRES_DB_SHADOW:-${POSTGRESQL_NAME_SHADOW:-nfxnews_diff}}"
+        export POSTGRES_SSLMODE="${POSTGRES_SSLMODE:-disable}"
         export POSTGRES_CONTAINER_NAME="${POSTGRES_CONTAINER_NAME:-NFX-Stack-PostgreSQL}"
         export ATLAS_ENV="${ATLAS_ENV:-{{.ENV}}}"
         bash databases/scripts/gen_models.sh
@@ -141,9 +145,13 @@ tasks:
         export POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-$POSTGRESQL_PASSWORD}"
         export POSTGRES_HOST="${POSTGRES_HOST:-$POSTGRESQL_HOST}"
         export POSTGRES_PORT="${POSTGRES_PORT:-$POSTGRESQL_PORT}"
-        export POSTGRES_DB_DEV="${POSTGRES_DB_DEV:-$POSTGRESQL_NAME_DEV}"
-        export POSTGRES_DB_PROD="${POSTGRES_DB_PROD:-$POSTGRESQL_NAME_PROD}"
-        export POSTGRES_DB_SHADOW="${POSTGRES_DB_SHADOW:-$POSTGRESQL_NAME_SHADOW}"
+        if [[ "{{.ENV}}" == "secure" ]]; then
+          export POSTGRES_DB="${POSTGRES_DB:-${POSTGRESQL_NAME:-$POSTGRESQL_NAME_PROD}}"
+        else
+          export POSTGRES_DB="${POSTGRES_DB:-${POSTGRESQL_NAME:-$POSTGRESQL_NAME_DEV}}"
+        fi
+        export POSTGRES_DB_SHADOW="${POSTGRES_DB_SHADOW:-${POSTGRESQL_NAME_SHADOW:-nfxnews_diff}}"
+        export POSTGRES_SSLMODE="${POSTGRES_SSLMODE:-disable}"
         export POSTGRES_CONTAINER_NAME="${POSTGRES_CONTAINER_NAME:-NFX-Stack-PostgreSQL}"
         export ATLAS_ENV="${ATLAS_ENV:-{{.ENV}}}"
         bash databases/scripts/gen_views.sh
@@ -158,9 +166,14 @@ tasks:
         export POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-$POSTGRESQL_PASSWORD}"
         export POSTGRES_HOST="${POSTGRES_HOST:-$POSTGRESQL_HOST}"
         export POSTGRES_PORT="${POSTGRES_PORT:-$POSTGRESQL_PORT}"
-        export POSTGRES_DB_DEV="${POSTGRES_DB_DEV:-$POSTGRESQL_NAME_DEV}"
-        export POSTGRES_DB_PROD="${POSTGRES_DB_PROD:-$POSTGRESQL_NAME_PROD}"
-        export POSTGRES_DB_SHADOW="${POSTGRES_DB_SHADOW:-$POSTGRESQL_NAME_SHADOW}"
+        if [[ "{{.ENV}}" == "secure" ]]; then
+          export POSTGRES_DB="${POSTGRES_DB:-${POSTGRESQL_NAME:-$POSTGRESQL_NAME_PROD}}"
+        else
+          export POSTGRES_DB="${POSTGRES_DB:-${POSTGRESQL_NAME:-$POSTGRESQL_NAME_DEV}}"
+        fi
+        export POSTGRES_DB_SHADOW="${POSTGRES_DB_SHADOW:-${POSTGRESQL_NAME_SHADOW:-nfxnews_diff}}"
+        export POSTGRES_SSLMODE="${POSTGRES_SSLMODE:-disable}"
+        export POSTGRES_CONTAINER_NAME="${POSTGRES_CONTAINER_NAME:-NFX-Stack-PostgreSQL}"
         export ATLAS_ENV="${ATLAS_ENV:-{{.ENV}}}"
         bash databases/scripts/gen_enums.sh
 
@@ -181,14 +194,16 @@ tasks:
         export POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-$POSTGRESQL_PASSWORD}"
         export POSTGRES_HOST="${POSTGRES_HOST:-$POSTGRESQL_HOST}"
         export POSTGRES_PORT="${POSTGRES_PORT:-$POSTGRESQL_PORT}"
-        export POSTGRES_DB="${POSTGRES_DB:-${POSTGRESQL_NAME_DEV}}"
-        if [ "{{.ENV}}" = "secure" ]; then export POSTGRES_DB="${POSTGRESQL_NAME_PROD}"; fi
-        export POSTGRES_DB_DEV="${POSTGRESQL_NAME_DEV}"
-        export POSTGRES_DB_PROD="${POSTGRESQL_NAME_PROD}"
-        export POSTGRES_DB_SHADOW="${POSTGRES_DB_SHADOW:-$POSTGRESQL_NAME_SHADOW}"
+        if [[ "{{.ENV}}" == "secure" ]]; then
+          export POSTGRES_DB="${POSTGRES_DB:-${POSTGRESQL_NAME:-$POSTGRESQL_NAME_PROD}}"
+        else
+          export POSTGRES_DB="${POSTGRES_DB:-${POSTGRESQL_NAME:-$POSTGRESQL_NAME_DEV}}"
+        fi
+        export POSTGRES_DB_SHADOW="${POSTGRES_DB_SHADOW:-${POSTGRESQL_NAME_SHADOW:-nfxnews_diff}}"
+        export POSTGRES_SSLMODE="${POSTGRES_SSLMODE:-disable}"
         export POSTGRES_CONTAINER_NAME="${POSTGRES_CONTAINER_NAME:-NFX-Stack-PostgreSQL}"
         export ATLAS_CONFIG_PATH="file://databases/atlas.hcl"
-        bash run_atlas_pipeline.sh {{.CLI_ARGS}}
+        bash run_atlas_pipeline.sh --{{.ENV}} {{.CLI_ARGS}}
 
   atlas:pipeline:run:sh:
     desc: "Run Atlas pipeline using bash (ENV=dev|secure)"
