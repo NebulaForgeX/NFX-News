@@ -257,7 +257,7 @@ tasks:
         bash scripts/create_databases.sh
 
   go:ub:
-    desc: "Up go dev server and build (NFX-Edge must already be running)"
+    desc: "Build and start Go services + console (NFX-Edge must already be running)"
     cmds:
       - sudo docker compose --env-file {{.ENV_FILE}} -f {{.APP_COMPOSE}} up --build
 
@@ -267,7 +267,7 @@ tasks:
       - sudo docker compose --env-file {{.ENV_FILE}} -f {{.APP_COMPOSE}} up
 
   run:
-    desc: "Alias for go:ub (ENV=dev|secure). Requires NFX-Edge."
+    desc: "Start Go services + console (ENV=dev|secure). Requires NFX-Edge."
     cmds:
       - task: go:ub
 
