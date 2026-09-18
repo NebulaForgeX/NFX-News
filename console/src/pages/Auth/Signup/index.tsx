@@ -13,7 +13,6 @@ import { LucideIcon } from "@/components";
 import { routerEventEmitter } from "@/events/router";
 import { ROUTES } from "@/navigations";
 import AuthShell from "@/pages/Auth/shared/AuthShell";
-import GitHubContinueButton from "@/pages/Auth/shared/GitHubContinueButton";
 
 import styles from "./s.module.css";
 
@@ -201,7 +200,6 @@ export default function SignupPage() {
                 {t("submit")}
                 <LucideIcon icon={ArrowRight} size={16} />
               </Button>
-              <GitHubContinueButton label={t("github.continue")} />
             </form>
           </Flex>
         </FormProvider>

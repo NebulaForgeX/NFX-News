@@ -5,7 +5,6 @@ import { Main, Sidebar } from "@/layouts";
 import { ROUTES } from "@/navigations";
 import {
   CrawlPage,
-  GitHubCallbackPage,
   LoginPage,
   MCPPage,
   NotFoundPage,
@@ -48,7 +47,6 @@ export default function App() {
         <Route path={ROUTES.SIGNUP} element={<SignupPage />} />
       </Route>
 
-      <Route path={ROUTES.LOGIN_GITHUB_CALLBACK} element={<GitHubCallbackPage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );

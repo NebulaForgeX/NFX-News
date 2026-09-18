@@ -48,10 +48,5 @@
       "owner": "Propriétaire",
       "forger": "Forger"
     }
-  },
-  "github": {
-    "continue": "Continuer avec GitHub",
-    "completing": "Finalisation de la connexion GitHub…",
-    "missingParams": "Le callback GitHub n'a pas de code ou de state."
   }
 }
