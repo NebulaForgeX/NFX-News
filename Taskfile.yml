@@ -122,8 +122,8 @@ tasks:
       - |
         export POSTGRES_USER="${POSTGRES_USER:-$POSTGRESQL_USER}"
         export POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-$POSTGRESQL_PASSWORD}"
-        export POSTGRES_HOST="${POSTGRES_HOST:-$POSTGRESQL_HOST}"
-        export POSTGRES_PORT="${POSTGRES_PORT:-$POSTGRESQL_PORT}"
+        export POSTGRES_HOST="${ATLAS_POSTGRES_HOST:-${POSTGRESQL_DATABASE_HOST:-192.168.1.64}}"
+        export POSTGRES_PORT="${ATLAS_POSTGRES_PORT:-${POSTGRESQL_DATABASE_PORT:-10105}}"
         if [[ "{{.ENV}}" == "secure" ]]; then
           export POSTGRES_DB="${POSTGRES_DB:-${POSTGRESQL_NAME:-$POSTGRESQL_NAME_PROD}}"
         else
@@ -135,6 +135,7 @@ tasks:
         export ATLAS_POSTGRES_USE_DOCKER="${ATLAS_POSTGRES_USE_DOCKER:-true}"
         export ATLAS_ENV="${ATLAS_ENV:-{{.ENV}}}"
         bash databases/scripts/gen_models.sh
+    silent: false
 
   atlas:gen-views:
     desc: "Generate Go views from the database schema (ENV=dev|secure)"
@@ -144,8 +145,8 @@ tasks:
       - |
         export POSTGRES_USER="${POSTGRES_USER:-$POSTGRESQL_USER}"
         export POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-$POSTGRESQL_PASSWORD}"
-        export POSTGRES_HOST="${POSTGRES_HOST:-$POSTGRESQL_HOST}"
-        export POSTGRES_PORT="${POSTGRES_PORT:-$POSTGRESQL_PORT}"
+        export POSTGRES_HOST="${ATLAS_POSTGRES_HOST:-${POSTGRESQL_DATABASE_HOST:-192.168.1.64}}"
+        export POSTGRES_PORT="${ATLAS_POSTGRES_PORT:-${POSTGRESQL_DATABASE_PORT:-10105}}"
         if [[ "{{.ENV}}" == "secure" ]]; then
           export POSTGRES_DB="${POSTGRES_DB:-${POSTGRESQL_NAME:-$POSTGRESQL_NAME_PROD}}"
         else
@@ -157,6 +158,7 @@ tasks:
         export ATLAS_POSTGRES_USE_DOCKER="${ATLAS_POSTGRES_USE_DOCKER:-true}"
         export ATLAS_ENV="${ATLAS_ENV:-{{.ENV}}}"
         bash databases/scripts/gen_views.sh
+    silent: false
 
   atlas:gen-enums:
     desc: "Generate Go enums from the database schema (ENV=dev|secure)"
@@ -166,8 +168,8 @@ tasks:
       - |
         export POSTGRES_USER="${POSTGRES_USER:-$POSTGRESQL_USER}"
         export POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-$POSTGRESQL_PASSWORD}"
-        export POSTGRES_HOST="${POSTGRES_HOST:-$POSTGRESQL_HOST}"
-        export POSTGRES_PORT="${POSTGRES_PORT:-$POSTGRESQL_PORT}"
+        export POSTGRES_HOST="${ATLAS_POSTGRES_HOST:-${POSTGRESQL_DATABASE_HOST:-192.168.1.64}}"
+        export POSTGRES_PORT="${ATLAS_POSTGRES_PORT:-${POSTGRESQL_DATABASE_PORT:-10105}}"
         if [[ "{{.ENV}}" == "secure" ]]; then
           export POSTGRES_DB="${POSTGRES_DB:-${POSTGRESQL_NAME:-$POSTGRESQL_NAME_PROD}}"
         else
@@ -179,6 +181,7 @@ tasks:
         export ATLAS_POSTGRES_USE_DOCKER="${ATLAS_POSTGRES_USE_DOCKER:-true}"
         export ATLAS_ENV="${ATLAS_ENV:-{{.ENV}}}"
         bash databases/scripts/gen_enums.sh
+    silent: false
 
   atlas:gen:
     desc: "Generate Go models, enums and views from the database schema"
@@ -186,17 +189,18 @@ tasks:
       - task: atlas:gen-enums
       - task: atlas:gen-models
       - task: atlas:gen-views
+    silent: false
 
   atlas:pipeline:run:
-    desc: "Run Atlas pipeline (ENV=dev|secure; extra flags after --)"
+    desc: "Run Atlas pipeline (ENV=dev|secure; extra flags after --, e.g. task atlas:pipeline:run ENV=secure -- --no-skip)"
     dotenv:
       - "{{.ENV_FILE}}"
     cmds:
       - |
         export POSTGRES_USER="${POSTGRES_USER:-$POSTGRESQL_USER}"
         export POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-$POSTGRESQL_PASSWORD}"
-        export POSTGRES_HOST="${POSTGRES_HOST:-$POSTGRESQL_HOST}"
-        export POSTGRES_PORT="${POSTGRES_PORT:-$POSTGRESQL_PORT}"
+        export POSTGRES_HOST="${ATLAS_POSTGRES_HOST:-${POSTGRESQL_DATABASE_HOST:-192.168.1.64}}"
+        export POSTGRES_PORT="${ATLAS_POSTGRES_PORT:-${POSTGRESQL_DATABASE_PORT:-10105}}"
         if [[ "{{.ENV}}" == "secure" ]]; then
           export POSTGRES_DB="${POSTGRES_DB:-${POSTGRESQL_NAME:-$POSTGRESQL_NAME_PROD}}"
         else
@@ -248,8 +252,8 @@ tasks:
       - |
         export POSTGRES_USER="${POSTGRES_USER:-$POSTGRESQL_USER}"
         export POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-$POSTGRESQL_PASSWORD}"
-        export POSTGRES_HOST="${POSTGRES_HOST:-$POSTGRESQL_HOST}"
-        export POSTGRES_PORT="${POSTGRES_PORT:-$POSTGRESQL_PORT}"
+        export POSTGRES_HOST="${ATLAS_POSTGRES_HOST:-${POSTGRESQL_DATABASE_HOST:-192.168.1.64}}"
+        export POSTGRES_PORT="${ATLAS_POSTGRES_PORT:-${POSTGRESQL_DATABASE_PORT:-10105}}"
         bash scripts/create_databases.sh
 
   go:ub:
