@@ -1,9 +1,10 @@
 {
-  "pillarIdentityTitle": "Identity",
-  "pillarIdentityBody": "一个 Account 承载你在整个 Pulso 家族中的身份。",
-  "pillarCommunityTitle": "Community",
-  "pillarCommunityBody": "Profile 把你与城市里的人与地方连在一起。",
-  "pillarLinkTitle": "Link",
-  "pillarLinkBody": "打开 Near、Loop 与所有产品的共享钥匙。",
+  "brandHome": "新闻台",
+  "pillarIdentityTitle": "稿件",
+  "pillarIdentityBody": "用 NFX Account 进入频道、稿件与发布队列。",
+  "pillarCommunityTitle": "检索",
+  "pillarCommunityBody": "按关键词、频道与时间切片新闻，不绕路。",
+  "pillarLinkTitle": "播报",
+  "pillarLinkBody": "控制台与公开站点共用同一把身份钥匙。",
   "backHome": "返回首页"
 }

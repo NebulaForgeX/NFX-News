@@ -2,13 +2,13 @@
   "title": "Sign in",
   "brand": {
     "access": "{{name}} access",
-    "title": "Identity. Community. Link."
+    "title": "Open the desk that holds every channel."
   },
-  "heroFooter": "Sign in once. Carry the same Account into Near, Loop, and every Pulso product.",
+  "heroFooter": "Sign in once. Carry the same Account into the News console.",
   "form": {
     "welcomeBack": "Welcome back",
     "title": "Sign in to {{name}}",
-    "subtitle": "Continue with your city-home Account — identity first, products next.",
+    "subtitle": "Continue with your NFX Account — identity first, newsroom next.",
     "emailLabel": "Email",
     "emailPlaceholder": "you@example.com",
     "passwordLabel": "Password",
@@ -25,14 +25,14 @@
   "selectProfile": {
     "eyebrow": "Choose identity",
     "title": "Which Profile continues?",
-    "subtitle": "Your Account can hold more than one city identity.",
+    "subtitle": "Your Account can hold more than one Profile.",
     "back": "Back to sign in",
     "kind": {
       "community": "Community",
       "authority": "Authority"
     },
     "kindHint": {
-      "community": "Everyday city presence",
+      "community": "Everyday use",
       "authority": "Moderation & roles"
     },
     "roles": {

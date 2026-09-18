@@ -1,9 +1,10 @@
 {
-  "pillarIdentityTitle": "Identity",
-  "pillarIdentityBody": "Un Account porte qui vous êtes dans toute la famille Pulso.",
-  "pillarCommunityTitle": "Community",
-  "pillarCommunityBody": "Les profils vous relient aux personnes et aux lieux de la ville.",
-  "pillarLinkTitle": "Link",
-  "pillarLinkBody": "La clé partagée qui ouvre Near, Loop et chaque produit.",
+  "brandHome": "Rédaction",
+  "pillarIdentityTitle": "Bureau",
+  "pillarIdentityBody": "Votre Account NFX ouvre canaux, copies et file de publication.",
+  "pillarCommunityTitle": "Recherche",
+  "pillarCommunityBody": "Découpez l'actualité par mot-clé, canal et temps.",
+  "pillarLinkTitle": "Diffusion",
+  "pillarLinkBody": "Console et site public partagent la même clé d'identité.",
   "backHome": "Accueil"
 }
