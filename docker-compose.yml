@@ -270,8 +270,6 @@ services:
     build:
       context: ./console
       dockerfile: Dockerfile
-      additional_contexts:
-        nfx-ui: ../NFX-UI
       target: prod
     ports:
       - "${CONSOLE_EXTERNAL_PORT}:${CONSOLE_PORT}"

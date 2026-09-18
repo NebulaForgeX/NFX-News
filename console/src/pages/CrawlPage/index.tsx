@@ -2,8 +2,8 @@ import { memo, useState } from "react";
 import { Button, Card, Flex, Text, TextField } from "@radix-ui/themes";
 import { Play, List } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { PageFrame } from "nfx-ui/layouts";
-import { CardHeader, EmptyState, PageHeader } from "nfx-ui/components";
+import { PageFrame } from "@/layouts";
+import { CardHeader, EmptyState, PageHeader } from "@/components";
 
 import { useCrawlSessions, useGetCrawlSession, useSource, useSources, useTriggerCrawl } from "@/hooks/news";
 

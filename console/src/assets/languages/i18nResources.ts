@@ -1,81 +1,130 @@
-import en_components from "./en/components.json";
-import en_LoginPage from "./en/LoginPage.json";
-import en_ReaderPage from "./en/ReaderPage.json";
-import en_ReportsPage from "./en/ReportsPage.json";
-import en_CrawlPage from "./en/CrawlPage.json";
-import en_MCPPage from "./en/MCPPage.json";
-import en_SettingsPage from "./en/SettingsPage.json";
-import zh_components from "./zh/components.json";
-import zh_LoginPage from "./zh/LoginPage.json";
-import zh_ReaderPage from "./zh/ReaderPage.json";
-import zh_ReportsPage from "./zh/ReportsPage.json";
-import zh_CrawlPage from "./zh/CrawlPage.json";
-import zh_MCPPage from "./zh/MCPPage.json";
-import zh_SettingsPage from "./zh/SettingsPage.json";
-import fr_components from "./fr/components.json";
-import fr_LoginPage from "./fr/LoginPage.json";
-import fr_ReaderPage from "./fr/ReaderPage.json";
-import fr_ReportsPage from "./fr/ReportsPage.json";
-import fr_CrawlPage from "./fr/CrawlPage.json";
-import fr_MCPPage from "./fr/MCPPage.json";
-import fr_SettingsPage from "./fr/SettingsPage.json";
-import en_NotFoundPage from "./en/NotFoundPage.json";
-import en_SelectProfilePage from "./en/SelectProfilePage.json";
-import zh_NotFoundPage from "./zh/NotFoundPage.json";
-import zh_SelectProfilePage from "./zh/SelectProfilePage.json";
-import fr_NotFoundPage from "./fr/NotFoundPage.json";
-import fr_SelectProfilePage from "./fr/SelectProfilePage.json";
+import type { CreateI18nResourcesResult, NameSpacesMap, Resources } from "nfx-ui/languages";
 
-export const RESOURCES = {
-  en: {
-    components: en_components,
-    LoginPage: en_LoginPage,
-    ReaderPage: en_ReaderPage,
-    ReportsPage: en_ReportsPage,
-    CrawlPage: en_CrawlPage,
-    MCPPage: en_MCPPage,
-    SettingsPage: en_SettingsPage,
-    NotFoundPage: en_NotFoundPage,
-    SelectProfilePage: en_SelectProfilePage,
-  },
-  zh: {
-    components: zh_components,
-    LoginPage: zh_LoginPage,
-    ReaderPage: zh_ReaderPage,
-    ReportsPage: zh_ReportsPage,
-    CrawlPage: zh_CrawlPage,
-    MCPPage: zh_MCPPage,
-    SettingsPage: zh_SettingsPage,
-    NotFoundPage: zh_NotFoundPage,
-    SelectProfilePage: zh_SelectProfilePage,
-  },
-  fr: {
-    components: fr_components,
-    LoginPage: fr_LoginPage,
-    ReaderPage: fr_ReaderPage,
-    ReportsPage: fr_ReportsPage,
-    CrawlPage: fr_CrawlPage,
-    MCPPage: fr_MCPPage,
-    SettingsPage: fr_SettingsPage,
-    NotFoundPage: fr_NotFoundPage,
-    SelectProfilePage: fr_SelectProfilePage,
-  },
-};
+import enHooks from "./en/hooks.json";
+import enLanguage from "./en/language.json";
+import enAuthShell from "./en/pages/Account/AuthShell.json";
+import enLogin from "./en/pages/Account/Login.json";
+import enSignup from "./en/pages/Account/Signup.json";
+import enCrawl from "./en/CrawlPage.json";
+import enMCP from "./en/MCPPage.json";
+import enNotFound from "./en/NotFoundPage.json";
+import enReader from "./en/ReaderPage.json";
+import enReports from "./en/ReportsPage.json";
+import enSettings from "./en/SettingsPage.json";
+import enUserProfileEdit from "./en/pages/User/Profile/Edit.json";
+import enUserProfileIdentities from "./en/pages/User/Profile/Identities.json";
+import enUserProfileOverview from "./en/pages/User/Profile/Overview.json";
+import enUserSetting from "./en/pages/User/Setting.json";
+import frHooks from "./fr/hooks.json";
+import frLanguage from "./fr/language.json";
+import frAuthShell from "./fr/pages/Account/AuthShell.json";
+import frLogin from "./fr/pages/Account/Login.json";
+import frSignup from "./fr/pages/Account/Signup.json";
+import frCrawl from "./fr/CrawlPage.json";
+import frMCP from "./fr/MCPPage.json";
+import frNotFound from "./fr/NotFoundPage.json";
+import frReader from "./fr/ReaderPage.json";
+import frReports from "./fr/ReportsPage.json";
+import frSettings from "./fr/SettingsPage.json";
+import frUserProfileEdit from "./fr/pages/User/Profile/Edit.json";
+import frUserProfileIdentities from "./fr/pages/User/Profile/Identities.json";
+import frUserProfileOverview from "./fr/pages/User/Profile/Overview.json";
+import frUserSetting from "./fr/pages/User/Setting.json";
+import zhHooks from "./zh/hooks.json";
+import zhLanguage from "./zh/language.json";
+import zhAuthShell from "./zh/pages/Account/AuthShell.json";
+import zhLogin from "./zh/pages/Account/Login.json";
+import zhSignup from "./zh/pages/Account/Signup.json";
+import zhCrawl from "./zh/CrawlPage.json";
+import zhMCP from "./zh/MCPPage.json";
+import zhNotFound from "./zh/NotFoundPage.json";
+import zhReader from "./zh/ReaderPage.json";
+import zhReports from "./zh/ReportsPage.json";
+import zhSettings from "./zh/SettingsPage.json";
+import zhUserProfileEdit from "./zh/pages/User/Profile/Edit.json";
+import zhUserProfileIdentities from "./zh/pages/User/Profile/Identities.json";
+import zhUserProfileOverview from "./zh/pages/User/Profile/Overview.json";
+import zhUserSetting from "./zh/pages/User/Setting.json";
 
-export const NAME_SPACES_MAP = {
-  components: "components",
-  LoginPage: "LoginPage",
+const PAGE = {
+  AuthShell: "pages.Account.AuthShell",
+  Login: "pages.Account.Login",
+  Signup: "pages.Account.Signup",
+  UserSetting: "pages.User.Setting",
+  UserProfileOverview: "pages.User.Profile.Overview",
+  UserProfileEdit: "pages.User.Profile.Edit",
+  UserProfileIdentities: "pages.User.Profile.Identities",
   ReaderPage: "ReaderPage",
   ReportsPage: "ReportsPage",
   CrawlPage: "CrawlPage",
   MCPPage: "MCPPage",
   SettingsPage: "SettingsPage",
   NotFoundPage: "NotFoundPage",
-  SelectProfilePage: "SelectProfilePage",
+} as const;
+
+const BUILTIN_I18N_NAMESPACES_MAP: NameSpacesMap = {
+  language: "language",
+  hooks: "hooks",
+  ...PAGE,
 };
 
-export const NAME_SPACES = Object.values(NAME_SPACES_MAP);
-
-export function getBuiltinI18nBundles() {
-  return { RESOURCES, NAME_SPACES_MAP, NAME_SPACES };
+export function getBuiltinI18nBundles(): CreateI18nResourcesResult {
+  const RESOURCES: Resources = {
+    en: {
+      language: enLanguage,
+      hooks: enHooks,
+      [PAGE.AuthShell]: enAuthShell,
+      [PAGE.Login]: enLogin,
+      [PAGE.Signup]: enSignup,
+      [PAGE.UserSetting]: enUserSetting,
+      [PAGE.UserProfileOverview]: enUserProfileOverview,
+      [PAGE.UserProfileEdit]: enUserProfileEdit,
+      [PAGE.UserProfileIdentities]: enUserProfileIdentities,
+      [PAGE.ReaderPage]: enReader,
+      [PAGE.ReportsPage]: enReports,
+      [PAGE.CrawlPage]: enCrawl,
+      [PAGE.MCPPage]: enMCP,
+      [PAGE.SettingsPage]: enSettings,
+      [PAGE.NotFoundPage]: enNotFound,
+    },
+    zh: {
+      language: zhLanguage,
+      hooks: zhHooks,
+      [PAGE.AuthShell]: zhAuthShell,
+      [PAGE.Login]: zhLogin,
+      [PAGE.Signup]: zhSignup,
+      [PAGE.UserSetting]: zhUserSetting,
+      [PAGE.UserProfileOverview]: zhUserProfileOverview,
+      [PAGE.UserProfileEdit]: zhUserProfileEdit,
+      [PAGE.UserProfileIdentities]: zhUserProfileIdentities,
+      [PAGE.ReaderPage]: zhReader,
+      [PAGE.ReportsPage]: zhReports,
+      [PAGE.CrawlPage]: zhCrawl,
+      [PAGE.MCPPage]: zhMCP,
+      [PAGE.SettingsPage]: zhSettings,
+      [PAGE.NotFoundPage]: zhNotFound,
+    },
+    fr: {
+      language: frLanguage,
+      hooks: frHooks,
+      [PAGE.AuthShell]: frAuthShell,
+      [PAGE.Login]: frLogin,
+      [PAGE.Signup]: frSignup,
+      [PAGE.UserSetting]: frUserSetting,
+      [PAGE.UserProfileOverview]: frUserProfileOverview,
+      [PAGE.UserProfileEdit]: frUserProfileEdit,
+      [PAGE.UserProfileIdentities]: frUserProfileIdentities,
+      [PAGE.ReaderPage]: frReader,
+      [PAGE.ReportsPage]: frReports,
+      [PAGE.CrawlPage]: frCrawl,
+      [PAGE.MCPPage]: frMCP,
+      [PAGE.SettingsPage]: frSettings,
+      [PAGE.NotFoundPage]: frNotFound,
+    },
+  };
+  return {
+    RESOURCES,
+    NAME_SPACES_MAP: BUILTIN_I18N_NAMESPACES_MAP,
+    NAME_SPACES: Object.values(BUILTIN_I18N_NAMESPACES_MAP),
+  };
 }

@@ -2,8 +2,8 @@ import { memo, useState } from "react";
 import { Button, Card, Flex, Select, Switch, Text, TextField } from "@radix-ui/themes";
 import { Bell, Inbox, Server } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { PageFrame } from "nfx-ui/layouts";
-import { CardHeader, EmptyState, PageHeader, ThemeSettings } from "nfx-ui/components";
+import { PageFrame } from "@/layouts";
+import { CardHeader, EmptyState, PageHeader } from "@/components";
 
 import { NOTIFY_KINDS, notifyChannelConfig, notifyConfigPlaceholder, type NotifyKind } from "@/enums/newsEnum";
 import { useChannels, useDeliveries, useInitializeSystem, useNotifyKinds, useSystemState, useUpsertChannel } from "@/hooks/news";
@@ -94,7 +94,6 @@ const SettingsPage = memo(() => {
             </Flex>
           )}
         </Card>
-        <ThemeSettings />
       </Flex>
     </PageFrame>
   );

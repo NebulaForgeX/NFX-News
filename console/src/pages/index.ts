@@ -1,8 +1,13 @@
-export { default as LoginPage } from "./LoginPage";
-export { default as SelectProfilePage } from "./SelectProfilePage";
 export { default as ReaderPage } from "./ReaderPage";
 export { default as ReportsPage } from "./ReportsPage";
 export { default as CrawlPage } from "./CrawlPage";
 export { default as MCPPage } from "./MCPPage";
-export { default as SettingsPage } from "./SettingsPage";
+export { default as NotifyPage } from "./SettingsPage";
+export { default as SettingsPage } from "./User/Settings";
 export { default as NotFoundPage } from "./NotFoundPage";
+export { default as LoginPage } from "./Account/Login";
+export { default as SignupPage } from "./Account/Signup";
+export { default as GitHubCallbackPage } from "./Account/GitHubCallback";
+export { default as ProfileOverviewPage } from "./User/Profile/Overview";
+export { default as ProfileEditPage } from "./User/Profile/Edit";
+export { default as ProfileIdentitiesPage } from "./User/Profile/Identities";

@@ -17,7 +17,8 @@
     /* Path mapping */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*", "../../NFX-UI/src/*", "../../NFX-UI/src/*/index.ts"],
+      "nfx-ui/*": ["../../NFX-UI/src/*", "../../NFX-UI/src/*/index.ts"]
     },
     /* Linting */
     "strict": true,

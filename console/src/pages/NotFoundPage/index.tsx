@@ -1,8 +1,8 @@
 import { Button, Flex } from "@radix-ui/themes";
 import { useTranslation } from "react-i18next";
-import { Info } from "@/assets/icons/lucide";
-import { PageFrame } from "nfx-ui/layouts";
-import { EmptyState } from "nfx-ui/components";
+import { Info } from "lucide-react";
+import { PageFrame } from "@/layouts";
+import { EmptyState } from "@/components";
 
 import { routerEventEmitter } from "@/events/router";
 

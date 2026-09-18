@@ -1,3 +1,4 @@
-export { default as QueryProvider } from "./QueryProvider";
+export { QueryProvider } from "./QueryProvider";
+export { DataProvider } from "./DataProvider";
+export { default as ModalProvider } from "./ModalProvider";
 export { default as RouterProvider } from "./RouterProvider";
-export { NewsDataProvider } from "./DataProvider";

@@ -14,7 +14,7 @@ export function useRouterEvents() {
   }, [navigate]);
 
   const handleLoginSuccess = useCallback(() => {
-    navigate(ROUTES.SELECT_PROFILE, { replace: true });
+    navigate(ROUTES.READER, { replace: true });
   }, [navigate]);
 
   const handleLogout = useCallback(() => {

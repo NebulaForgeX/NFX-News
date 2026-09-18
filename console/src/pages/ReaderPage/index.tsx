@@ -5,8 +5,8 @@ import { SortableContext, arrayMove, horizontalListSortingStrategy, useSortable 
 import { CSS } from "@dnd-kit/utilities";
 import { Newspaper, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { PageFrame } from "nfx-ui/layouts";
-import { CardHeader, EmptyState, PageHeader } from "nfx-ui/components";
+import { PageFrame } from "@/layouts";
+import { CardHeader, EmptyState, PageHeader } from "@/components";
 
 import { useColumnPreferences, useNewsItems, useSearchNews, useSources, useFetchSource, useSaveColumnOrder, type SourceMeta } from "@/hooks/news";
 
