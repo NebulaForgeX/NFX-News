@@ -5,41 +5,12 @@ name: nfx-news
 # Must start NFX-Edge first (creates nfx-edge). This stack has no reverse-proxy.
 
 services:
-  source-api:
-    image: nfx-news-source-api:prod
-    container_name: NFX-News-Source-Api
+  source-base:
+    image: nfx-news-source-base:prod
+    container_name: NFX-News-Source-Base-Prod
     build:
       context: .
-      dockerfile: inputs/source/api/Dockerfile
-      target: prod
-    environment:
-      - ENV=prod
-    expose:
-      - "${HTTP_PORT}"
-    labels:
-      traefik.enable: "true"
-      traefik.project: "nfx-news"
-      traefik.http.services.news-source-api.loadbalancer.server.port: "${HTTP_PORT}"
-      traefik.http.routers.news-source-api.entrypoints: web
-      traefik.http.routers.news-source-api.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_SOURCE}`)
-      traefik.http.routers.news-source-api.service: news-source-api
-      traefik.http.routers.news-source-api-secure.entrypoints: websecure
-      traefik.http.routers.news-source-api-secure.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_SOURCE}`)
-      traefik.http.routers.news-source-api-secure.service: news-source-api
-      traefik.http.routers.news-source-api-secure.tls: "true"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    networks:
-      - nfx-news
-      - nfx-edge
-    restart: unless-stopped
-
-  source-connection:
-    image: nfx-news-source-connection:prod
-    container_name: NFX-News-Source-Connection
-    build:
-      context: .
-      dockerfile: inputs/source/connection/Dockerfile
+      dockerfile: inputs/source/configuration/Dockerfile.Base
       target: prod
     environment:
       - ENV=prod
@@ -48,81 +19,35 @@ services:
       - "${GRPC_PORT_SOURCE}"
     ports:
       - "${GRPC_PORT_SOURCE}:${GRPC_PORT_SOURCE}"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    networks:
-      - nfx-news
-    restart: unless-stopped
-
-  source-pipeline:
-    image: nfx-news-source-pipeline:prod
-    container_name: NFX-News-Source-Pipeline
-    build:
-      context: .
-      dockerfile: inputs/source/pipeline/Dockerfile
-      target: prod
-    environment:
-      - ENV=prod
-    expose:
-      - "${HTTP_PORT}"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    networks:
-      - nfx-news
-    restart: unless-stopped
-
-  source-messaging:
-    image: nfx-news-source-messaging:prod
-    container_name: NFX-News-Source-Messaging
-    build:
-      context: .
-      dockerfile: inputs/source/messaging/Dockerfile
-      target: prod
-    environment:
-      - ENV=prod
-    expose:
-      - "${HTTP_PORT}"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    networks:
-      - nfx-news
-    restart: unless-stopped
-
-  news-api:
-    image: nfx-news-news-api:prod
-    container_name: NFX-News-News-Api
-    build:
-      context: .
-      dockerfile: inputs/news/api/Dockerfile
-      target: prod
-    environment:
-      - ENV=prod
-    expose:
-      - "${HTTP_PORT}"
     labels:
       traefik.enable: "true"
       traefik.project: "nfx-news"
-      traefik.http.services.news-api.loadbalancer.server.port: "${HTTP_PORT}"
-      traefik.http.routers.news-api.entrypoints: web
-      traefik.http.routers.news-api.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_NEWS}`)
-      traefik.http.routers.news-api.service: news-api
-      traefik.http.routers.news-api-secure.entrypoints: websecure
-      traefik.http.routers.news-api-secure.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_NEWS}`)
-      traefik.http.routers.news-api-secure.service: news-api
-      traefik.http.routers.news-api-secure.tls: "true"
+      traefik.http.services.news-source-base.loadbalancer.server.port: "${HTTP_PORT}"
+      traefik.http.routers.news-source-base.entrypoints: web
+      traefik.http.routers.news-source-base.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_SOURCE}`)
+      traefik.http.routers.news-source-base.service: news-source-base
+      traefik.http.routers.news-source-base-secure.entrypoints: websecure
+      traefik.http.routers.news-source-base-secure.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_SOURCE}`)
+      traefik.http.routers.news-source-base-secure.service: news-source-base
+      traefik.http.routers.news-source-base-secure.tls: "true"
+    volumes:
+      - ./static:/app/static
+      - ./data:/app/data
+      - ./assets:/app/assets
+      - ./errors/langs:/app/errors/langs
+    restart: always
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
       - nfx-news
       - nfx-edge
-    restart: unless-stopped
 
-  news-connection:
-    image: nfx-news-news-connection:prod
-    container_name: NFX-News-News-Connection
+  news-base:
+    image: nfx-news-news-base:prod
+    container_name: NFX-News-News-Base-Prod
     build:
       context: .
-      dockerfile: inputs/news/connection/Dockerfile
+      dockerfile: inputs/news/configuration/Dockerfile.Base
       target: prod
     environment:
       - ENV=prod
@@ -131,81 +56,35 @@ services:
       - "${GRPC_PORT_NEWS}"
     ports:
       - "${GRPC_PORT_NEWS}:${GRPC_PORT_NEWS}"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    networks:
-      - nfx-news
-    restart: unless-stopped
-
-  news-pipeline:
-    image: nfx-news-news-pipeline:prod
-    container_name: NFX-News-News-Pipeline
-    build:
-      context: .
-      dockerfile: inputs/news/pipeline/Dockerfile
-      target: prod
-    environment:
-      - ENV=prod
-    expose:
-      - "${HTTP_PORT}"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    networks:
-      - nfx-news
-    restart: unless-stopped
-
-  news-messaging:
-    image: nfx-news-news-messaging:prod
-    container_name: NFX-News-News-Messaging
-    build:
-      context: .
-      dockerfile: inputs/news/messaging/Dockerfile
-      target: prod
-    environment:
-      - ENV=prod
-    expose:
-      - "${HTTP_PORT}"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    networks:
-      - nfx-news
-    restart: unless-stopped
-
-  crawl-api:
-    image: nfx-news-crawl-api:prod
-    container_name: NFX-News-Crawl-Api
-    build:
-      context: .
-      dockerfile: inputs/crawl/api/Dockerfile
-      target: prod
-    environment:
-      - ENV=prod
-    expose:
-      - "${HTTP_PORT}"
     labels:
       traefik.enable: "true"
       traefik.project: "nfx-news"
-      traefik.http.services.news-crawl-api.loadbalancer.server.port: "${HTTP_PORT}"
-      traefik.http.routers.news-crawl-api.entrypoints: web
-      traefik.http.routers.news-crawl-api.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_CRAWL}`)
-      traefik.http.routers.news-crawl-api.service: news-crawl-api
-      traefik.http.routers.news-crawl-api-secure.entrypoints: websecure
-      traefik.http.routers.news-crawl-api-secure.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_CRAWL}`)
-      traefik.http.routers.news-crawl-api-secure.service: news-crawl-api
-      traefik.http.routers.news-crawl-api-secure.tls: "true"
+      traefik.http.services.news-base.loadbalancer.server.port: "${HTTP_PORT}"
+      traefik.http.routers.news-base.entrypoints: web
+      traefik.http.routers.news-base.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_NEWS}`)
+      traefik.http.routers.news-base.service: news-base
+      traefik.http.routers.news-base-secure.entrypoints: websecure
+      traefik.http.routers.news-base-secure.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_NEWS}`)
+      traefik.http.routers.news-base-secure.service: news-base
+      traefik.http.routers.news-base-secure.tls: "true"
+    volumes:
+      - ./static:/app/static
+      - ./data:/app/data
+      - ./assets:/app/assets
+      - ./errors/langs:/app/errors/langs
+    restart: always
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
       - nfx-news
       - nfx-edge
-    restart: unless-stopped
 
-  crawl-connection:
-    image: nfx-news-crawl-connection:prod
-    container_name: NFX-News-Crawl-Connection
+  crawl-base:
+    image: nfx-news-crawl-base:prod
+    container_name: NFX-News-Crawl-Base-Prod
     build:
       context: .
-      dockerfile: inputs/crawl/connection/Dockerfile
+      dockerfile: inputs/crawl/configuration/Dockerfile.Base
       target: prod
     environment:
       - ENV=prod
@@ -214,81 +93,35 @@ services:
       - "${GRPC_PORT_CRAWL}"
     ports:
       - "${GRPC_PORT_CRAWL}:${GRPC_PORT_CRAWL}"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    networks:
-      - nfx-news
-    restart: unless-stopped
-
-  crawl-pipeline:
-    image: nfx-news-crawl-pipeline:prod
-    container_name: NFX-News-Crawl-Pipeline
-    build:
-      context: .
-      dockerfile: inputs/crawl/pipeline/Dockerfile
-      target: prod
-    environment:
-      - ENV=prod
-    expose:
-      - "${HTTP_PORT}"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    networks:
-      - nfx-news
-    restart: unless-stopped
-
-  crawl-messaging:
-    image: nfx-news-crawl-messaging:prod
-    container_name: NFX-News-Crawl-Messaging
-    build:
-      context: .
-      dockerfile: inputs/crawl/messaging/Dockerfile
-      target: prod
-    environment:
-      - ENV=prod
-    expose:
-      - "${HTTP_PORT}"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    networks:
-      - nfx-news
-    restart: unless-stopped
-
-  report-api:
-    image: nfx-news-report-api:prod
-    container_name: NFX-News-Report-Api
-    build:
-      context: .
-      dockerfile: inputs/report/api/Dockerfile
-      target: prod
-    environment:
-      - ENV=prod
-    expose:
-      - "${HTTP_PORT}"
     labels:
       traefik.enable: "true"
       traefik.project: "nfx-news"
-      traefik.http.services.news-report-api.loadbalancer.server.port: "${HTTP_PORT}"
-      traefik.http.routers.news-report-api.entrypoints: web
-      traefik.http.routers.news-report-api.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_REPORT}`)
-      traefik.http.routers.news-report-api.service: news-report-api
-      traefik.http.routers.news-report-api-secure.entrypoints: websecure
-      traefik.http.routers.news-report-api-secure.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_REPORT}`)
-      traefik.http.routers.news-report-api-secure.service: news-report-api
-      traefik.http.routers.news-report-api-secure.tls: "true"
+      traefik.http.services.news-crawl-base.loadbalancer.server.port: "${HTTP_PORT}"
+      traefik.http.routers.news-crawl-base.entrypoints: web
+      traefik.http.routers.news-crawl-base.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_CRAWL}`)
+      traefik.http.routers.news-crawl-base.service: news-crawl-base
+      traefik.http.routers.news-crawl-base-secure.entrypoints: websecure
+      traefik.http.routers.news-crawl-base-secure.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_CRAWL}`)
+      traefik.http.routers.news-crawl-base-secure.service: news-crawl-base
+      traefik.http.routers.news-crawl-base-secure.tls: "true"
+    volumes:
+      - ./static:/app/static
+      - ./data:/app/data
+      - ./assets:/app/assets
+      - ./errors/langs:/app/errors/langs
+    restart: always
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
       - nfx-news
       - nfx-edge
-    restart: unless-stopped
 
-  report-connection:
-    image: nfx-news-report-connection:prod
-    container_name: NFX-News-Report-Connection
+  report-base:
+    image: nfx-news-report-base:prod
+    container_name: NFX-News-Report-Base-Prod
     build:
       context: .
-      dockerfile: inputs/report/connection/Dockerfile
+      dockerfile: inputs/report/configuration/Dockerfile.Base
       target: prod
     environment:
       - ENV=prod
@@ -297,81 +130,35 @@ services:
       - "${GRPC_PORT_REPORT}"
     ports:
       - "${GRPC_PORT_REPORT}:${GRPC_PORT_REPORT}"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    networks:
-      - nfx-news
-    restart: unless-stopped
-
-  report-pipeline:
-    image: nfx-news-report-pipeline:prod
-    container_name: NFX-News-Report-Pipeline
-    build:
-      context: .
-      dockerfile: inputs/report/pipeline/Dockerfile
-      target: prod
-    environment:
-      - ENV=prod
-    expose:
-      - "${HTTP_PORT}"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    networks:
-      - nfx-news
-    restart: unless-stopped
-
-  report-messaging:
-    image: nfx-news-report-messaging:prod
-    container_name: NFX-News-Report-Messaging
-    build:
-      context: .
-      dockerfile: inputs/report/messaging/Dockerfile
-      target: prod
-    environment:
-      - ENV=prod
-    expose:
-      - "${HTTP_PORT}"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    networks:
-      - nfx-news
-    restart: unless-stopped
-
-  notify-api:
-    image: nfx-news-notify-api:prod
-    container_name: NFX-News-Notify-Api
-    build:
-      context: .
-      dockerfile: inputs/notify/api/Dockerfile
-      target: prod
-    environment:
-      - ENV=prod
-    expose:
-      - "${HTTP_PORT}"
     labels:
       traefik.enable: "true"
       traefik.project: "nfx-news"
-      traefik.http.services.news-notify-api.loadbalancer.server.port: "${HTTP_PORT}"
-      traefik.http.routers.news-notify-api.entrypoints: web
-      traefik.http.routers.news-notify-api.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_NOTIFY}`)
-      traefik.http.routers.news-notify-api.service: news-notify-api
-      traefik.http.routers.news-notify-api-secure.entrypoints: websecure
-      traefik.http.routers.news-notify-api-secure.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_NOTIFY}`)
-      traefik.http.routers.news-notify-api-secure.service: news-notify-api
-      traefik.http.routers.news-notify-api-secure.tls: "true"
+      traefik.http.services.news-report-base.loadbalancer.server.port: "${HTTP_PORT}"
+      traefik.http.routers.news-report-base.entrypoints: web
+      traefik.http.routers.news-report-base.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_REPORT}`)
+      traefik.http.routers.news-report-base.service: news-report-base
+      traefik.http.routers.news-report-base-secure.entrypoints: websecure
+      traefik.http.routers.news-report-base-secure.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_REPORT}`)
+      traefik.http.routers.news-report-base-secure.service: news-report-base
+      traefik.http.routers.news-report-base-secure.tls: "true"
+    volumes:
+      - ./static:/app/static
+      - ./data:/app/data
+      - ./assets:/app/assets
+      - ./errors/langs:/app/errors/langs
+    restart: always
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
       - nfx-news
       - nfx-edge
-    restart: unless-stopped
 
-  notify-connection:
-    image: nfx-news-notify-connection:prod
-    container_name: NFX-News-Notify-Connection
+  notify-base:
+    image: nfx-news-notify-base:prod
+    container_name: NFX-News-Notify-Base-Prod
     build:
       context: .
-      dockerfile: inputs/notify/connection/Dockerfile
+      dockerfile: inputs/notify/configuration/Dockerfile.Base
       target: prod
     environment:
       - ENV=prod
@@ -380,81 +167,35 @@ services:
       - "${GRPC_PORT_NOTIFY}"
     ports:
       - "${GRPC_PORT_NOTIFY}:${GRPC_PORT_NOTIFY}"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    networks:
-      - nfx-news
-    restart: unless-stopped
-
-  notify-pipeline:
-    image: nfx-news-notify-pipeline:prod
-    container_name: NFX-News-Notify-Pipeline
-    build:
-      context: .
-      dockerfile: inputs/notify/pipeline/Dockerfile
-      target: prod
-    environment:
-      - ENV=prod
-    expose:
-      - "${HTTP_PORT}"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    networks:
-      - nfx-news
-    restart: unless-stopped
-
-  notify-messaging:
-    image: nfx-news-notify-messaging:prod
-    container_name: NFX-News-Notify-Messaging
-    build:
-      context: .
-      dockerfile: inputs/notify/messaging/Dockerfile
-      target: prod
-    environment:
-      - ENV=prod
-    expose:
-      - "${HTTP_PORT}"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    networks:
-      - nfx-news
-    restart: unless-stopped
-
-  mcp-api:
-    image: nfx-news-mcp-api:prod
-    container_name: NFX-News-Mcp-Api
-    build:
-      context: .
-      dockerfile: inputs/mcp/api/Dockerfile
-      target: prod
-    environment:
-      - ENV=prod
-    expose:
-      - "${HTTP_PORT}"
     labels:
       traefik.enable: "true"
       traefik.project: "nfx-news"
-      traefik.http.services.news-mcp-api.loadbalancer.server.port: "${HTTP_PORT}"
-      traefik.http.routers.news-mcp-api.entrypoints: web
-      traefik.http.routers.news-mcp-api.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_MCP}`)
-      traefik.http.routers.news-mcp-api.service: news-mcp-api
-      traefik.http.routers.news-mcp-api-secure.entrypoints: websecure
-      traefik.http.routers.news-mcp-api-secure.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_MCP}`)
-      traefik.http.routers.news-mcp-api-secure.service: news-mcp-api
-      traefik.http.routers.news-mcp-api-secure.tls: "true"
+      traefik.http.services.news-notify-base.loadbalancer.server.port: "${HTTP_PORT}"
+      traefik.http.routers.news-notify-base.entrypoints: web
+      traefik.http.routers.news-notify-base.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_NOTIFY}`)
+      traefik.http.routers.news-notify-base.service: news-notify-base
+      traefik.http.routers.news-notify-base-secure.entrypoints: websecure
+      traefik.http.routers.news-notify-base-secure.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_NOTIFY}`)
+      traefik.http.routers.news-notify-base-secure.service: news-notify-base
+      traefik.http.routers.news-notify-base-secure.tls: "true"
+    volumes:
+      - ./static:/app/static
+      - ./data:/app/data
+      - ./assets:/app/assets
+      - ./errors/langs:/app/errors/langs
+    restart: always
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
       - nfx-news
       - nfx-edge
-    restart: unless-stopped
 
-  mcp-connection:
-    image: nfx-news-mcp-connection:prod
-    container_name: NFX-News-Mcp-Connection
+  mcp-base:
+    image: nfx-news-mcp-base:prod
+    container_name: NFX-News-Mcp-Base-Prod
     build:
       context: .
-      dockerfile: inputs/mcp/connection/Dockerfile
+      dockerfile: inputs/mcp/configuration/Dockerfile.Base
       target: prod
     environment:
       - ENV=prod
@@ -463,81 +204,35 @@ services:
       - "${GRPC_PORT_MCP}"
     ports:
       - "${GRPC_PORT_MCP}:${GRPC_PORT_MCP}"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    networks:
-      - nfx-news
-    restart: unless-stopped
-
-  mcp-pipeline:
-    image: nfx-news-mcp-pipeline:prod
-    container_name: NFX-News-Mcp-Pipeline
-    build:
-      context: .
-      dockerfile: inputs/mcp/pipeline/Dockerfile
-      target: prod
-    environment:
-      - ENV=prod
-    expose:
-      - "${HTTP_PORT}"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    networks:
-      - nfx-news
-    restart: unless-stopped
-
-  mcp-messaging:
-    image: nfx-news-mcp-messaging:prod
-    container_name: NFX-News-Mcp-Messaging
-    build:
-      context: .
-      dockerfile: inputs/mcp/messaging/Dockerfile
-      target: prod
-    environment:
-      - ENV=prod
-    expose:
-      - "${HTTP_PORT}"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    networks:
-      - nfx-news
-    restart: unless-stopped
-
-  system-api:
-    image: nfx-news-system-api:prod
-    container_name: NFX-News-System-Api
-    build:
-      context: .
-      dockerfile: inputs/system/api/Dockerfile
-      target: prod
-    environment:
-      - ENV=prod
-    expose:
-      - "${HTTP_PORT}"
     labels:
       traefik.enable: "true"
       traefik.project: "nfx-news"
-      traefik.http.services.news-system-api.loadbalancer.server.port: "${HTTP_PORT}"
-      traefik.http.routers.news-system-api.entrypoints: web
-      traefik.http.routers.news-system-api.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_SYSTEM}`)
-      traefik.http.routers.news-system-api.service: news-system-api
-      traefik.http.routers.news-system-api-secure.entrypoints: websecure
-      traefik.http.routers.news-system-api-secure.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_SYSTEM}`)
-      traefik.http.routers.news-system-api-secure.service: news-system-api
-      traefik.http.routers.news-system-api-secure.tls: "true"
+      traefik.http.services.news-mcp-base.loadbalancer.server.port: "${HTTP_PORT}"
+      traefik.http.routers.news-mcp-base.entrypoints: web
+      traefik.http.routers.news-mcp-base.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_MCP}`)
+      traefik.http.routers.news-mcp-base.service: news-mcp-base
+      traefik.http.routers.news-mcp-base-secure.entrypoints: websecure
+      traefik.http.routers.news-mcp-base-secure.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_MCP}`)
+      traefik.http.routers.news-mcp-base-secure.service: news-mcp-base
+      traefik.http.routers.news-mcp-base-secure.tls: "true"
+    volumes:
+      - ./static:/app/static
+      - ./data:/app/data
+      - ./assets:/app/assets
+      - ./errors/langs:/app/errors/langs
+    restart: always
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
       - nfx-news
       - nfx-edge
-    restart: unless-stopped
 
-  system-connection:
-    image: nfx-news-system-connection:prod
-    container_name: NFX-News-System-Connection
+  system-base:
+    image: nfx-news-system-base:prod
+    container_name: NFX-News-System-Base-Prod
     build:
       context: .
-      dockerfile: inputs/system/connection/Dockerfile
+      dockerfile: inputs/system/configuration/Dockerfile.Base
       target: prod
     environment:
       - ENV=prod
@@ -546,54 +241,38 @@ services:
       - "${GRPC_PORT_SYSTEM}"
     ports:
       - "${GRPC_PORT_SYSTEM}:${GRPC_PORT_SYSTEM}"
+    labels:
+      traefik.enable: "true"
+      traefik.project: "nfx-news"
+      traefik.http.services.news-system-base.loadbalancer.server.port: "${HTTP_PORT}"
+      traefik.http.routers.news-system-base.entrypoints: web
+      traefik.http.routers.news-system-base.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_SYSTEM}`)
+      traefik.http.routers.news-system-base.service: news-system-base
+      traefik.http.routers.news-system-base-secure.entrypoints: websecure
+      traefik.http.routers.news-system-base-secure.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_SYSTEM}`)
+      traefik.http.routers.news-system-base-secure.service: news-system-base
+      traefik.http.routers.news-system-base-secure.tls: "true"
+    volumes:
+      - ./static:/app/static
+      - ./data:/app/data
+      - ./assets:/app/assets
+      - ./errors/langs:/app/errors/langs
+    restart: always
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
       - nfx-news
-    restart: unless-stopped
-
-  system-pipeline:
-    image: nfx-news-system-pipeline:prod
-    container_name: NFX-News-System-Pipeline
-    build:
-      context: .
-      dockerfile: inputs/system/pipeline/Dockerfile
-      target: prod
-    environment:
-      - ENV=prod
-    expose:
-      - "${HTTP_PORT}"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    networks:
-      - nfx-news
-    restart: unless-stopped
-
-  system-messaging:
-    image: nfx-news-system-messaging:prod
-    container_name: NFX-News-System-Messaging
-    build:
-      context: .
-      dockerfile: inputs/system/messaging/Dockerfile
-      target: prod
-    environment:
-      - ENV=prod
-    expose:
-      - "${HTTP_PORT}"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    networks:
-      - nfx-news
-    restart: unless-stopped
+      - nfx-edge
 
   console:
     image: nfx-news-console:prod
-    container_name: NFX-News-Console
+    container_name: NFX-News-Console-Prod
     build:
       context: ./console
       dockerfile: Dockerfile
       additional_contexts:
         nfx-ui: ../NFX-UI
+      target: prod
     ports:
       - "${CONSOLE_EXTERNAL_PORT}:${CONSOLE_PORT}"
     labels:
@@ -609,10 +288,10 @@ services:
       traefik.http.routers.news-console-secure.service: news-console
       traefik.http.routers.news-console-secure.tls: "true"
       traefik.http.routers.news-console-secure.priority: "1"
+    restart: always
     networks:
       - nfx-news
       - nfx-edge
-    restart: unless-stopped
 
 networks:
   nfx-news:

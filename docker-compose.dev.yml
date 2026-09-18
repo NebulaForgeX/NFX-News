@@ -10,7 +10,7 @@ services:
     container_name: NFX-News-Source-Base-Dev
     build:
       context: .
-      dockerfile: inputs/source/base/Dockerfile
+      dockerfile: inputs/source/configuration/Dockerfile.Base
       target: dev
     environment:
       - ENV=dev
@@ -47,7 +47,7 @@ services:
     container_name: NFX-News-News-Base-Dev
     build:
       context: .
-      dockerfile: inputs/news/base/Dockerfile
+      dockerfile: inputs/news/configuration/Dockerfile.Base
       target: dev
     environment:
       - ENV=dev
@@ -84,7 +84,7 @@ services:
     container_name: NFX-News-Crawl-Base-Dev
     build:
       context: .
-      dockerfile: inputs/crawl/base/Dockerfile
+      dockerfile: inputs/crawl/configuration/Dockerfile.Base
       target: dev
     environment:
       - ENV=dev
@@ -121,7 +121,7 @@ services:
     container_name: NFX-News-Report-Base-Dev
     build:
       context: .
-      dockerfile: inputs/report/base/Dockerfile
+      dockerfile: inputs/report/configuration/Dockerfile.Base
       target: dev
     environment:
       - ENV=dev
@@ -158,7 +158,7 @@ services:
     container_name: NFX-News-Notify-Base-Dev
     build:
       context: .
-      dockerfile: inputs/notify/base/Dockerfile
+      dockerfile: inputs/notify/configuration/Dockerfile.Base
       target: dev
     environment:
       - ENV=dev
@@ -195,7 +195,7 @@ services:
     container_name: NFX-News-Mcp-Base-Dev
     build:
       context: .
-      dockerfile: inputs/mcp/base/Dockerfile
+      dockerfile: inputs/mcp/configuration/Dockerfile.Base
       target: dev
     environment:
       - ENV=dev
@@ -232,7 +232,7 @@ services:
     container_name: NFX-News-System-Base-Dev
     build:
       context: .
-      dockerfile: inputs/system/base/Dockerfile
+      dockerfile: inputs/system/configuration/Dockerfile.Base
       target: dev
     environment:
       - ENV=dev
