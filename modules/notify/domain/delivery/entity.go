@@ -7,12 +7,13 @@ import (
 
 type Delivery struct{ state State }
 type State struct {
-	ID, ChannelID uuid.UUID
-	ReportID      *uuid.UUID
-	Status        string
-	ErrorMessage  *string
-	CreatedAt     time.Time
-	SentAt        *time.Time
+	ID, ChannelID        uuid.UUID
+	AccountID, ProfileID *string
+	ReportID             *uuid.UUID
+	Status               string
+	ErrorMessage         *string
+	CreatedAt            time.Time
+	SentAt               *time.Time
 }
 
 func NewFromState(st State) *Delivery { return &Delivery{state: st} }

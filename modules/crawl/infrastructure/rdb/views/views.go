@@ -7,6 +7,8 @@ import (
 
 type SessionsActiveView struct {
 	ID           uuid.UUID  `gorm:"column:id"`
+	AccountID    *string    `gorm:"column:account_id"`
+	ProfileID    *string    `gorm:"column:profile_id"`
 	SourceID     *string    `gorm:"column:source_id"`
 	Status       string     `gorm:"column:status"`
 	ItemCount    int        `gorm:"column:item_count"`

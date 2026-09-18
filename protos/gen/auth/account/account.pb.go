@@ -2469,7 +2469,7 @@ const file_auth_account_proto_rawDesc = "" +
 	"*InvalidateFullInformationWithForgerProfile\x12:.account.InvalidateFullInformationWithForgerProfileRequest\x1a;.account.InvalidateFullInformationWithForgerProfileResponse\x12\xae\x01\n" +
 	"-InvalidateFullInformationWithAuthorityProfile\x12=.account.InvalidateFullInformationWithAuthorityProfileRequest\x1a>.account.InvalidateFullInformationWithAuthorityProfileResponse\x12]\n" +
 	"\x12EnsureOwnedProfile\x12\".account.EnsureOwnedProfileRequest\x1a#.account.EnsureOwnedProfileResponse\x12`\n" +
-	"\x13ListProfilesInTable\x12#.account.ListProfilesInTableRequest\x1a$.account.ListProfilesInTableResponseB/Z-nfxnews/protos/gen/auth/account;accountpbb\x06proto3"
+	"\x13ListProfilesInTable\x12#.account.ListProfilesInTableRequest\x1a$.account.ListProfilesInTableResponseB+Z)nfxnews/protos/gen/auth/account;accountpbb\x06proto3"
 
 var (
 	file_auth_account_proto_rawDescOnce sync.Once

@@ -1,6 +1,6 @@
 CREATE OR REPLACE VIEW "notify"."DeliveriesActiveView" AS
 SELECT
-  "id", "channel_id", "report_id", "status", "error_message",
+  "id", "account_id", "profile_id", "channel_id", "report_id", "status", "error_message",
   "created_at", "sent_at"
 FROM "notify"."deliveries";
 

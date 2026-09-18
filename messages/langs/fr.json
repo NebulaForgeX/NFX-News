@@ -1,0 +1,22 @@
+{
+  "NOTIFY_REPORT_PUSH": {
+    "title": "Rapport d'actualités",
+    "body": "Un nouveau rapport filtré est disponible"
+  },
+  "REPORT_CURRENT_READY": {
+    "title": "Rapport actuel prêt",
+    "body": "Votre rapport d'actualités actuel est prêt"
+  },
+  "REPORT_DAILY_READY": {
+    "title": "Rapport quotidien prêt",
+    "body": "Votre rapport d'actualités quotidien est prêt"
+  },
+  "REPORT_INCREMENTAL_READY": {
+    "title": "Rapport incrémental prêt",
+    "body": "Les nouveaux titres depuis le dernier crawl sont prêts"
+  },
+  "SYSTEM_INITIALIZED": {
+    "title": "Système initialisé",
+    "body": "NFX News est prêt"
+  }
+}

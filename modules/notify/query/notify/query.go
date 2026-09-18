@@ -30,8 +30,8 @@ type Query struct {
 	Deliveries Deliveries
 }
 type Channels interface {
-	All(ctx context.Context) ([]ChannelVO, error)
+	All(ctx context.Context, accountID string) ([]ChannelVO, error)
 }
 type Deliveries interface {
-	Recent(ctx context.Context, limit int) ([]DeliveryVO, error)
+	Recent(ctx context.Context, accountID string, limit int) ([]DeliveryVO, error)
 }

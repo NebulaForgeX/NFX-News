@@ -7,19 +7,19 @@ import (
 	"nfxnews/modules/notify/infrastructure/rdb/models"
 )
 
-type h struct{ db *gorm.DB }
+type handler struct{ db *gorm.DB }
 
 func NewRepo(db *gorm.DB) *delivery.Repo {
-	x := &h{db: db}
-	return &delivery.Repo{Create: x, Update: x}
+	impl := &handler{db: db}
+	return &delivery.Repo{Create: impl, Update: impl}
 }
 func toM(d *delivery.Delivery) *models.Delivery {
 	st := d.State()
-	return &models.Delivery{ID: st.ID, ChannelID: st.ChannelID, ReportID: st.ReportID, Status: st.Status, ErrorMessage: st.ErrorMessage, CreatedAt: st.CreatedAt, SentAt: st.SentAt}
+	return &models.Delivery{ID: st.ID, AccountID: st.AccountID, ProfileID: st.ProfileID, ChannelID: st.ChannelID, ReportID: st.ReportID, Status: st.Status, ErrorMessage: st.ErrorMessage, CreatedAt: st.CreatedAt, SentAt: st.SentAt}
 }
-func (x *h) New(ctx context.Context, d *delivery.Delivery) error {
-	return x.db.WithContext(ctx).Create(toM(d)).Error
+func (handler *handler) New(ctx context.Context, d *delivery.Delivery) error {
+	return handler.db.WithContext(ctx).Create(toM(d)).Error
 }
-func (x *h) Generic(ctx context.Context, d *delivery.Delivery) error {
-	return x.db.WithContext(ctx).Save(toM(d)).Error
+func (handler *handler) Generic(ctx context.Context, d *delivery.Delivery) error {
+	return handler.db.WithContext(ctx).Save(toM(d)).Error
 }

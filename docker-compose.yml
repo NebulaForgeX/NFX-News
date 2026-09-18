@@ -1,35 +1,10 @@
 name: nfx-news
 
+# HTTP 入口只有 NFX-Edge（先启动 Edge：共享网络 nfx-edge + Traefik）。
+# 本栈不跑 reverse-proxy。traefik.project 由 Edge LabelRegex 发现。
+# Must start NFX-Edge first (creates nfx-edge). This stack has no reverse-proxy.
+
 services:
-  reverse-proxy:
-    image: traefik:latest
-    container_name: NFX-News-Reverse-Proxy
-    command:
-      - --api.insecure=true
-      - --providers.docker
-      - --providers.docker.exposedByDefault=false
-      - --providers.docker.constraints=Label(`traefik.project`, `nfx-news`)
-      - --entrypoints.web.address=:${TRAEFIK_HTTP_INTERNAL_PORT}
-      - --entrypoints.websecure.address=:${TRAEFIK_HTTPS_INTERNAL_PORT}
-      - --entrypoints.traefik.address=:${TRAEFIK_DASHBOARD_INTERNAL_PORT}
-    ports:
-      - "${TRAEFIK_HTTP_PORT}:${TRAEFIK_HTTP_INTERNAL_PORT}"
-      - "${TRAEFIK_HTTPS_PORT}:${TRAEFIK_HTTPS_INTERNAL_PORT}"
-      - "${TRAEFIK_DASHBOARD_PORT}:${TRAEFIK_DASHBOARD_INTERNAL_PORT}"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ${TRAEFIK_DYNAMIC_DIR}:/etc/traefik/dynamic:ro
-      - ${CERTS_DIR}:/certs:ro
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    networks:
-      - nfx-news
-    restart: unless-stopped
-
-
-
-
-
   source-api:
     image: nfx-news-source-api:prod
     container_name: NFX-News-Source-Api
@@ -44,17 +19,20 @@ services:
     labels:
       traefik.enable: "true"
       traefik.project: "nfx-news"
-      traefik.http.routers.source-api.entrypoints: web
-      traefik.http.routers.source-api.rule: PathPrefix(`${API_PREFIX_PATH_SOURCE}`)
-      traefik.http.services.source-api.loadbalancer.server.port: "${HTTP_PORT}"
+      traefik.http.services.news-source-api.loadbalancer.server.port: "${HTTP_PORT}"
+      traefik.http.routers.news-source-api.entrypoints: web
+      traefik.http.routers.news-source-api.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_SOURCE}`)
+      traefik.http.routers.news-source-api.service: news-source-api
+      traefik.http.routers.news-source-api-secure.entrypoints: websecure
+      traefik.http.routers.news-source-api-secure.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_SOURCE}`)
+      traefik.http.routers.news-source-api-secure.service: news-source-api
+      traefik.http.routers.news-source-api-secure.tls: "true"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
       - nfx-news
+      - nfx-edge
     restart: unless-stopped
-    depends_on:
-      reverse-proxy:
-        condition: service_started
 
   source-connection:
     image: nfx-news-source-connection:prod
@@ -75,9 +53,6 @@ services:
     networks:
       - nfx-news
     restart: unless-stopped
-    depends_on:
-      reverse-proxy:
-        condition: service_started
 
   source-pipeline:
     image: nfx-news-source-pipeline:prod
@@ -95,9 +70,6 @@ services:
     networks:
       - nfx-news
     restart: unless-stopped
-    depends_on:
-      reverse-proxy:
-        condition: service_started
 
   source-messaging:
     image: nfx-news-source-messaging:prod
@@ -115,9 +87,6 @@ services:
     networks:
       - nfx-news
     restart: unless-stopped
-    depends_on:
-      reverse-proxy:
-        condition: service_started
 
   news-api:
     image: nfx-news-news-api:prod
@@ -133,17 +102,20 @@ services:
     labels:
       traefik.enable: "true"
       traefik.project: "nfx-news"
-      traefik.http.routers.news-api.entrypoints: web
-      traefik.http.routers.news-api.rule: PathPrefix(`${API_PREFIX_PATH_NEWS}`)
       traefik.http.services.news-api.loadbalancer.server.port: "${HTTP_PORT}"
+      traefik.http.routers.news-api.entrypoints: web
+      traefik.http.routers.news-api.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_NEWS}`)
+      traefik.http.routers.news-api.service: news-api
+      traefik.http.routers.news-api-secure.entrypoints: websecure
+      traefik.http.routers.news-api-secure.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_NEWS}`)
+      traefik.http.routers.news-api-secure.service: news-api
+      traefik.http.routers.news-api-secure.tls: "true"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
       - nfx-news
+      - nfx-edge
     restart: unless-stopped
-    depends_on:
-      reverse-proxy:
-        condition: service_started
 
   news-connection:
     image: nfx-news-news-connection:prod
@@ -164,9 +136,6 @@ services:
     networks:
       - nfx-news
     restart: unless-stopped
-    depends_on:
-      reverse-proxy:
-        condition: service_started
 
   news-pipeline:
     image: nfx-news-news-pipeline:prod
@@ -184,9 +153,6 @@ services:
     networks:
       - nfx-news
     restart: unless-stopped
-    depends_on:
-      reverse-proxy:
-        condition: service_started
 
   news-messaging:
     image: nfx-news-news-messaging:prod
@@ -204,9 +170,6 @@ services:
     networks:
       - nfx-news
     restart: unless-stopped
-    depends_on:
-      reverse-proxy:
-        condition: service_started
 
   crawl-api:
     image: nfx-news-crawl-api:prod
@@ -222,17 +185,20 @@ services:
     labels:
       traefik.enable: "true"
       traefik.project: "nfx-news"
-      traefik.http.routers.crawl-api.entrypoints: web
-      traefik.http.routers.crawl-api.rule: PathPrefix(`${API_PREFIX_PATH_CRAWL}`)
-      traefik.http.services.crawl-api.loadbalancer.server.port: "${HTTP_PORT}"
+      traefik.http.services.news-crawl-api.loadbalancer.server.port: "${HTTP_PORT}"
+      traefik.http.routers.news-crawl-api.entrypoints: web
+      traefik.http.routers.news-crawl-api.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_CRAWL}`)
+      traefik.http.routers.news-crawl-api.service: news-crawl-api
+      traefik.http.routers.news-crawl-api-secure.entrypoints: websecure
+      traefik.http.routers.news-crawl-api-secure.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_CRAWL}`)
+      traefik.http.routers.news-crawl-api-secure.service: news-crawl-api
+      traefik.http.routers.news-crawl-api-secure.tls: "true"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
       - nfx-news
+      - nfx-edge
     restart: unless-stopped
-    depends_on:
-      reverse-proxy:
-        condition: service_started
 
   crawl-connection:
     image: nfx-news-crawl-connection:prod
@@ -253,9 +219,6 @@ services:
     networks:
       - nfx-news
     restart: unless-stopped
-    depends_on:
-      reverse-proxy:
-        condition: service_started
 
   crawl-pipeline:
     image: nfx-news-crawl-pipeline:prod
@@ -273,9 +236,6 @@ services:
     networks:
       - nfx-news
     restart: unless-stopped
-    depends_on:
-      reverse-proxy:
-        condition: service_started
 
   crawl-messaging:
     image: nfx-news-crawl-messaging:prod
@@ -293,9 +253,6 @@ services:
     networks:
       - nfx-news
     restart: unless-stopped
-    depends_on:
-      reverse-proxy:
-        condition: service_started
 
   report-api:
     image: nfx-news-report-api:prod
@@ -311,17 +268,20 @@ services:
     labels:
       traefik.enable: "true"
       traefik.project: "nfx-news"
-      traefik.http.routers.report-api.entrypoints: web
-      traefik.http.routers.report-api.rule: PathPrefix(`${API_PREFIX_PATH_REPORT}`)
-      traefik.http.services.report-api.loadbalancer.server.port: "${HTTP_PORT}"
+      traefik.http.services.news-report-api.loadbalancer.server.port: "${HTTP_PORT}"
+      traefik.http.routers.news-report-api.entrypoints: web
+      traefik.http.routers.news-report-api.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_REPORT}`)
+      traefik.http.routers.news-report-api.service: news-report-api
+      traefik.http.routers.news-report-api-secure.entrypoints: websecure
+      traefik.http.routers.news-report-api-secure.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_REPORT}`)
+      traefik.http.routers.news-report-api-secure.service: news-report-api
+      traefik.http.routers.news-report-api-secure.tls: "true"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
       - nfx-news
+      - nfx-edge
     restart: unless-stopped
-    depends_on:
-      reverse-proxy:
-        condition: service_started
 
   report-connection:
     image: nfx-news-report-connection:prod
@@ -342,9 +302,6 @@ services:
     networks:
       - nfx-news
     restart: unless-stopped
-    depends_on:
-      reverse-proxy:
-        condition: service_started
 
   report-pipeline:
     image: nfx-news-report-pipeline:prod
@@ -362,9 +319,6 @@ services:
     networks:
       - nfx-news
     restart: unless-stopped
-    depends_on:
-      reverse-proxy:
-        condition: service_started
 
   report-messaging:
     image: nfx-news-report-messaging:prod
@@ -382,9 +336,6 @@ services:
     networks:
       - nfx-news
     restart: unless-stopped
-    depends_on:
-      reverse-proxy:
-        condition: service_started
 
   notify-api:
     image: nfx-news-notify-api:prod
@@ -400,17 +351,20 @@ services:
     labels:
       traefik.enable: "true"
       traefik.project: "nfx-news"
-      traefik.http.routers.notify-api.entrypoints: web
-      traefik.http.routers.notify-api.rule: PathPrefix(`${API_PREFIX_PATH_NOTIFY}`)
-      traefik.http.services.notify-api.loadbalancer.server.port: "${HTTP_PORT}"
+      traefik.http.services.news-notify-api.loadbalancer.server.port: "${HTTP_PORT}"
+      traefik.http.routers.news-notify-api.entrypoints: web
+      traefik.http.routers.news-notify-api.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_NOTIFY}`)
+      traefik.http.routers.news-notify-api.service: news-notify-api
+      traefik.http.routers.news-notify-api-secure.entrypoints: websecure
+      traefik.http.routers.news-notify-api-secure.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_NOTIFY}`)
+      traefik.http.routers.news-notify-api-secure.service: news-notify-api
+      traefik.http.routers.news-notify-api-secure.tls: "true"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
       - nfx-news
+      - nfx-edge
     restart: unless-stopped
-    depends_on:
-      reverse-proxy:
-        condition: service_started
 
   notify-connection:
     image: nfx-news-notify-connection:prod
@@ -431,9 +385,6 @@ services:
     networks:
       - nfx-news
     restart: unless-stopped
-    depends_on:
-      reverse-proxy:
-        condition: service_started
 
   notify-pipeline:
     image: nfx-news-notify-pipeline:prod
@@ -451,9 +402,6 @@ services:
     networks:
       - nfx-news
     restart: unless-stopped
-    depends_on:
-      reverse-proxy:
-        condition: service_started
 
   notify-messaging:
     image: nfx-news-notify-messaging:prod
@@ -471,9 +419,6 @@ services:
     networks:
       - nfx-news
     restart: unless-stopped
-    depends_on:
-      reverse-proxy:
-        condition: service_started
 
   mcp-api:
     image: nfx-news-mcp-api:prod
@@ -489,17 +434,20 @@ services:
     labels:
       traefik.enable: "true"
       traefik.project: "nfx-news"
-      traefik.http.routers.mcp-api.entrypoints: web
-      traefik.http.routers.mcp-api.rule: PathPrefix(`${API_PREFIX_PATH_MCP}`)
-      traefik.http.services.mcp-api.loadbalancer.server.port: "${HTTP_PORT}"
+      traefik.http.services.news-mcp-api.loadbalancer.server.port: "${HTTP_PORT}"
+      traefik.http.routers.news-mcp-api.entrypoints: web
+      traefik.http.routers.news-mcp-api.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_MCP}`)
+      traefik.http.routers.news-mcp-api.service: news-mcp-api
+      traefik.http.routers.news-mcp-api-secure.entrypoints: websecure
+      traefik.http.routers.news-mcp-api-secure.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_MCP}`)
+      traefik.http.routers.news-mcp-api-secure.service: news-mcp-api
+      traefik.http.routers.news-mcp-api-secure.tls: "true"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
       - nfx-news
+      - nfx-edge
     restart: unless-stopped
-    depends_on:
-      reverse-proxy:
-        condition: service_started
 
   mcp-connection:
     image: nfx-news-mcp-connection:prod
@@ -520,9 +468,6 @@ services:
     networks:
       - nfx-news
     restart: unless-stopped
-    depends_on:
-      reverse-proxy:
-        condition: service_started
 
   mcp-pipeline:
     image: nfx-news-mcp-pipeline:prod
@@ -540,9 +485,6 @@ services:
     networks:
       - nfx-news
     restart: unless-stopped
-    depends_on:
-      reverse-proxy:
-        condition: service_started
 
   mcp-messaging:
     image: nfx-news-mcp-messaging:prod
@@ -560,9 +502,6 @@ services:
     networks:
       - nfx-news
     restart: unless-stopped
-    depends_on:
-      reverse-proxy:
-        condition: service_started
 
   system-api:
     image: nfx-news-system-api:prod
@@ -578,17 +517,20 @@ services:
     labels:
       traefik.enable: "true"
       traefik.project: "nfx-news"
-      traefik.http.routers.system-api.entrypoints: web
-      traefik.http.routers.system-api.rule: PathPrefix(`${API_PREFIX_PATH_SYSTEM}`)
-      traefik.http.services.system-api.loadbalancer.server.port: "${HTTP_PORT}"
+      traefik.http.services.news-system-api.loadbalancer.server.port: "${HTTP_PORT}"
+      traefik.http.routers.news-system-api.entrypoints: web
+      traefik.http.routers.news-system-api.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_SYSTEM}`)
+      traefik.http.routers.news-system-api.service: news-system-api
+      traefik.http.routers.news-system-api-secure.entrypoints: websecure
+      traefik.http.routers.news-system-api-secure.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_SYSTEM}`)
+      traefik.http.routers.news-system-api-secure.service: news-system-api
+      traefik.http.routers.news-system-api-secure.tls: "true"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
       - nfx-news
+      - nfx-edge
     restart: unless-stopped
-    depends_on:
-      reverse-proxy:
-        condition: service_started
 
   system-connection:
     image: nfx-news-system-connection:prod
@@ -609,9 +551,6 @@ services:
     networks:
       - nfx-news
     restart: unless-stopped
-    depends_on:
-      reverse-proxy:
-        condition: service_started
 
   system-pipeline:
     image: nfx-news-system-pipeline:prod
@@ -629,9 +568,6 @@ services:
     networks:
       - nfx-news
     restart: unless-stopped
-    depends_on:
-      reverse-proxy:
-        condition: service_started
 
   system-messaging:
     image: nfx-news-system-messaging:prod
@@ -649,9 +585,6 @@ services:
     networks:
       - nfx-news
     restart: unless-stopped
-    depends_on:
-      reverse-proxy:
-        condition: service_started
 
   console:
     image: nfx-news-console:prod
@@ -666,15 +599,25 @@ services:
     labels:
       traefik.enable: "true"
       traefik.project: "nfx-news"
-      traefik.http.routers.console.entrypoints: web
-      traefik.http.routers.console.rule: PathPrefix(`/`)
-      traefik.http.routers.console.priority: "1"
-      traefik.http.services.console.loadbalancer.server.port: "${CONSOLE_PORT}"
+      traefik.http.services.news-console.loadbalancer.server.port: "${CONSOLE_PORT}"
+      traefik.http.routers.news-console.entrypoints: web
+      traefik.http.routers.news-console.rule: Host(`${TRAEFIK_CONSOLE_HOST}`)
+      traefik.http.routers.news-console.service: news-console
+      traefik.http.routers.news-console.priority: "1"
+      traefik.http.routers.news-console-secure.entrypoints: websecure
+      traefik.http.routers.news-console-secure.rule: Host(`${TRAEFIK_CONSOLE_HOST}`)
+      traefik.http.routers.news-console-secure.service: news-console
+      traefik.http.routers.news-console-secure.tls: "true"
+      traefik.http.routers.news-console-secure.priority: "1"
     networks:
       - nfx-news
+      - nfx-edge
     restart: unless-stopped
 
 networks:
   nfx-news:
     name: nfx-news
     driver: bridge
+  nfx-edge:
+    external: true
+    name: nfx-edge

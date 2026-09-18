@@ -1,35 +1,70 @@
 import { memo, useState } from "react";
-import { Button, Card, Flex, Switch, Text, TextField } from "@radix-ui/themes";
-import { Bell, Inbox } from "lucide-react";
+import { Button, Card, Flex, Select, Switch, Text, TextField } from "@radix-ui/themes";
+import { Bell, Inbox, Server } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { PageFrame } from "nfx-ui/layouts";
 import { CardHeader, EmptyState, PageHeader, ThemeSettings } from "nfx-ui/components";
 
-import { useChannels, useDeliveries, useUpsertChannel } from "@/hooks/news";
+import { NOTIFY_KINDS, notifyChannelConfig, notifyConfigPlaceholder, type NotifyKind } from "@/enums/newsEnum";
+import { useChannels, useDeliveries, useInitializeSystem, useNotifyKinds, useSystemState, useUpsertChannel } from "@/hooks/news";
 
 const SettingsPage = memo(() => {
   const { t } = useTranslation("SettingsPage");
   const { data: channels } = useChannels();
   const { data: deliveries } = useDeliveries();
-  const [kind, setKind] = useState("feishu");
+  const { data: kinds } = useNotifyKinds();
+  const system = useSystemState();
+  const init = useInitializeSystem();
+  const [kind, setKind] = useState<NotifyKind>("feishu");
   const [name, setName] = useState("");
+  const [webhook, setWebhook] = useState("");
   const [enabled, setEnabled] = useState(true);
   const save = useUpsertChannel();
+  const kindOptions = (kinds && kinds.length > 0 ? kinds : [...NOTIFY_KINDS]) as NotifyKind[];
 
   return (
     <PageFrame>
       <PageHeader icon={Bell} title={t("title")} description={t("webhookHint")} />
       <Flex direction="column" gap="4">
         <Card>
+          <CardHeader icon={<Server size={18} />} title={t("system")} />
+          <Flex gap="2" align="center" wrap="wrap">
+            <Text size="2">{system.data?.initialized ? t("initialized") : t("notInitialized")}</Text>
+            <Button variant="soft" onClick={() => init.mutate()} disabled={init.isPending}>
+              {t("initialize")}
+            </Button>
+          </Flex>
+        </Card>
+        <Card>
           <CardHeader icon={<Bell size={18} />} title={t("channels")} />
           <Flex gap="2" wrap="wrap">
-            <TextField.Root value={kind} onChange={(e) => setKind(e.target.value)} placeholder="feishu / dingtalk / telegram" />
+            <Select.Root value={kind} onValueChange={(v) => setKind(v as NotifyKind)}>
+              <Select.Trigger />
+              <Select.Content>
+                {kindOptions.map((k) => (
+                  <Select.Item key={k} value={k}>
+                    {k}
+                  </Select.Item>
+                ))}
+              </Select.Content>
+            </Select.Root>
             <TextField.Root value={name} onChange={(e) => setName(e.target.value)} placeholder={t("name")} />
+            <TextField.Root value={webhook} onChange={(e) => setWebhook(e.target.value)} placeholder={notifyConfigPlaceholder(kind)} />
             <Flex align="center" gap="2">
               <Switch checked={enabled} onCheckedChange={setEnabled} />
               <Text size="2">{t("enabled")}</Text>
             </Flex>
-            <Button onClick={() => save.mutate({ kind, name, enabled, config: {} })} disabled={!name}>
+            <Button
+              onClick={() =>
+                save.mutate({
+                  kind,
+                  name,
+                  enabled,
+                  config: notifyChannelConfig(kind, webhook),
+                })
+              }
+              disabled={!name}
+            >
               {t("save")}
             </Button>
           </Flex>
@@ -53,7 +88,7 @@ const SettingsPage = memo(() => {
             <Flex direction="column" gap="2">
               {(deliveries ?? []).map((row) => (
                 <Text key={row.id} size="2">
-                  {row.status} · {row.channel_id} · {row.created_at}
+                  {row.status} · {row.channelId} · {row.createdAt}
                 </Text>
               ))}
             </Flex>

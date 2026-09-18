@@ -1,0 +1,22 @@
+{
+  "NOTIFY_REPORT_PUSH": {
+    "title": "News report",
+    "body": "A new filtered news report is available"
+  },
+  "REPORT_CURRENT_READY": {
+    "title": "Current report ready",
+    "body": "Your current hotspot report is ready"
+  },
+  "REPORT_DAILY_READY": {
+    "title": "Daily report ready",
+    "body": "Your daily news report is ready"
+  },
+  "REPORT_INCREMENTAL_READY": {
+    "title": "Incremental report ready",
+    "body": "New titles since the last crawl are ready"
+  },
+  "SYSTEM_INITIALIZED": {
+    "title": "System initialized",
+    "body": "NFX News is ready"
+  }
+}

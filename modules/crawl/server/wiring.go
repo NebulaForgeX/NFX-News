@@ -6,6 +6,7 @@ import (
 	"time"
 
 	authconn "nfxnews/connections/auth"
+	reportconn "nfxnews/connections/report"
 	sourceconn "nfxnews/connections/source"
 	crawlapp "nfxnews/modules/crawl/application/crawl"
 	resourceApp "nfxnews/modules/crawl/application/resource"
@@ -22,6 +23,7 @@ import (
 	"nfxnews/pkgs/security/token/servertoken"
 	"nfxnews/pkgs/tokenx"
 	"nfxnews/pkgs/transaction"
+	reportpb "nfxnews/protos/gen/report"
 	sourcepb "nfxnews/protos/gen/source"
 
 	"google.golang.org/grpc"
@@ -92,15 +94,21 @@ func NewDeps(ctx context.Context, cfg *config.Config) (*Dependencies, error) {
 		identityAuth: identityClient,
 	}
 	var sourceClient sourcepb.SourceServiceClient
+	var reportClient reportpb.ReportServiceClient
 	if conn, err := grpcx.Dial(cfg.GRPCClient.SourceAddr, "crawl", cfg.Token); err == nil {
 		d.conns = append(d.conns, conn)
 		sourceClient = sourceconn.New(conn)
+	}
+	if conn, err := grpcx.Dial(cfg.GRPCClient.ReportAddr, "crawl", cfg.Token); err == nil {
+		d.conns = append(d.conns, conn)
+		reportClient = reportconn.New(conn)
 	}
 	d.appSvc = crawlapp.NewService(
 		transaction.NewGormTxManager(postgres.DB()),
 		repofactory.NewTxRepoFactory(postgres.DB()),
 		sessionQuery.NewQuery(postgres.DB()),
 		sourceClient,
+		reportClient,
 	)
 	_ = provider
 	return d, nil

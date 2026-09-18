@@ -3,6 +3,8 @@
   "subtitle": "Lancer un crawl pour une source ou toutes.",
   "sourceId": "ID source (optionnel)",
   "trigger": "Lancer",
+  "triggerAll": "Tout lancer",
+  "detail": "Détail",
   "sessions": "Sessions récentes",
   "emptySessions": "Aucune session",
   "emptySessionsHint": "Lancez un crawl pour voir le statut."

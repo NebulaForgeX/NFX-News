@@ -31,9 +31,7 @@ func (h *MCPHandler) RunTool(c fiber.Ctx) error {
 }
 
 func (h *MCPHandler) Tools(c fiber.Ctx) error {
-	return fiberx.OK(c, "ok", httpx.SuccessOptions{Data: []string{
-		"get_latest_news", "search_news", "list_sources", "generate_report", "list_keywords",
-	}})
+	return fiberx.OK(c, "ok", httpx.SuccessOptions{Data: h.svc.Tools()})
 }
 
 func (h *MCPHandler) RunJSON(c fiber.Ctx) error {

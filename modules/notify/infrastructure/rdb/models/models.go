@@ -7,6 +7,8 @@ import (
 
 type Channel struct {
 	ID                   uuid.UUID `gorm:"type:uuid;primaryKey"`
+	AccountID            *string   `gorm:"column:account_id;type:uuid"`
+	ProfileID            *string   `gorm:"column:profile_id;type:uuid"`
 	Kind, Name           string
 	Enabled              bool
 	Config               []byte `gorm:"type:jsonb"`
@@ -17,6 +19,8 @@ func (Channel) TableName() string { return "notify.channels" }
 
 type Delivery struct {
 	ID           uuid.UUID `gorm:"type:uuid;primaryKey"`
+	AccountID    *string   `gorm:"column:account_id;type:uuid"`
+	ProfileID    *string   `gorm:"column:profile_id;type:uuid"`
 	ChannelID    uuid.UUID
 	ReportID     *uuid.UUID
 	Status       string

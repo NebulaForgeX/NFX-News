@@ -15,7 +15,7 @@ type ReportHandler struct {
 func NewReportHandler(svc *reportapp.Service) *ReportHandler { return &ReportHandler{svc: svc} }
 
 func (h *ReportHandler) GenerateReport(ctx context.Context, req *reportpb.GenerateReportRequest) (*reportpb.GenerateReportResponse, error) {
-	snap, err := h.svc.Generate(ctx, req.GetMode())
+	snap, err := h.svc.Generate(ctx, "", "", req.GetMode())
 	if err != nil {
 		return nil, err
 	}
@@ -23,7 +23,7 @@ func (h *ReportHandler) GenerateReport(ctx context.Context, req *reportpb.Genera
 }
 
 func (h *ReportHandler) GetReport(ctx context.Context, req *reportpb.GetReportRequest) (*reportpb.GetReportResponse, error) {
-	snap, err := h.svc.Get(ctx, req.GetReportId())
+	snap, err := h.svc.Get(ctx, "", req.GetReportId())
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +33,7 @@ func (h *ReportHandler) GetReport(ctx context.Context, req *reportpb.GetReportRe
 }
 
 func (h *ReportHandler) ListKeywords(ctx context.Context, req *reportpb.ListKeywordsRequest) (*reportpb.ListKeywordsResponse, error) {
-	rows, err := h.svc.ListKeywords(ctx)
+	rows, err := h.svc.ListKeywords(ctx, "")
 	if err != nil {
 		return nil, err
 	}

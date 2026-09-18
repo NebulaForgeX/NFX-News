@@ -740,7 +740,7 @@ const file_auth_forger_profile_proto_rawDesc = "" +
 	"\x1aBatchGetPublicProfileCards\x121.forger_profile.BatchGetPublicProfileCardsRequest\x1a2.forger_profile.BatchGetPublicProfileCardsResponse\x12_\n" +
 	"\x0eGetForgerRoles\x12%.forger_profile.GetForgerRolesRequest\x1a&.forger_profile.GetForgerRolesResponse\x12\\\n" +
 	"\rHasForgerRole\x12$.forger_profile.HasForgerRoleRequest\x1a%.forger_profile.HasForgerRoleResponse\x12W\n" +
-	"\bIsForger\x12$.forger_profile.HasForgerRoleRequest\x1a%.forger_profile.HasForgerRoleResponseB<Z:nfxnews/protos/gen/auth/forger_profile;forgerprofilepbb\x06proto3"
+	"\bIsForger\x12$.forger_profile.HasForgerRoleRequest\x1a%.forger_profile.HasForgerRoleResponseB8Z6nfxnews/protos/gen/auth/forger_profile;forgerprofilepbb\x06proto3"
 
 var (
 	file_auth_forger_profile_proto_rawDescOnce sync.Once

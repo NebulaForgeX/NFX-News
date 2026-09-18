@@ -17,19 +17,19 @@ import (
 )
 
 type Service struct {
-	tx    transaction.TxManager
-	repos *repofactory.TxRepoFactory
-	query *itemQuery.Query
-	cache *cachex.Connection
+	tx          transaction.TxManager
+	repoFactory *repofactory.TxRepoFactory
+	query       *itemQuery.Query
+	cache       *cachex.Connection
 }
 
 func NewService(
 	tx transaction.TxManager,
-	repos *repofactory.TxRepoFactory,
+	repoFactory *repofactory.TxRepoFactory,
 	query *itemQuery.Query,
 	cache *cachex.Connection,
 ) *Service {
-	return &Service{tx: tx, repos: repos, query: query, cache: cache}
+	return &Service{tx: tx, repoFactory: repoFactory, query: query, cache: cache}
 }
 
 type ItemView = itemQuery.ItemVO
@@ -38,7 +38,7 @@ type PreferenceView = itemQuery.PreferenceVO
 func (s *Service) UpsertFromEvent(ctx context.Context, ev events.SourceFetchedEvent) (int, error) {
 	count := 0
 	err := s.tx.WithUoW(ctx, func(ctx context.Context, uow transaction.UoW) error {
-		items := s.repos.Item(uow)
+		itemRepo := s.repoFactory.Item(uow)
 		for _, it := range ev.Items {
 			original := it.ID
 			id := ev.SourceID + ":" + original
@@ -51,10 +51,10 @@ func (s *Service) UpsertFromEvent(ctx context.Context, ev events.SourceFetchedEv
 				st.MobileURL = &it.MobileURL
 			}
 			if it.PubDate > 0 {
-				t := time.Unix(it.PubDate, 0)
+				t := time.UnixMilli(it.PubDate)
 				st.PubDate = &t
 			}
-			if err := items.Create.Upsert(ctx, itemDomain.NewFromState(st)); err != nil {
+			if err := itemRepo.Create.Upsert(ctx, itemDomain.NewFromState(st)); err != nil {
 				return err
 			}
 			count++
@@ -94,8 +94,11 @@ func (s *Service) ListBySource(ctx context.Context, sourceID string, limit int) 
 }
 
 func (s *Service) Search(ctx context.Context, query string, limit int) ([]ItemView, error) {
-	if limit <= 0 || limit > 200 {
+	if limit <= 0 {
 		limit = 50
+	}
+	if limit > 1000 {
+		limit = 1000
 	}
 	rows, err := s.query.List.Search(ctx, strings.TrimSpace(query), limit)
 	if err != nil {
@@ -116,7 +119,8 @@ func (s *Service) GetPreferences(ctx context.Context, accountID, profileID strin
 }
 
 func (s *Service) SetPreferences(ctx context.Context, accountID, profileID string, columnOrder, payload json.RawMessage) error {
-	return s.repos.Preference(transaction.UoW{}).Create.Upsert(ctx, prefDomain.NewFromState(prefDomain.State{
+	preferenceRepo := s.repoFactory.Preference(transaction.UoW{})
+	return preferenceRepo.Create.Upsert(ctx, prefDomain.NewFromState(prefDomain.State{
 		AccountID: accountID, ProfileID: profileID, ColumnOrder: columnOrder, Payload: payload, UpdatedAt: time.Now(),
 	}))
 }

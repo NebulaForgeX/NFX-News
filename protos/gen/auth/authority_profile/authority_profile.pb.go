@@ -742,7 +742,7 @@ const file_auth_authority_profile_proto_rawDesc = "" +
 	"\x10HasAuthorityRole\x12*.authority_profile.HasAuthorityRoleRequest\x1a+.authority_profile.HasAuthorityRoleResponse\x12d\n" +
 	"\tIsAuditor\x12*.authority_profile.HasAuthorityRoleRequest\x1a+.authority_profile.HasAuthorityRoleResponse\x12j\n" +
 	"\x0fIsAdministrator\x12*.authority_profile.HasAuthorityRoleRequest\x1a+.authority_profile.HasAuthorityRoleResponse\x12b\n" +
-	"\aIsOwner\x12*.authority_profile.HasAuthorityRoleRequest\x1a+.authority_profile.HasAuthorityRoleResponseBBZ@nfxnews/protos/gen/auth/authority_profile;authorityprofilepbb\x06proto3"
+	"\aIsOwner\x12*.authority_profile.HasAuthorityRoleRequest\x1a+.authority_profile.HasAuthorityRoleResponseB>Z<nfxnews/protos/gen/auth/authority_profile;authorityprofilepbb\x06proto3"
 
 var (
 	file_auth_authority_profile_proto_rawDescOnce sync.Once

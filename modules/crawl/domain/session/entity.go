@@ -8,6 +8,8 @@ import (
 type Session struct{ state State }
 type State struct {
 	ID           uuid.UUID
+	AccountID    *string
+	ProfileID    *string
 	SourceID     *string
 	Status       string
 	ItemCount    int

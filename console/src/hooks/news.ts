@@ -10,6 +10,20 @@ export function useSources() {
   return useQuery({ queryKey: ["sources"], queryFn: repos.news.ListSources });
 }
 
+export function useSource(id: string) {
+  const repos = useNewsRepositories();
+  return useQuery({
+    queryKey: ["source", id],
+    queryFn: () => repos.news.GetSource(id),
+    enabled: id.trim().length > 0,
+  });
+}
+
+export function useNotifyKinds() {
+  const repos = useNewsRepositories();
+  return useQuery({ queryKey: ["notify-kinds"], queryFn: repos.notify.ListNotifyKinds });
+}
+
 export function useNewsItems(sourceId?: string) {
   const repos = useNewsRepositories();
   return useQuery({
@@ -62,7 +76,9 @@ export function useFetchSource() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => repos.news.FetchSource(id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["news"] }),
+    onSuccess: (items, id) => {
+      qc.setQueryData(["news", id], items);
+    },
   });
 }
 
@@ -86,8 +102,60 @@ export function useAddKeyword() {
   const repos = useNewsRepositories();
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (body: { word: string; kind: string }) => repos.report.AddKeyword(body),
+    mutationFn: (body: { word: string; kind: string; groupName?: string }) => repos.report.AddKeyword(body),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["keywords"] }),
+  });
+}
+
+export function useDispatchReport() {
+  const repos = useNewsRepositories();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const snap = await repos.report.GetSnapshot(id);
+      const payload = snap.payload ? JSON.stringify(snap.payload) : "";
+      return repos.notify.DispatchReport({
+        reportId: snap.id,
+        mode: snap.mode,
+        title: snap.title,
+        itemCount: snap.itemCount,
+        payloadJson: payload,
+      });
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["notify-deliveries"] }),
+  });
+}
+
+export function useMCPTools() {
+  const repos = useNewsRepositories();
+  return useQuery({ queryKey: ["mcp-tools"], queryFn: repos.mcp.ListMCPTools });
+}
+
+export function useRunMCPTool() {
+  const repos = useNewsRepositories();
+  return useMutation({
+    mutationFn: (body: { name: string; arguments?: Record<string, unknown> }) => repos.mcp.RunMCPTool(body.name, body.arguments),
+  });
+}
+
+export function useSystemState() {
+  const repos = useNewsRepositories();
+  return useQuery({ queryKey: ["system-state"], queryFn: repos.system.getLatestSystemState });
+}
+
+export function useInitializeSystem() {
+  const repos = useNewsRepositories();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () => repos.system.initializeSystem(),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["system-state"] }),
+  });
+}
+
+export function useGetCrawlSession() {
+  const repos = useNewsRepositories();
+  return useMutation({
+    mutationFn: (id: string) => repos.crawl.GetCrawlSession(id),
   });
 }
 

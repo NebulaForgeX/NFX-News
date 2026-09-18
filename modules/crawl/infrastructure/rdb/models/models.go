@@ -7,6 +7,8 @@ import (
 
 type Session struct {
 	ID           uuid.UUID `gorm:"type:uuid;primaryKey"`
+	AccountID    *string   `gorm:"column:account_id;type:uuid"`
+	ProfileID    *string   `gorm:"column:profile_id;type:uuid"`
 	SourceID     *string
 	Status       string
 	ItemCount    int

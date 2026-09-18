@@ -5,16 +5,20 @@ import { useTranslation } from "react-i18next";
 import { PageFrame } from "nfx-ui/layouts";
 import { CardHeader, EmptyState, PageHeader } from "nfx-ui/components";
 
-import { useKeywords, useSnapshots, useAddKeyword, useGenerateReport } from "@/hooks/news";
+import { OpenSnapshotHTML } from "@/apis/report.api";
+import { KEYWORD_KINDS, REPORT_MODES } from "@/enums/newsEnum";
+import { useKeywords, useSnapshots, useAddKeyword, useGenerateReport, useDispatchReport } from "@/hooks/news";
 
 const ReportsPage = memo(() => {
   const { t } = useTranslation("ReportsPage");
   const { data: keywords } = useKeywords();
   const { data: snapshots } = useSnapshots();
   const [word, setWord] = useState("");
-  const [kind, setKind] = useState("include");
+  const [groupName, setGroupName] = useState("default");
+  const [kind, setKind] = useState<(typeof KEYWORD_KINDS)[number]>("include");
   const add = useAddKeyword();
   const generate = useGenerateReport();
+  const dispatch = useDispatchReport();
 
   return (
     <PageFrame>
@@ -24,7 +28,7 @@ const ReportsPage = memo(() => {
         description={t("subtitle")}
         actions={
           <Flex gap="2">
-            {["daily", "current", "incremental"].map((mode) => (
+            {REPORT_MODES.map((mode) => (
               <Button key={mode} variant="soft" onClick={() => generate.mutate(mode)}>
                 {t(mode)}
               </Button>
@@ -36,18 +40,22 @@ const ReportsPage = memo(() => {
         <Card>
           <CardHeader icon={<Tag size={18} />} title={t("keywords")} />
           <Flex gap="2" wrap="wrap">
+            <TextField.Root value={groupName} onChange={(e) => setGroupName(e.target.value)} placeholder={t("group")} />
             <TextField.Root value={word} onChange={(e) => setWord(e.target.value)} placeholder="+required / !exclude" />
-            <Select.Root value={kind} onValueChange={setKind}>
+            <Select.Root value={kind} onValueChange={(v) => setKind(v as (typeof KEYWORD_KINDS)[number])}>
               <Select.Trigger />
               <Select.Content>
-                <Select.Item value="include">include</Select.Item>
-                <Select.Item value="exclude">exclude</Select.Item>
+                {KEYWORD_KINDS.map((k) => (
+                  <Select.Item key={k} value={k}>
+                    {k}
+                  </Select.Item>
+                ))}
               </Select.Content>
             </Select.Root>
             <Button
               onClick={() =>
                 add.mutate(
-                  { word, kind },
+                  { word, kind, groupName },
                   {
                     onSuccess: () => setWord(""),
                   },
@@ -64,7 +72,7 @@ const ReportsPage = memo(() => {
             <Flex direction="column" gap="2" mt="3">
               {(keywords ?? []).map((k) => (
                 <Text key={k.id} size="2">
-                  {k.kind} {k.word}
+                  {k.groupName} · {k.kind} {k.word}
                 </Text>
               ))}
             </Flex>
@@ -77,9 +85,19 @@ const ReportsPage = memo(() => {
           ) : (
             <Flex direction="column" gap="2">
               {(snapshots ?? []).map((s) => (
-                <Text key={s.id} size="2">
-                  {s.title} · {s.itemCount} · {s.createdAt}
-                </Text>
+                <Flex key={s.id} align="center" justify="between" gap="2" wrap="wrap">
+                  <Text size="2">
+                    {s.title} · {s.itemCount} · {s.createdAt}
+                  </Text>
+                  <Flex gap="2">
+                    <Button size="1" variant="soft" onClick={() => void OpenSnapshotHTML(s.id)}>
+                      {t("openHtml")}
+                    </Button>
+                    <Button size="1" variant="soft" onClick={() => dispatch.mutate(s.id)} disabled={dispatch.isPending}>
+                      {t("dispatch")}
+                    </Button>
+                  </Flex>
+                </Flex>
               ))}
             </Flex>
           )}

@@ -1,6 +1,6 @@
 import type { DataResponse } from "nfx-ui/types";
 
-import { publicClient } from "./clients";
+import { protectedClient, publicClient } from "./clients";
 import { URL_PATHS } from "./ip";
 
 export const getErrorTranslations = async (lang: string): Promise<Record<string, unknown>> => {
@@ -9,11 +9,11 @@ export const getErrorTranslations = async (lang: string): Promise<Record<string,
 };
 
 export const getLatestSystemState = async () => {
-  const { data } = await publicClient.get<DataResponse<{ initialized: boolean }>>(URL_PATHS.SYSTEM.latest);
+  const { data } = await protectedClient.get<DataResponse<{ initialized: boolean }>>(URL_PATHS.SYSTEM.latest);
   return data.data;
 };
 
 export const initializeSystem = async (version = "1.0.0") => {
-  const { data } = await publicClient.post<DataResponse<{ initialized: boolean }>>(URL_PATHS.SYSTEM.initialize, { version });
+  const { data } = await protectedClient.post<DataResponse<{ initialized: boolean }>>(URL_PATHS.SYSTEM.initialize, { version });
   return data.data;
 };

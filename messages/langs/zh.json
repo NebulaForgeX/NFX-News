@@ -1,0 +1,22 @@
+{
+  "NOTIFY_REPORT_PUSH": {
+    "title": "新闻报告",
+    "body": "新的筛选新闻报告已生成"
+  },
+  "REPORT_CURRENT_READY": {
+    "title": "实时报告已生成",
+    "body": "当前热点报告已就绪"
+  },
+  "REPORT_DAILY_READY": {
+    "title": "每日报告已生成",
+    "body": "今日新闻报告已就绪"
+  },
+  "REPORT_INCREMENTAL_READY": {
+    "title": "增量报告已生成",
+    "body": "距上次抓取的新标题已就绪"
+  },
+  "SYSTEM_INITIALIZED": {
+    "title": "系统已初始化",
+    "body": "NFX News 已就绪"
+  }
+}

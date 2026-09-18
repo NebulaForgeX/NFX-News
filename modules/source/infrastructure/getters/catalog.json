@@ -509,5 +509,54 @@
     "color": "blue",
     "interval": 1800000,
     "title": "综合早报"
+  },
+  "linuxdo": {
+    "redirect": "linuxdo-latest",
+    "name": "LINUX DO",
+    "column": "tech",
+    "home": "https://linux.do",
+    "color": "slate",
+    "interval": 600000,
+    "title": "最新"
+  },
+  "linuxdo-latest": {
+    "name": "LINUX DO",
+    "column": "tech",
+    "home": "https://linux.do",
+    "color": "slate",
+    "interval": 600000,
+    "title": "最新"
+  },
+  "linuxdo-hot": {
+    "name": "LINUX DO",
+    "column": "tech",
+    "home": "https://linux.do",
+    "color": "slate",
+    "interval": 600000,
+    "title": "今日热门"
+  },
+  "ghxi": {
+    "name": "果核剥壳",
+    "column": "china",
+    "home": "https://www.ghxi.com/",
+    "color": "yellow",
+    "interval": 600000
+  },
+  "smzdm": {
+    "name": "什么值得买",
+    "type": "hottest",
+    "column": "china",
+    "home": "https://www.smzdm.com",
+    "color": "red",
+    "interval": 600000
+  },
+  "pcbeta-windows": {
+    "name": "远景论坛",
+    "type": "realtime",
+    "column": "tech",
+    "home": "https://bbs.pcbeta.com",
+    "color": "blue",
+    "interval": 300000,
+    "title": "Win"
   }
 }

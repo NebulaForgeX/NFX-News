@@ -7,10 +7,10 @@ import (
 	"nfxnews/modules/notify/infrastructure/rdb/models"
 )
 
-type h struct{ db *gorm.DB }
+type handler struct{ db *gorm.DB }
 
-func NewRepo(db *gorm.DB) *channel.Repo { return &channel.Repo{Create: &h{db: db}} }
-func (x *h) New(ctx context.Context, c *channel.Channel) error {
+func NewRepo(db *gorm.DB) *channel.Repo { return &channel.Repo{Create: &handler{db: db}} }
+func (handler *handler) New(ctx context.Context, c *channel.Channel) error {
 	st := c.State()
-	return x.db.WithContext(ctx).Create(&models.Channel{ID: st.ID, Kind: st.Kind, Name: st.Name, Enabled: st.Enabled, Config: st.Config, CreatedAt: st.CreatedAt, UpdatedAt: st.UpdatedAt}).Error
+	return handler.db.WithContext(ctx).Create(&models.Channel{ID: st.ID, AccountID: st.AccountID, ProfileID: st.ProfileID, Kind: st.Kind, Name: st.Name, Enabled: st.Enabled, Config: st.Config, CreatedAt: st.CreatedAt, UpdatedAt: st.UpdatedAt}).Error
 }

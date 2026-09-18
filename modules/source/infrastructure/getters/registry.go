@@ -4,15 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"os"
-	"regexp"
-	"strings"
 	"time"
-
-	"github.com/PuerkitoBio/goquery"
-	"github.com/mmcdole/gofeed"
 )
 
 type Item struct {
@@ -31,7 +25,7 @@ type Meta struct {
 	Column     string `json:"column"`
 	Home       string `json:"home"`
 	Color      string `json:"color"`
-	IntervalMS int    `json:"interval"`
+	IntervalMS int    `json:"interval_ms"`
 	Type       string `json:"type"`
 	Redirect   string `json:"redirect"`
 }
@@ -102,6 +96,25 @@ func (r *Registry) List() []Meta {
 	return out
 }
 
+func (r *Registry) Interval(id string) time.Duration {
+	m, ok := r.Meta(id)
+	if !ok || m.IntervalMS <= 0 {
+		return 10 * time.Minute
+	}
+	return time.Duration(m.IntervalMS) * time.Millisecond
+}
+
+func (r *Registry) IDs() []string {
+	ids := make([]string, 0, len(r.catalog))
+	for id, m := range r.catalog {
+		if m.Redirect != "" {
+			continue
+		}
+		ids = append(ids, id)
+	}
+	return ids
+}
+
 func (r *Registry) Meta(id string) (Meta, bool) {
 	m, ok := r.catalog[id]
 	if ok && m.Redirect != "" {
@@ -129,6 +142,29 @@ func (r *Registry) Fetch(ctx context.Context, id string) ([]Item, error) {
 
 func (r *Registry) register(id string, fn Getter) { r.getters[id] = fn }
 
+func (r *Registry) nativeOrHub(native Getter, hubRoute string) Getter {
+	return func(ctx context.Context) ([]Item, error) {
+		items, err := native(ctx)
+		if err == nil && len(items) > 0 {
+			return items, nil
+		}
+		if hubRoute == "" {
+			return items, err
+		}
+		return r.rssHub(hubRoute)(ctx)
+	}
+}
+
+func (r *Registry) nativeOrRSS(native Getter, rssURL string) Getter {
+	return func(ctx context.Context) ([]Item, error) {
+		items, err := native(ctx)
+		if err == nil && len(items) > 0 {
+			return items, nil
+		}
+		return r.rss(rssURL)(ctx)
+	}
+}
+
 func (r *Registry) registerBuiltin() {
 	r.register("zhihu", r.zhihu)
 	r.register("v2ex", r.v2ex)
@@ -141,317 +177,57 @@ func (r *Registry) registerBuiltin() {
 	r.register("bilibili-hot-search", r.bilibiliHot)
 	r.register("bilibili-hot-video", r.bilibiliVideo)
 	r.register("bilibili-ranking", r.bilibiliRank)
+	r.register("baidu", r.baidu)
 	r.register("ithome", r.rss("https://www.ithome.com/rss/"))
 	r.register("solidot", r.rss("https://www.solidot.org/index.rss"))
-	r.register("sspai", r.rss("https://sspai.com/feed"))
-	r.register("hupu", r.rssHub("/bbs/hupu/all-gambia"))
-	r.register("douban", r.rssHub("/douban/movie/playing"))
+	r.register("sspai", r.nativeOrRSS(r.sspai, "https://sspai.com/feed"))
+	r.register("hupu", r.nativeOrHub(r.hupu, "/bbs/hupu/all-gambia"))
+	r.register("douban", r.nativeOrHub(r.douban, "/douban/movie/playing"))
 	r.register("producthunt", r.rss("https://www.producthunt.com/feed"))
-	r.register("linuxdo", r.rss("https://linux.do/latest.rss"))
-	r.register("zaobao", r.rssHub("/zaobao/realtime/china"))
-	r.register("thepaper", r.rssHub("/thepaper/featured"))
-	r.register("kaopu", r.rss("https://kaopu.news/rss"))
-	r.register("gelonghui", r.rssHub("/gelonghui/hot-article"))
-	r.register("fastbull", r.rssHub("/fastbull/express"))
-	r.register("jin10", r.rssHub("/jin10"))
-	r.register("wallstreetcn", r.rssHub("/wallstreetcn/news"))
-	r.register("xueqiu", r.rssHub("/xueqiu/hot"))
-	r.register("cls", r.rssHub("/cls/telegraph"))
-	r.register("mktnews", r.rssHub("/mktnews/flash"))
-	r.register("juejin", r.rssHub("/juejin/hot"))
-	r.register("nowcoder", r.rssHub("/nowcoder/recommend"))
-	r.register("pcbeta", r.rssHub("/pcbeta/topic"))
-	r.register("chongbuluo", r.rssHub("/chongbuluo/hot"))
-	r.register("sputniknewscn", r.rssHub("/sputniknewscn"))
-	r.register("cankaoxiaoxi", r.rssHub("/cankaoxiaoxi"))
-	r.register("ifeng", r.rssHub("/ifeng/hot"))
-	r.register("toutiao", r.rssHub("/toutiao/hot"))
-	r.register("tieba", r.rssHub("/tieba/topic"))
-	r.register("kuaishou", r.rssHub("/kuaishou/hot"))
-	r.register("douyin", r.rssHub("/douyin/hot"))
-	r.register("baidu", r.baidu)
-	r.register("36kr", r.rssHub("/36kr/hot-list"))
-	r.register("smzdm", r.rssHub("/smzdm/ranking/pinlei/11/3"))
-	r.register("steam", r.rssHub("/steam/search/hot"))
-	r.register("coolapk", r.rssHub("/coolapk/hot"))
-	r.register("ghxi", r.rssHub("/ghxi"))
-	r.register("tencent-news", r.rssHub("/tencent/news/hot"))
-}
-
-func (r *Registry) get(ctx context.Context, url string, headers map[string]string) ([]byte, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("User-Agent", "Mozilla/5.0 (compatible; NFX-News/1.0)")
-	for k, v := range headers {
-		req.Header.Set(k, v)
-	}
-	resp, err := r.http.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode >= 400 {
-		return nil, fmt.Errorf("GET %s: %s", url, resp.Status)
-	}
-	return io.ReadAll(resp.Body)
-}
-
-func (r *Registry) rss(url string) Getter {
-	return func(ctx context.Context) ([]Item, error) {
-		fp := gofeed.NewParser()
-		fp.Client = r.http
-		feed, err := fp.ParseURLWithContext(url, ctx)
-		if err != nil {
-			return nil, err
-		}
-		items := make([]Item, 0, len(feed.Items))
-		for _, it := range feed.Items {
-			link := it.Link
-			if link == "" {
-				link = it.GUID
-			}
-			item := Item{ID: link, Title: it.Title, URL: link}
-			if it.PublishedParsed != nil {
-				item.PubDate = it.PublishedParsed.Unix()
-			}
-			items = append(items, item)
-		}
-		return items, nil
-	}
-}
-
-func (r *Registry) rssHub(route string) Getter {
-	return r.rss("https://rsshub.rssforever.com" + route + "?format=xml")
-}
-
-func (r *Registry) zhihu(ctx context.Context) ([]Item, error) {
-	body, err := r.get(ctx, "https://www.zhihu.com/api/v3/feed/topstory/hot-list-web?limit=20&desktop=true", nil)
-	if err != nil {
-		return nil, err
-	}
-	var res struct {
-		Data []struct {
-			Target struct {
-				TitleArea struct {
-					Text string `json:"text"`
-				} `json:"title_area"`
-				ExcerptArea struct {
-					Text string `json:"text"`
-				} `json:"excerpt_area"`
-				MetricsArea struct {
-					Text string `json:"text"`
-				} `json:"metrics_area"`
-				Link struct {
-					URL string `json:"url"`
-				} `json:"link"`
-			} `json:"target"`
-		} `json:"data"`
-	}
-	if err := json.Unmarshal(body, &res); err != nil {
-		return nil, err
-	}
-	re := regexp.MustCompile(`(\d+)$`)
-	out := make([]Item, 0, len(res.Data))
-	for _, k := range res.Data {
-		id := k.Target.Link.URL
-		if m := re.FindString(k.Target.Link.URL); m != "" {
-			id = m
-		}
-		out = append(out, Item{
-			ID:    id,
-			Title: k.Target.TitleArea.Text,
-			URL:   k.Target.Link.URL,
-			Extra: map[string]any{"info": k.Target.MetricsArea.Text, "hover": k.Target.ExcerptArea.Text},
-		})
-	}
-	return out, nil
-}
-
-func (r *Registry) v2ex(ctx context.Context) ([]Item, error) {
-	var all []Item
-	for _, k := range []string{"create", "ideas", "programmer", "share"} {
-		body, err := r.get(ctx, "https://www.v2ex.com/feed/"+k+".json", nil)
-		if err != nil {
-			continue
-		}
-		var res struct {
-			Items []struct {
-				ID            string `json:"id"`
-				Title         string `json:"title"`
-				URL           string `json:"url"`
-				DatePublished string `json:"date_published"`
-			} `json:"items"`
-		}
-		if err := json.Unmarshal(body, &res); err != nil {
-			continue
-		}
-		for _, it := range res.Items {
-			all = append(all, Item{ID: it.ID, Title: it.Title, URL: it.URL})
-		}
-	}
-	return all, nil
-}
-
-func (r *Registry) hackerNews(ctx context.Context) ([]Item, error) {
-	body, err := r.get(ctx, "https://news.ycombinator.com", nil)
-	if err != nil {
-		return nil, err
-	}
-	doc, err := goquery.NewDocumentFromReader(strings.NewReader(string(body)))
-	if err != nil {
-		return nil, err
-	}
-	var out []Item
-	doc.Find(".athing").Each(func(_ int, s *goquery.Selection) {
-		id, _ := s.Attr("id")
-		a := s.Find(".titleline a").First()
-		title := a.Text()
-		if id != "" && title != "" {
-			out = append(out, Item{ID: id, Title: title, URL: "https://news.ycombinator.com/item?id=" + id})
-		}
-	})
-	return out, nil
-}
-
-func (r *Registry) githubTrending(ctx context.Context) ([]Item, error) {
-	body, err := r.get(ctx, "https://github.com/trending?spoken_language_code=", nil)
-	if err != nil {
-		return nil, err
-	}
-	doc, err := goquery.NewDocumentFromReader(strings.NewReader(string(body)))
-	if err != nil {
-		return nil, err
-	}
-	var out []Item
-	doc.Find("main .Box article").Each(func(_ int, s *goquery.Selection) {
-		a := s.Find("h2 a")
-		href, _ := a.Attr("href")
-		title := strings.TrimSpace(strings.ReplaceAll(a.Text(), "\n", ""))
-		if href != "" && title != "" {
-			out = append(out, Item{ID: href, Title: title, URL: "https://github.com" + href})
-		}
-	})
-	return out, nil
-}
-
-func (r *Registry) weibo(ctx context.Context) ([]Item, error) {
-	url := "https://s.weibo.com/top/summary?cate=realtimehot"
-	body, err := r.get(ctx, url, map[string]string{"Referer": url})
-	if err != nil {
-		return nil, err
-	}
-	doc, err := goquery.NewDocumentFromReader(strings.NewReader(string(body)))
-	if err != nil {
-		return nil, err
-	}
-	var out []Item
-	doc.Find("#pl_top_realtimehot table tbody tr").Each(func(i int, s *goquery.Selection) {
-		if i == 0 {
-			return
-		}
-		a := s.Find("td.td-02 a").First()
-		title := strings.TrimSpace(a.Text())
-		href, _ := a.Attr("href")
-		if title != "" && href != "" && !strings.Contains(href, "javascript") {
-			out = append(out, Item{ID: title, Title: title, URL: "https://s.weibo.com" + href})
-		}
-	})
-	return out, nil
-}
-
-func (r *Registry) baidu(ctx context.Context) ([]Item, error) {
-	body, err := r.get(ctx, "https://top.baidu.com/board?tab=realtime", nil)
-	if err != nil {
-		return nil, err
-	}
-	re := regexp.MustCompile(`(?s)<!--s-data:(.*?)-->`)
-	m := re.FindSubmatch(body)
-	if len(m) < 2 {
-		return nil, fmt.Errorf("baidu payload not found")
-	}
-	var res struct {
-		Data struct {
-			Cards []struct {
-				Content []struct {
-					IsTop  bool   `json:"isTop"`
-					Word   string `json:"word"`
-					RawURL string `json:"rawUrl"`
-					Desc   string `json:"desc"`
-				} `json:"content"`
-			} `json:"cards"`
-		} `json:"data"`
-	}
-	if err := json.Unmarshal(m[1], &res); err != nil {
-		return nil, err
-	}
-	var out []Item
-	if len(res.Data.Cards) == 0 {
-		return out, nil
-	}
-	for _, k := range res.Data.Cards[0].Content {
-		if k.IsTop {
-			continue
-		}
-		out = append(out, Item{ID: k.RawURL, Title: k.Word, URL: k.RawURL, Extra: map[string]any{"hover": k.Desc}})
-	}
-	return out, nil
-}
-
-func (r *Registry) bilibiliHot(ctx context.Context) ([]Item, error) {
-	body, err := r.get(ctx, "https://s.search.bilibili.com/main/hotword?limit=30", nil)
-	if err != nil {
-		return nil, err
-	}
-	var res struct {
-		List []struct {
-			Keyword  string `json:"keyword"`
-			ShowName string `json:"show_name"`
-		} `json:"list"`
-	}
-	if err := json.Unmarshal(body, &res); err != nil {
-		return nil, err
-	}
-	out := make([]Item, 0, len(res.List))
-	for _, k := range res.List {
-		out = append(out, Item{
-			ID:    k.Keyword,
-			Title: k.ShowName,
-			URL:   "https://search.bilibili.com/all?keyword=" + k.Keyword,
-		})
-	}
-	return out, nil
-}
-
-func (r *Registry) bilibiliVideo(ctx context.Context) ([]Item, error) {
-	return r.bilibiliList(ctx, "https://api.bilibili.com/x/web-interface/popular")
-}
-
-func (r *Registry) bilibiliRank(ctx context.Context) ([]Item, error) {
-	return r.bilibiliList(ctx, "https://api.bilibili.com/x/web-interface/ranking/v2")
-}
-
-func (r *Registry) bilibiliList(ctx context.Context, url string) ([]Item, error) {
-	body, err := r.get(ctx, url, nil)
-	if err != nil {
-		return nil, err
-	}
-	var res struct {
-		Data struct {
-			List []struct {
-				BVID  string `json:"bvid"`
-				Title string `json:"title"`
-				Desc  string `json:"desc"`
-			} `json:"list"`
-		} `json:"data"`
-	}
-	if err := json.Unmarshal(body, &res); err != nil {
-		return nil, err
-	}
-	out := make([]Item, 0, len(res.Data.List))
-	for _, v := range res.Data.List {
-		out = append(out, Item{ID: v.BVID, Title: v.Title, URL: "https://www.bilibili.com/video/" + v.BVID, Extra: map[string]any{"hover": v.Desc}})
-	}
-	return out, nil
+	r.register("zaobao", r.nativeOrHub(r.zaobao, "/zaobao/realtime/china"))
+	r.register("thepaper", r.nativeOrHub(r.thepaper, "/thepaper/featured"))
+	r.register("kaopu", r.nativeOrHub(r.kaopu, ""))
+	r.register("gelonghui", r.nativeOrHub(r.gelonghui, "/gelonghui/hot-article"))
+	r.register("jin10", r.nativeOrHub(r.jin10, "/jin10"))
+	r.register("juejin", r.nativeOrHub(r.juejin, "/juejin/hot"))
+	r.register("nowcoder", r.nativeOrHub(r.nowcoder, "/nowcoder/recommend"))
+	r.register("sputniknewscn", r.nativeOrHub(r.sputnik, "/sputniknewscn"))
+	r.register("cankaoxiaoxi", r.nativeOrHub(r.cankaoxiaoxi, "/cankaoxiaoxi"))
+	r.register("ifeng", r.nativeOrHub(r.ifeng, "/ifeng/hot"))
+	r.register("toutiao", r.nativeOrHub(r.toutiao, "/toutiao/hot"))
+	r.register("tieba", r.nativeOrHub(r.tieba, "/tieba/topic"))
+	r.register("kuaishou", r.nativeOrHub(r.kuaishou, "/kuaishou/hot"))
+	r.register("douyin", r.nativeOrHub(r.douyin, "/douyin/hot"))
+	r.register("smzdm", r.nativeOrHub(r.smzdm, "/smzdm/ranking/pinlei/11/3"))
+	r.register("steam", r.nativeOrHub(r.steam, "/steam/search/hot"))
+	r.register("coolapk", r.nativeOrHub(r.coolapk, "/coolapk/hot"))
+	r.register("ghxi", r.nativeOrHub(r.ghxi, "/ghxi"))
+	r.register("36kr-quick", r.nativeOrHub(r.kr36Quick, "/36kr/hot-list"))
+	r.register("36kr", r.nativeOrHub(r.kr36Quick, "/36kr/hot-list"))
+	r.register("wallstreetcn-quick", r.nativeOrHub(r.wallstreetcnQuick, "/wallstreetcn/live"))
+	r.register("wallstreetcn-news", r.nativeOrHub(r.wallstreetcnNews, "/wallstreetcn/news"))
+	r.register("wallstreetcn-hot", r.nativeOrHub(r.wallstreetcnHot, "/wallstreetcn/hot"))
+	r.register("wallstreetcn", r.nativeOrHub(r.wallstreetcnQuick, "/wallstreetcn/live"))
+	r.register("cls-telegraph", r.nativeOrHub(r.clsTelegraph, "/cls/telegraph"))
+	r.register("cls-depth", r.nativeOrHub(r.clsDepth, "/cls/depth"))
+	r.register("cls-hot", r.nativeOrHub(r.clsHot, "/cls/hot"))
+	r.register("cls", r.nativeOrHub(r.clsTelegraph, "/cls/telegraph"))
+	r.register("linuxdo-hot", r.nativeOrHub(r.linuxdoHot, ""))
+	r.register("linuxdo-latest", r.nativeOrHub(r.linuxdoLatest, ""))
+	r.register("linuxdo", r.nativeOrHub(r.linuxdoLatest, ""))
+	r.register("mktnews-flash", r.nativeOrHub(r.mktnewsFlash, "/mktnews/flash"))
+	r.register("mktnews", r.nativeOrHub(r.mktnewsFlash, "/mktnews/flash"))
+	r.register("pcbeta-windows", r.rss("https://bbs.pcbeta.com/forum.php?mod=rss&fid=521&auth=0"))
+	r.register("pcbeta-windows11", r.rss("https://bbs.pcbeta.com/forum.php?mod=rss&fid=563&auth=0"))
+	r.register("pcbeta", r.rss("https://bbs.pcbeta.com/forum.php?mod=rss&fid=563&auth=0"))
+	r.register("tencent-hot", r.nativeOrHub(r.tencentHot, "/tencent/news/hot"))
+	r.register("tencent-news", r.nativeOrHub(r.tencentHot, "/tencent/news/hot"))
+	r.register("xueqiu-hotstock", r.nativeOrHub(r.xueqiuHotstock, "/xueqiu/hot"))
+	r.register("xueqiu", r.nativeOrHub(r.xueqiuHotstock, "/xueqiu/hot"))
+	r.register("fastbull-express", r.nativeOrHub(r.fastbullExpress, "/fastbull/express"))
+	r.register("fastbull-news", r.nativeOrHub(r.fastbullNews, "/fastbull/news"))
+	r.register("fastbull", r.nativeOrHub(r.fastbullExpress, "/fastbull/express"))
+	r.register("chongbuluo-hot", r.nativeOrHub(r.chongbuluoHot, "/chongbuluo/hot"))
+	r.register("chongbuluo-latest", r.rss("https://www.chongbuluo.com/forum.php?mod=rss&view=newthread"))
+	r.register("chongbuluo", r.rss("https://www.chongbuluo.com/forum.php?mod=rss&view=newthread"))
 }

@@ -1,4 +1,4 @@
 {
   "header": { "logout": "退出" },
-  "sidebar": { "reader": "阅读器", "reports": "报告", "crawl": "爬取", "settings": "设置" }
+  "sidebar": { "reader": "阅读器", "reports": "报告", "crawl": "爬取", "mcp": "MCP", "settings": "设置" }
 }

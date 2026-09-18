@@ -4,6 +4,7 @@ export const URL_PATHS = {
   SOURCE: {
     sources: "/source/sources",
     byId: (id: string) => `/source/sources/${id}`,
+    fetch: (id: string) => `/source/sources/${id}/fetch`,
   },
   NEWS: {
     items: "/news/items",
@@ -18,11 +19,18 @@ export const URL_PATHS = {
     keywords: "/report/keywords",
     snapshots: "/report/snapshots",
     byId: (id: string) => `/report/snapshots/${id}`,
+    html: (id: string) => `/report/snapshots/${id}/html`,
   },
   NOTIFY: {
+    kinds: "/notify/kinds",
     channels: "/notify/channels",
     deliveries: "/notify/deliveries",
     dispatch: "/notify/dispatch",
+  },
+  MCP: {
+    tools: "/mcp/tools",
+    run: "/mcp/run",
+    byName: (name: string) => `/mcp/tools/${name}`,
   },
   SYSTEM: {
     latest: "/system/system-state/latest",

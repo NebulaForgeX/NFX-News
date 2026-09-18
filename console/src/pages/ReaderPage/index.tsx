@@ -10,7 +10,7 @@ import { CardHeader, EmptyState, PageHeader } from "nfx-ui/components";
 
 import { useColumnPreferences, useNewsItems, useSearchNews, useSources, useFetchSource, useSaveColumnOrder, type SourceMeta } from "@/hooks/news";
 
-function SortableColumn({ source }: { source: SourceMeta }) {
+function SortableColumn({ source, onFetch }: { source: SourceMeta; onFetch: (id: string) => void }) {
   const { t } = useTranslation("ReaderPage");
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: source.id });
   const { data: items } = useNewsItems(source.id);
@@ -20,9 +20,14 @@ function SortableColumn({ source }: { source: SourceMeta }) {
     <Box ref={setNodeRef} style={style} {...attributes}>
       <Card>
         <Flex direction="column" gap="3">
-          <Box {...listeners} style={{ cursor: "grab" }}>
-            <CardHeader icon={<Newspaper size={18} />} title={source.name || source.id} description={source.column || source.type} />
-          </Box>
+          <Flex align="center" justify="between" gap="2">
+            <Box {...listeners} style={{ cursor: "grab", flex: 1 }}>
+              <CardHeader icon={<Newspaper size={18} />} title={source.name || source.id} description={source.column || source.type} />
+            </Box>
+            <Button size="1" variant="ghost" onClick={() => onFetch(source.id)}>
+              {t("refresh")}
+            </Button>
+          </Flex>
           {rows.length === 0 ? (
             <EmptyState icon={Newspaper} title={t("emptyColumn")} />
           ) : (
@@ -55,7 +60,7 @@ const ReaderPage = memo(() => {
 
   const visible = useMemo(() => {
     const list = sources ?? [];
-    if (order.length === 0) return list.slice(0, 8);
+    if (order.length === 0) return list;
     const map = new Map(list.map((s) => [s.id, s]));
     return order.map((id) => map.get(id)).filter((s): s is SourceMeta => Boolean(s));
   }, [sources, order]);
@@ -85,7 +90,9 @@ const ReaderPage = memo(() => {
             <Button
               variant="soft"
               onClick={() => {
-                if (visible[0]) void refresh.mutateAsync(visible[0].id);
+                for (const source of visible) {
+                  void refresh.mutateAsync(source.id);
+                }
               }}
             >
               {t("refresh")}
@@ -116,7 +123,7 @@ const ReaderPage = memo(() => {
           <SortableContext items={ids} strategy={horizontalListSortingStrategy}>
             <Flex gap="3" overflowX="auto" pb="4">
               {visible.map((source) => (
-                <SortableColumn key={source.id} source={source} />
+                <SortableColumn key={source.id} source={source} onFetch={(id) => void refresh.mutateAsync(id)} />
               ))}
             </Flex>
           </SortableContext>

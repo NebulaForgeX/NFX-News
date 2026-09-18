@@ -8,6 +8,7 @@ import (
 type Keyword struct{ state State }
 type State struct {
 	ID                    uuid.UUID
+	AccountID, ProfileID  *string
 	GroupName, Word, Kind string
 	CountLimit            int
 	CreatedAt             time.Time

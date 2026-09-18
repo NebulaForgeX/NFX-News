@@ -24,7 +24,7 @@ func toVO(r views.ItemsActiveView) itemQuery.ItemVO {
 		v.MobileURL = *r.MobileURL
 	}
 	if r.PubDate != nil {
-		v.PubDate = r.PubDate.Unix()
+		v.PubDate = r.PubDate.UnixMilli()
 	}
 	if len(r.Extra) > 0 {
 		_ = json.Unmarshal(r.Extra, &v.Extra)

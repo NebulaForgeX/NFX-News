@@ -11,6 +11,11 @@ export type Channel = {
   config?: Record<string, unknown>;
 };
 
+export const ListNotifyKinds = async (): Promise<string[]> => {
+  const { data } = await protectedClient.get<DataResponse<string[]>>(URL_PATHS.NOTIFY.kinds);
+  return data.data;
+};
+
 export const ListChannels = async (): Promise<Channel[]> => {
   const { data } = await protectedClient.get<DataResponse<Channel[]>>(URL_PATHS.NOTIFY.channels);
   return data.data;
@@ -21,19 +26,31 @@ export const UpsertChannel = async (params: { kind: string; name: string; enable
   return data.data;
 };
 
-export const DispatchReport = async (params: { reportId: string; mode?: string; title?: string }): Promise<{ queued: number }> => {
-  const { data } = await protectedClient.post<DataResponse<{ queued: number }>>(URL_PATHS.NOTIFY.dispatch, params);
+export const DispatchReport = async (params: {
+  reportId: string;
+  mode?: string;
+  title?: string;
+  itemCount?: number;
+  payloadJson?: string;
+}): Promise<{ queued: number }> => {
+  const { data } = await protectedClient.post<DataResponse<{ queued: number }>>(URL_PATHS.NOTIFY.dispatch, {
+    report_id: params.reportId,
+    mode: params.mode,
+    title: params.title,
+    item_count: params.itemCount,
+    payload_json: params.payloadJson,
+  });
   return data.data;
 };
 
 export type Delivery = {
   id: string;
-  channel_id: string;
-  report_id?: string | null;
+  channelId: string;
+  reportId?: string | null;
   status: string;
-  error_message?: string | null;
-  created_at: string;
-  sent_at?: string | null;
+  errorMessage?: string | null;
+  createdAt: string;
+  sentAt?: string | null;
 };
 
 export const ListDeliveries = async (limit = 50): Promise<Delivery[]> => {

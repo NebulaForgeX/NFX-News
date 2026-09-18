@@ -1,6 +1,6 @@
 {
   "title": "Reader",
-  "subtitle": "Drag columns to reorder. Refresh pulls the first visible source.",
+  "subtitle": "Drag columns to reorder. Refresh fetches every visible source.",
   "search": "Search headlines",
   "refresh": "Refresh column",
   "results": "Search results",

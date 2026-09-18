@@ -7,5 +7,9 @@
   "webhookHint": "Les webhooks restent dans le .env serveur, jamais dans git.",
   "deliveries": "Livraisons",
   "emptyChannels": "Aucun canal",
-  "emptyDeliveries": "Aucune livraison"
+  "emptyDeliveries": "Aucune livraison",
+  "system": "Système",
+  "initialized": "Initialisé",
+  "notInitialized": "Non initialisé",
+  "initialize": "Initialiser"
 }

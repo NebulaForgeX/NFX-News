@@ -15,7 +15,7 @@ type CrawlHandler struct {
 func NewCrawlHandler(svc *crawlapp.Service) *CrawlHandler { return &CrawlHandler{svc: svc} }
 
 func (h *CrawlHandler) TriggerCrawl(ctx context.Context, req *crawlpb.TriggerCrawlRequest) (*crawlpb.TriggerCrawlResponse, error) {
-	sess, err := h.svc.Trigger(ctx, req.GetSourceId())
+	sess, err := h.svc.Trigger(ctx, "", "", req.GetSourceId())
 	if err != nil {
 		return nil, err
 	}
@@ -23,7 +23,7 @@ func (h *CrawlHandler) TriggerCrawl(ctx context.Context, req *crawlpb.TriggerCra
 }
 
 func (h *CrawlHandler) GetSession(ctx context.Context, req *crawlpb.GetSessionRequest) (*crawlpb.GetSessionResponse, error) {
-	sess, err := h.svc.Get(ctx, req.GetSessionId())
+	sess, err := h.svc.Get(ctx, "", req.GetSessionId())
 	if err != nil {
 		return nil, err
 	}

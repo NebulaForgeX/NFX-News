@@ -9,6 +9,7 @@ const routeMap = defineRouter({
   READER: "/reader",
   REPORTS: "/reports",
   CRAWL: "/crawl",
+  MCP: "/mcp",
   SETTINGS: "/settings",
 });
 

@@ -1,16 +1,14 @@
 package notifyapp
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
-	"os"
-	"strings"
+	"sync"
 	"time"
 
 	"nfxnews/events"
+	"nfxnews/modules/notify/application/notify/channels"
 	channelDomain "nfxnews/modules/notify/domain/channel"
 	deliveryDomain "nfxnews/modules/notify/domain/delivery"
 	repofactory "nfxnews/modules/notify/infrastructure/repository/factory"
@@ -25,58 +23,110 @@ type Channel = notifyQuery.ChannelVO
 type Delivery = notifyQuery.DeliveryVO
 
 type Service struct {
-	repos  *repofactory.TxRepoFactory
-	query  *notifyQuery.Query
-	client *http.Client
+	repoFactory *repofactory.TxRepoFactory
+	query       *notifyQuery.Query
+	client      *http.Client
+	mu          sync.Mutex
+	pushedDay   string
 }
 
-func NewService(repos *repofactory.TxRepoFactory, query *notifyQuery.Query) *Service {
-	return &Service{repos: repos, query: query, client: &http.Client{Timeout: 15 * time.Second}}
+func NewService(repoFactory *repofactory.TxRepoFactory, query *notifyQuery.Query) *Service {
+	return &Service{repoFactory: repoFactory, query: query, client: &http.Client{Timeout: 15 * time.Second}}
 }
 
-func (s *Service) ListChannels(ctx context.Context) ([]Channel, error) {
-	rows, err := s.query.Channels.All(ctx)
+func (s *Service) ListKinds() []string {
+	return channelDomain.Kinds()
+}
+
+func (s *Service) ListChannels(ctx context.Context, accountID string) ([]Channel, error) {
+	rows, err := s.query.Channels.All(ctx, accountID)
 	if err != nil {
 		return nil, errx.ErrInternal.WithCause(err)
 	}
 	return rows, nil
 }
 
-func (s *Service) ListDeliveries(ctx context.Context, limit int) ([]Delivery, error) {
+func (s *Service) ListDeliveries(ctx context.Context, accountID string, limit int) ([]Delivery, error) {
 	if limit <= 0 || limit > 200 {
 		limit = 50
 	}
-	return s.query.Deliveries.Recent(ctx, limit)
+	return s.query.Deliveries.Recent(ctx, accountID, limit)
 }
 
-func (s *Service) UpsertChannel(ctx context.Context, kind, name string, enabled bool, cfg map[string]any) (*Channel, error) {
+func (s *Service) UpsertChannel(ctx context.Context, accountID, profileID, kind, name string, enabled bool, cfg map[string]any) (*Channel, error) {
+	if accountID == "" {
+		return nil, errx.Unauthorized("INVALID_TOKEN", "missing account")
+	}
+	if cfg == nil {
+		cfg = map[string]any{}
+	}
 	raw, _ := json.Marshal(cfg)
-	now := time.Now()
-	id := uuid.Must(uuid.NewV7())
-	if err := s.repos.Channel(transaction.UoW{}).Create.New(ctx, channelDomain.NewFromState(channelDomain.State{
-		ID: id, Kind: kind, Name: name, Enabled: enabled, Config: raw, CreatedAt: now, UpdatedAt: now,
-	})); err != nil {
+	var aid, pid *string
+	if accountID != "" {
+		aid = &accountID
+	}
+	if profileID != "" {
+		pid = &profileID
+	}
+	ent, err := channelDomain.New(aid, pid, kind, name, enabled, raw)
+	if err != nil {
+		return nil, err
+	}
+	channelRepo := s.repoFactory.Channel(transaction.UoW{})
+	if err := channelRepo.Create.New(ctx, ent); err != nil {
 		return nil, errx.ErrInternal.WithCause(err)
 	}
-	return &Channel{ID: id, Kind: kind, Name: name, Enabled: enabled, Config: raw, ConfigObj: cfg, CreatedAt: now, UpdatedAt: now}, nil
+	st := ent.State()
+	return &Channel{ID: st.ID, Kind: st.Kind, Name: st.Name, Enabled: st.Enabled, Config: st.Config, ConfigObj: cfg, CreatedAt: st.CreatedAt, UpdatedAt: st.UpdatedAt}, nil
 }
 
 func (s *Service) DispatchReport(ctx context.Context, ev events.ReportGeneratedEvent) (int, error) {
-	channels, err := s.ListChannels(ctx)
+	channelsList, err := s.ListChannels(ctx, ev.AccountID)
 	if err != nil {
 		return 0, err
 	}
-	queued := 0
-	body := fmt.Sprintf("%s\n%s\nitems=%d", ev.Title, ev.Mode, ev.ItemCount)
-	deliveries := s.repos.Delivery(transaction.UoW{})
-	for _, ch := range channels {
-		if !ch.Enabled {
-			continue
+	enabled := make([]Channel, 0, len(channelsList))
+	for _, ch := range channelsList {
+		if ch.Enabled {
+			enabled = append(enabled, ch)
 		}
-		now := time.Now()
+	}
+	if len(enabled) == 0 {
+		for _, kind := range channels.EnvKinds() {
+			enabled = append(enabled, Channel{Kind: kind, Name: kind, Enabled: true, ConfigObj: map[string]any{}})
+		}
+	}
+	if len(enabled) == 0 {
+		return 0, nil
+	}
+	windowCfg := map[string]any{}
+	if len(enabled) > 0 && enabled[0].ConfigObj != nil {
+		windowCfg = enabled[0].ConfigObj
+	}
+	if !channels.InPushWindow(time.Now(), windowCfg) {
+		return 0, nil
+	}
+	if channels.OncePerDay(windowCfg) && s.alreadyPushedToday() {
+		return 0, nil
+	}
+	body := channels.ReportBody(ev)
+	deliveryRepo := s.repoFactory.Delivery(transaction.UoW{})
+	queued := 0
+	for _, ch := range enabled {
+		now := time.Now().UTC()
 		d := deliveryDomain.NewFromState(deliveryDomain.State{
 			ID: uuid.Must(uuid.NewV7()), ChannelID: ch.ID, Status: "pending", CreatedAt: now,
 		})
+		if ev.AccountID != "" {
+			st := d.State()
+			aid := ev.AccountID
+			st.AccountID = &aid
+			if ev.ProfileID != "" {
+				pid := ev.ProfileID
+				st.ProfileID = &pid
+			}
+			d = deliveryDomain.NewFromState(st)
+		}
 		if ev.ReportID != "" {
 			if id, err := uuid.Parse(ev.ReportID); err == nil {
 				st := d.State()
@@ -84,87 +134,47 @@ func (s *Service) DispatchReport(ctx context.Context, ev events.ReportGeneratedE
 				d = deliveryDomain.NewFromState(st)
 			}
 		}
-		_ = deliveries.Create.New(ctx, d)
-		if err := s.send(ctx, ch, body); err != nil {
+		if ch.ID != uuid.Nil {
+			_ = deliveryRepo.Create.New(ctx, d)
+		}
+		cfg := ch.ConfigObj
+		if cfg == nil {
+			cfg = map[string]any{}
+		}
+		if err := channels.SendAll(ctx, s.client, ch.Kind, cfg, body); err != nil {
 			msg := err.Error()
 			d.Mark("failed", &msg, nil)
 		} else {
-			sent := time.Now()
+			sent := time.Now().UTC()
 			d.Mark("sent", nil, &sent)
 			queued++
 		}
-		_ = deliveries.Update.Generic(ctx, d)
+		if ch.ID != uuid.Nil {
+			_ = deliveryRepo.Update.Generic(ctx, d)
+		}
+	}
+	if queued > 0 {
+		s.markPushedToday()
 	}
 	return queued, nil
 }
 
-func (s *Service) send(ctx context.Context, ch Channel, text string) error {
-	cfg := ch.ConfigObj
-	webhook := ""
-	if cfg != nil {
-		if v, ok := cfg["webhook_url"].(string); ok {
-			webhook = v
-		}
-	}
-	if webhook == "" {
-		webhook = envWebhook(ch.Kind)
-	}
-	if webhook == "" {
-		return fmt.Errorf("no webhook for %s", ch.Kind)
-	}
-	payload, _ := json.Marshal(map[string]any{"text": text, "msg_type": "text", "content": map[string]string{"text": text}})
-	if ch.Kind == "telegram" {
-		chat := os.Getenv("NOTIFY_TELEGRAM_CHAT_ID")
-		if cfg != nil {
-			if v, ok := cfg["chat_id"].(string); ok {
-				chat = v
-			}
-		}
-		token := os.Getenv("NOTIFY_TELEGRAM_BOT_TOKEN")
-		if token != "" && chat != "" {
-			webhook = "https://api.telegram.org/bot" + token + "/sendMessage"
-			payload, _ = json.Marshal(map[string]any{"chat_id": chat, "text": text})
-		}
-	}
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, webhook, bytes.NewReader(payload))
+func (s *Service) alreadyPushedToday() bool {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	loc, err := time.LoadLocation("Asia/Shanghai")
 	if err != nil {
-		return err
+		loc = time.Local
 	}
-	req.Header.Set("Content-Type", "application/json")
-	resp, err := s.client.Do(req)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode >= 300 {
-		return fmt.Errorf("webhook %s: %s", ch.Kind, resp.Status)
-	}
-	return nil
+	return s.pushedDay == time.Now().In(loc).Format("20060102")
 }
 
-func envWebhook(kind string) string {
-	switch kind {
-	case "feishu":
-		return os.Getenv("NOTIFY_FEISHU_WEBHOOK_URL")
-	case "dingtalk":
-		return os.Getenv("NOTIFY_DINGTALK_WEBHOOK_URL")
-	case "wework":
-		return os.Getenv("NOTIFY_WEWORK_WEBHOOK_URL")
-	case "slack":
-		return os.Getenv("NOTIFY_SLACK_WEBHOOK_URL")
-	case "bark":
-		return os.Getenv("NOTIFY_BARK_URL")
-	case "ntfy":
-		topic := os.Getenv("NOTIFY_NTFY_TOPIC")
-		if topic == "" {
-			return ""
-		}
-		base := os.Getenv("NOTIFY_NTFY_SERVER_URL")
-		if base == "" {
-			base = "https://ntfy.sh"
-		}
-		return strings.TrimRight(base, "/") + "/" + topic
-	default:
-		return ""
+func (s *Service) markPushedToday() {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	loc, err := time.LoadLocation("Asia/Shanghai")
+	if err != nil {
+		loc = time.Local
 	}
+	s.pushedDay = time.Now().In(loc).Format("20060102")
 }

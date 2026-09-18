@@ -1,5 +1,7 @@
 CREATE TABLE IF NOT EXISTS "report"."snapshots" (
   "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  "account_id" UUID,
+  "profile_id" UUID,
   "mode" VARCHAR(32) NOT NULL,
   "title" VARCHAR(255) NOT NULL,
   "payload" JSONB NOT NULL DEFAULT '{}'::jsonb,
@@ -8,3 +10,4 @@ CREATE TABLE IF NOT EXISTS "report"."snapshots" (
 );
 
 CREATE INDEX IF NOT EXISTS "idx_report_snapshots_created_at" ON "report"."snapshots"("created_at" DESC);
+CREATE INDEX IF NOT EXISTS "idx_report_snapshots_account" ON "report"."snapshots"("account_id", "profile_id");

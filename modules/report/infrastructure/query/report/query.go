@@ -17,9 +17,13 @@ type snap struct{ db *gorm.DB }
 func NewQuery(db *gorm.DB) *reportQuery.Query {
 	return &reportQuery.Query{Keywords: &kw{db: db}, Snapshots: &snap{db: db}}
 }
-func (h *kw) All(ctx context.Context) ([]reportQuery.KeywordVO, error) {
+func (h *kw) All(ctx context.Context, accountID string) ([]reportQuery.KeywordVO, error) {
 	var rows []views.KeywordsActiveView
-	if err := h.db.WithContext(ctx).Table(views.KeywordsActiveView{}.TableName()).Order("created_at").Find(&rows).Error; err != nil {
+	q := h.db.WithContext(ctx).Table(views.KeywordsActiveView{}.TableName())
+	if accountID != "" {
+		q = q.Where("account_id = ?", accountID)
+	}
+	if err := q.Order("created_at").Find(&rows).Error; err != nil {
 		return nil, err
 	}
 	out := make([]reportQuery.KeywordVO, 0, len(rows))
@@ -33,9 +37,13 @@ func decodeSnap(r views.SnapshotsActiveView) reportQuery.SnapshotVO {
 	_ = json.Unmarshal(r.Payload, &vo.PayloadObj)
 	return vo
 }
-func (h *snap) Recent(ctx context.Context, limit int) ([]reportQuery.SnapshotVO, error) {
+func (h *snap) Recent(ctx context.Context, accountID string, limit int) ([]reportQuery.SnapshotVO, error) {
 	var rows []views.SnapshotsActiveView
-	if err := h.db.WithContext(ctx).Table(views.SnapshotsActiveView{}.TableName()).Order("created_at desc").Limit(limit).Find(&rows).Error; err != nil {
+	q := h.db.WithContext(ctx).Table(views.SnapshotsActiveView{}.TableName())
+	if accountID != "" {
+		q = q.Where("account_id = ?", accountID)
+	}
+	if err := q.Order("created_at desc").Limit(limit).Find(&rows).Error; err != nil {
 		return nil, err
 	}
 	out := make([]reportQuery.SnapshotVO, 0, len(rows))
@@ -44,9 +52,13 @@ func (h *snap) Recent(ctx context.Context, limit int) ([]reportQuery.SnapshotVO,
 	}
 	return out, nil
 }
-func (h *snap) ByID(ctx context.Context, id uuid.UUID) (*reportQuery.SnapshotVO, error) {
+func (h *snap) ByID(ctx context.Context, accountID string, id uuid.UUID) (*reportQuery.SnapshotVO, error) {
 	var row views.SnapshotsActiveView
-	if err := h.db.WithContext(ctx).Table(views.SnapshotsActiveView{}.TableName()).Where("id = ?", id).First(&row).Error; err != nil {
+	q := h.db.WithContext(ctx).Table(views.SnapshotsActiveView{}.TableName()).Where("id = ?", id)
+	if accountID != "" {
+		q = q.Where("account_id = ?", accountID)
+	}
+	if err := q.First(&row).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errx.NotFound("REPORT_NOT_FOUND", "report not found")
 		}

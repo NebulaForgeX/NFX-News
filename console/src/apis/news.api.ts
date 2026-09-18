@@ -31,8 +31,13 @@ export const ListSources = async (): Promise<SourceMeta[]> => {
   return data.data;
 };
 
+export const GetSource = async (id: string): Promise<SourceMeta> => {
+  const { data } = await publicClient.get<DataResponse<SourceMeta>>(URL_PATHS.SOURCE.byId(id));
+  return data.data;
+};
+
 export const FetchSource = async (id: string): Promise<NewsItem[]> => {
-  const { data } = await publicClient.get<DataResponse<NewsItem[]>>(URL_PATHS.SOURCE.byId(id));
+  const { data } = await publicClient.post<DataResponse<NewsItem[]>>(URL_PATHS.SOURCE.fetch(id));
   return data.data;
 };
 

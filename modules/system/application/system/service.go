@@ -14,12 +14,12 @@ import (
 type State = systemstateQuery.StateVO
 
 type Service struct {
-	repo  *systemstateDomain.Repo
-	query *systemstateQuery.Query
+	systemStateRepo *systemstateDomain.Repo
+	query           *systemstateQuery.Query
 }
 
-func NewService(repo *systemstateDomain.Repo, query *systemstateQuery.Query) *Service {
-	return &Service{repo: repo, query: query}
+func NewService(systemStateRepo *systemstateDomain.Repo, query *systemstateQuery.Query) *Service {
+	return &Service{systemStateRepo: systemStateRepo, query: query}
 }
 
 func (s *Service) Latest(ctx context.Context) (*State, error) {
@@ -40,7 +40,7 @@ func (s *Service) Initialize(ctx context.Context, version string) (*State, error
 	if version != "" {
 		st.InitializationVersion = &version
 	}
-	if err := s.repo.Create.New(ctx, systemstateDomain.NewFromState(st)); err != nil {
+	if err := s.systemStateRepo.Create.New(ctx, systemstateDomain.NewFromState(st)); err != nil {
 		return nil, errx.ErrInternal.WithCause(err)
 	}
 	return &State{ID: id, Initialized: true, InitializedAt: &now, InitializationVersion: st.InitializationVersion, CreatedAt: now, UpdatedAt: now}, nil

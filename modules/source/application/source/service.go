@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"path/filepath"
 
-	"nfxnews/errors/src/common"
+	"nfxnews/errors/src/source"
 	"nfxnews/events"
 	"nfxnews/modules/source/infrastructure/getters"
 	"nfxnews/pkgs/errx"
@@ -35,7 +35,7 @@ func (s *Service) List() []getters.Meta { return s.reg.List() }
 func (s *Service) Fetch(ctx context.Context, sourceID string) ([]getters.Item, error) {
 	items, err := s.reg.Fetch(ctx, sourceID)
 	if err != nil {
-		return nil, common.ErrSourceNotFound.WithCause(err).WithMsg(err.Error())
+		return nil, source.ErrSourceNotFound.WithCause(err).WithMsg(err.Error())
 	}
 	if s.pub != nil {
 		evItems := make([]events.SourceNewsItem, 0, len(items))
@@ -53,7 +53,7 @@ func (s *Service) Fetch(ctx context.Context, sourceID string) ([]getters.Item, e
 func (s *Service) Meta(id string) (getters.Meta, error) {
 	m, ok := s.reg.Meta(id)
 	if !ok {
-		return getters.Meta{}, common.ErrSourceNotFound
+		return getters.Meta{}, source.ErrSourceNotFound
 	}
 	return m, nil
 }

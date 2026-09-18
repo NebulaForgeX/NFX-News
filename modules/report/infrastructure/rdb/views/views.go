@@ -7,6 +7,8 @@ import (
 
 type KeywordsActiveView struct {
 	ID         uuid.UUID `gorm:"column:id"`
+	AccountID  *string   `gorm:"column:account_id"`
+	ProfileID  *string   `gorm:"column:profile_id"`
 	GroupName  string    `gorm:"column:group_name"`
 	Word       string    `gorm:"column:word"`
 	Kind       string    `gorm:"column:kind"`
@@ -18,6 +20,8 @@ func (KeywordsActiveView) TableName() string { return `report."KeywordsActiveVie
 
 type SnapshotsActiveView struct {
 	ID        uuid.UUID `gorm:"column:id"`
+	AccountID *string   `gorm:"column:account_id"`
+	ProfileID *string   `gorm:"column:profile_id"`
 	Mode      string    `gorm:"column:mode"`
 	Title     string    `gorm:"column:title"`
 	Payload   []byte    `gorm:"column:payload"`

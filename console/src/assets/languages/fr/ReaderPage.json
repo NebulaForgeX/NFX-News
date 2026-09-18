@@ -1,6 +1,6 @@
 {
   "title": "Lecteur",
-  "subtitle": "Glissez les colonnes pour réordonner. Actualiser tire la première source visible.",
+  "subtitle": "Glissez les colonnes pour réordonner. Actualiser tire toutes les sources visibles.",
   "search": "Rechercher",
   "refresh": "Actualiser",
   "results": "Résultats",

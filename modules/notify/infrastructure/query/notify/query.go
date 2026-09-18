@@ -14,9 +14,12 @@ type del struct{ db *gorm.DB }
 func NewQuery(db *gorm.DB) *notifyQuery.Query {
 	return &notifyQuery.Query{Channels: &ch{db: db}, Deliveries: &del{db: db}}
 }
-func (h *ch) All(ctx context.Context) ([]notifyQuery.ChannelVO, error) {
+func (h *ch) All(ctx context.Context, accountID string) ([]notifyQuery.ChannelVO, error) {
+	if accountID == "" {
+		return []notifyQuery.ChannelVO{}, nil
+	}
 	var rows []views.ChannelsActiveView
-	if err := h.db.WithContext(ctx).Table(views.ChannelsActiveView{}.TableName()).Find(&rows).Error; err != nil {
+	if err := h.db.WithContext(ctx).Table(views.ChannelsActiveView{}.TableName()).Where("account_id = ?", accountID).Find(&rows).Error; err != nil {
 		return nil, err
 	}
 	out := make([]notifyQuery.ChannelVO, 0, len(rows))
@@ -27,9 +30,12 @@ func (h *ch) All(ctx context.Context) ([]notifyQuery.ChannelVO, error) {
 	}
 	return out, nil
 }
-func (h *del) Recent(ctx context.Context, limit int) ([]notifyQuery.DeliveryVO, error) {
+func (h *del) Recent(ctx context.Context, accountID string, limit int) ([]notifyQuery.DeliveryVO, error) {
+	if accountID == "" {
+		return []notifyQuery.DeliveryVO{}, nil
+	}
 	var rows []views.DeliveriesActiveView
-	if err := h.db.WithContext(ctx).Table(views.DeliveriesActiveView{}.TableName()).Order("created_at DESC").Limit(limit).Find(&rows).Error; err != nil {
+	if err := h.db.WithContext(ctx).Table(views.DeliveriesActiveView{}.TableName()).Where("account_id = ?", accountID).Order("created_at DESC").Limit(limit).Find(&rows).Error; err != nil {
 		return nil, err
 	}
 	out := make([]notifyQuery.DeliveryVO, 0, len(rows))

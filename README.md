@@ -24,19 +24,17 @@ NFX-News/
 
 ## Ports / 端口
 
-Avoid Stack MinIO Console `10188`. News Traefik HTTP is `10178`.
+HTTP 走 **NFX-Edge**（先启动 Edge）。本仓不跑 Traefik。Avoid Stack MinIO Console `10188`.
 
 | Use | Variable | Port |
 |-----|----------|------|
 | Identity auth gRPC | `GRPC_PORT_AUTH` | 10156 (Identity) |
 | gRPC source…system | `GRPC_PORT_*` | 10171–10177 |
-| Traefik HTTP/HTTPS | `TRAEFIK_HTTP/HTTPS_PORT` | 10178 / 10179 |
-| Console | `CONSOLE_EXTERNAL_PORT` | 10190 |
-| Traefik dashboard | `TRAEFIK_DASHBOARD_PORT` | 10191 |
+| Console (optional host map) | `CONSOLE_EXTERNAL_PORT` | 10190 |
 
-HTTP prefixes: `/source` `/news` `/crawl` `/report` `/notify` `/mcp` `/system`.
+HTTP prefixes via Edge Host `TRAEFIK_API_HOST`: `/source` `/news` `/crawl` `/report` `/notify` `/mcp` `/system`.
 
-Console: `VITE_API_URL=http://127.0.0.1:10178`, `VITE_IDENTITY_API_URL=http://127.0.0.1:10166`.
+Console: `VITE_API_URL=https://news-api.example.com`, `VITE_IDENTITY_API_URL=https://api.example.com`.
 
 Token secret/issuer **must match NFX-Identity** (`TOKEN_ISSUER=nfxidentity`) so product APIs can verify user JWTs locally.
 

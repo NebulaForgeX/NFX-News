@@ -8,5 +8,8 @@
   "current": "Actuel",
   "incremental": "Incrémental",
   "emptyKeywords": "Aucun mot-clé",
-  "emptySnapshots": "Aucun instantané"
+  "emptySnapshots": "Aucun instantané",
+  "openHtml": "Ouvrir HTML",
+  "dispatch": "Notifier",
+  "group": "Groupe"
 }

@@ -7,6 +7,8 @@ import (
 
 type ChannelsActiveView struct {
 	ID        uuid.UUID `gorm:"column:id"`
+	AccountID *string   `gorm:"column:account_id"`
+	ProfileID *string   `gorm:"column:profile_id"`
 	Kind      string    `gorm:"column:kind"`
 	Name      string    `gorm:"column:name"`
 	Enabled   bool      `gorm:"column:enabled"`
@@ -19,6 +21,8 @@ func (ChannelsActiveView) TableName() string { return `notify."ChannelsActiveVie
 
 type DeliveriesActiveView struct {
 	ID           uuid.UUID  `gorm:"column:id"`
+	AccountID    *string    `gorm:"column:account_id"`
+	ProfileID    *string    `gorm:"column:profile_id"`
 	ChannelID    uuid.UUID  `gorm:"column:channel_id"`
 	ReportID     *uuid.UUID `gorm:"column:report_id"`
 	Status       string     `gorm:"column:status"`

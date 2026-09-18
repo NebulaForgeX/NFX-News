@@ -8,6 +8,8 @@ import (
 
 type SessionVO struct {
 	ID           uuid.UUID  `json:"id"`
+	AccountID    *string    `json:"account_id,omitempty"`
+	ProfileID    *string    `json:"profile_id,omitempty"`
 	SourceID     *string    `json:"source_id"`
 	Status       string     `json:"status"`
 	ItemCount    int        `json:"item_count"`
@@ -17,6 +19,6 @@ type SessionVO struct {
 }
 type Query struct{ List List }
 type List interface {
-	Recent(ctx context.Context, limit int) ([]SessionVO, error)
-	ByID(ctx context.Context, id uuid.UUID) (*SessionVO, error)
+	Recent(ctx context.Context, accountID string, limit int) ([]SessionVO, error)
+	ByID(ctx context.Context, accountID string, id uuid.UUID) (*SessionVO, error)
 }

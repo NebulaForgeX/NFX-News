@@ -28,9 +28,9 @@ type Query struct {
 	Snapshots Snapshots
 }
 type Keywords interface {
-	All(ctx context.Context) ([]KeywordVO, error)
+	All(ctx context.Context, accountID string) ([]KeywordVO, error)
 }
 type Snapshots interface {
-	Recent(ctx context.Context, limit int) ([]SnapshotVO, error)
-	ByID(ctx context.Context, id uuid.UUID) (*SnapshotVO, error)
+	Recent(ctx context.Context, accountID string, limit int) ([]SnapshotVO, error)
+	ByID(ctx context.Context, accountID string, id uuid.UUID) (*SnapshotVO, error)
 }

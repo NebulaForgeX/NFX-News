@@ -7,11 +7,12 @@ import (
 
 type Snapshot struct{ state State }
 type State struct {
-	ID          uuid.UUID
-	Mode, Title string
-	Payload     []byte
-	ItemCount   int
-	CreatedAt   time.Time
+	ID                   uuid.UUID
+	AccountID, ProfileID *string
+	Mode, Title          string
+	Payload              []byte
+	ItemCount            int
+	CreatedAt            time.Time
 }
 
 func NewFromState(st State) *Snapshot { return &Snapshot{state: st} }

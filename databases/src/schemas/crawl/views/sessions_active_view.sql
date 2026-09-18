@@ -1,6 +1,6 @@
 CREATE OR REPLACE VIEW "crawl"."SessionsActiveView" AS
 SELECT
-  "id", "source_id", "status", "item_count", "error_message",
+  "id", "account_id", "profile_id", "source_id", "status", "item_count", "error_message",
   "started_at", "finished_at"
 FROM "crawl"."sessions";
 

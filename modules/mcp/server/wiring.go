@@ -6,6 +6,7 @@ import (
 	"time"
 
 	authconn "nfxnews/connections/auth"
+	crawlconn "nfxnews/connections/crawl"
 	newsconn "nfxnews/connections/news"
 	reportconn "nfxnews/connections/report"
 	sourceconn "nfxnews/connections/source"
@@ -22,6 +23,7 @@ import (
 	"nfxnews/pkgs/security/token"
 	"nfxnews/pkgs/security/token/servertoken"
 	"nfxnews/pkgs/tokenx"
+	crawlpb "nfxnews/protos/gen/crawl"
 	newspb "nfxnews/protos/gen/news"
 	reportpb "nfxnews/protos/gen/report"
 	sourcepb "nfxnews/protos/gen/source"
@@ -96,6 +98,7 @@ func NewDeps(ctx context.Context, cfg *config.Config) (*Dependencies, error) {
 	var newsClient newspb.NewsServiceClient
 	var reportClient reportpb.ReportServiceClient
 	var sourceClient sourcepb.SourceServiceClient
+	var crawlClient crawlpb.CrawlServiceClient
 	if conn, err := grpcx.Dial(cfg.GRPCClient.NewsAddr, "mcp", cfg.Token); err == nil {
 		d.conns = append(d.conns, conn)
 		newsClient = newsconn.New(conn)
@@ -108,7 +111,11 @@ func NewDeps(ctx context.Context, cfg *config.Config) (*Dependencies, error) {
 		d.conns = append(d.conns, conn)
 		sourceClient = sourceconn.New(conn)
 	}
-	d.appSvc = mcpapp.NewService(toolcallRepo.NewRepo(postgres.DB()), newsClient, reportClient, sourceClient)
+	if conn, err := grpcx.Dial(cfg.GRPCClient.CrawlAddr, "mcp", cfg.Token); err == nil {
+		d.conns = append(d.conns, conn)
+		crawlClient = crawlconn.New(conn)
+	}
+	d.appSvc = mcpapp.NewService(toolcallRepo.NewRepo(postgres.DB()), newsClient, reportClient, sourceClient, crawlClient)
 	_ = provider
 	return d, nil
 }

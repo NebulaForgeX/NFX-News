@@ -7,19 +7,19 @@ import (
 	"nfxnews/modules/crawl/infrastructure/rdb/models"
 )
 
-type repo struct{ db *gorm.DB }
+type handler struct{ db *gorm.DB }
 
 func NewRepo(db *gorm.DB) *session.Repo {
-	h := &repo{db: db}
-	return &session.Repo{Create: h, Update: h}
+	impl := &handler{db: db}
+	return &session.Repo{Create: impl, Update: impl}
 }
 func toModel(s *session.Session) *models.Session {
 	st := s.State()
-	return &models.Session{ID: st.ID, SourceID: st.SourceID, Status: st.Status, ItemCount: st.ItemCount, ErrorMessage: st.ErrorMessage, StartedAt: st.StartedAt, FinishedAt: st.FinishedAt}
+	return &models.Session{ID: st.ID, AccountID: st.AccountID, ProfileID: st.ProfileID, SourceID: st.SourceID, Status: st.Status, ItemCount: st.ItemCount, ErrorMessage: st.ErrorMessage, StartedAt: st.StartedAt, FinishedAt: st.FinishedAt}
 }
-func (h *repo) New(ctx context.Context, s *session.Session) error {
-	return h.db.WithContext(ctx).Create(toModel(s)).Error
+func (handler *handler) New(ctx context.Context, s *session.Session) error {
+	return handler.db.WithContext(ctx).Create(toModel(s)).Error
 }
-func (h *repo) Generic(ctx context.Context, s *session.Session) error {
-	return h.db.WithContext(ctx).Save(toModel(s)).Error
+func (handler *handler) Generic(ctx context.Context, s *session.Session) error {
+	return handler.db.WithContext(ctx).Save(toModel(s)).Error
 }

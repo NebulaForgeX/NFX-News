@@ -1,0 +1,9 @@
+{
+  "title": "Outils MCP",
+  "subtitle": "Lister et exécuter les mêmes outils que POST /mcp/tools/:name.",
+  "tools": "Outils",
+  "run": "Exécuter",
+  "execute": "Lancer",
+  "emptyTools": "Aucun outil",
+  "invalidJson": "Les arguments doivent être un objet JSON"
+}

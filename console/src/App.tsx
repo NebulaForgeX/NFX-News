@@ -2,7 +2,7 @@ import { Navigate, Route, Routes } from "react-router";
 import { useAuthStore, hasSelectedProfile } from "nfx-ui/stores";
 
 import { ConsoleLayout } from "@/layouts";
-import { CrawlPage, LoginPage, NotFoundPage, ReaderPage, ReportsPage, SelectProfilePage, SettingsPage } from "@/pages";
+import { CrawlPage, LoginPage, MCPPage, NotFoundPage, ReaderPage, ReportsPage, SelectProfilePage, SettingsPage } from "@/pages";
 import { ROUTES } from "@/navigations";
 
 import "./App.module.css";
@@ -37,6 +37,7 @@ function App() {
         <Route path={ROUTES.READER} element={<ReaderPage />} />
         <Route path={ROUTES.REPORTS} element={<ReportsPage />} />
         <Route path={ROUTES.CRAWL} element={<CrawlPage />} />
+        <Route path={ROUTES.MCP} element={<MCPPage />} />
         <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

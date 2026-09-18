@@ -8,6 +8,7 @@ import (
 type Channel struct{ state State }
 type State struct {
 	ID                   uuid.UUID
+	AccountID, ProfileID *string
 	Kind, Name           string
 	Enabled              bool
 	Config               []byte

@@ -8,5 +8,8 @@
   "current": "当前",
   "incremental": "增量",
   "emptyKeywords": "还没有关键词",
-  "emptySnapshots": "还没有快照"
+  "emptySnapshots": "还没有快照",
+  "openHtml": "打开 HTML",
+  "dispatch": "推送",
+  "group": "分组"
 }

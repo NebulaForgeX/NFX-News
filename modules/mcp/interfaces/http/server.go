@@ -33,6 +33,7 @@ func NewHTTPServer(d httpDeps, accessLog httpx.AccessLogConfig) *fiber.App {
 	}))
 	app.Use(middleware.Logger(), middleware.AccessLog(accessLog), middleware.Recover())
 	NewRouter(app, d.UserTokenVerifier(), NewRegistry(d.AppSvc(), d.ErrorsLangsPath())).RegisterRoutes()
+	app.Use("/mcp/protocol", middleware.TokenAuth(d.UserTokenVerifier()))
 	mountMCPProtocol(app, d.AppSvc())
 	return app
 }

@@ -56,7 +56,7 @@ func (r *Router) Run(ctx context.Context) error {
 }
 
 func (r *Router) schedule(ctx context.Context) {
-	sec := 600
+	sec := 30
 	if v := os.Getenv("CRAWL_SCHEDULE_SECONDS"); v != "" {
 		if n, err := strconv.Atoi(v); err == nil && n > 0 {
 			sec = n
@@ -64,13 +64,15 @@ func (r *Router) schedule(ctx context.Context) {
 	}
 	ticker := time.NewTicker(time.Duration(sec) * time.Second)
 	defer ticker.Stop()
-	_, _ = r.svc.TriggerAll(ctx)
+	if err := r.svc.FetchDue(ctx); err != nil {
+		logx.S().Warnf("scheduled crawl failed: %v", err)
+	}
 	for {
 		select {
 		case <-ctx.Done():
 			return
 		case <-ticker.C:
-			if _, err := r.svc.TriggerAll(ctx); err != nil {
+			if err := r.svc.FetchDue(ctx); err != nil {
 				logx.S().Warnf("scheduled crawl failed: %v", err)
 			}
 		}

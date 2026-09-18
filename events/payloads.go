@@ -18,6 +18,8 @@ type SourceNewsItem struct {
 type ReportGeneratedEvent struct {
 	ReportTopic
 	ReportID  string `json:"report_id"`
+	AccountID string `json:"account_id,omitempty"`
+	ProfileID string `json:"profile_id,omitempty"`
 	Mode      string `json:"mode"`
 	Title     string `json:"title"`
 	ItemCount int    `json:"item_count"`

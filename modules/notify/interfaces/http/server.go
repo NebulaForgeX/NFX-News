@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
+	authconn "nfxnews/connections/auth"
 	notifyapp "nfxnews/modules/notify/application/notify"
 	"nfxnews/pkgs/fiberx"
 	"nfxnews/pkgs/fiberx/middleware"
@@ -18,6 +19,7 @@ type httpDeps interface {
 	AppSvc() *notifyapp.Service
 	UserTokenVerifier() token.Verifier
 	ErrorsLangsPath() string
+	AuthClient() *authconn.Client
 }
 
 func NewHTTPServer(d httpDeps, accessLog httpx.AccessLogConfig) *fiber.App {
@@ -32,6 +34,6 @@ func NewHTTPServer(d httpDeps, accessLog httpx.AccessLogConfig) *fiber.App {
 		AllowCredentials: false, ExposeHeaders: []string{"Content-Length", "Content-Type"}, MaxAge: 3600,
 	}))
 	app.Use(middleware.Logger(), middleware.AccessLog(accessLog), middleware.Recover())
-	NewRouter(app, d.UserTokenVerifier(), NewRegistry(d.AppSvc(), d.ErrorsLangsPath())).RegisterRoutes()
+	NewRouter(app, d.UserTokenVerifier(), NewRegistry(d.AppSvc(), d.ErrorsLangsPath(), d.AuthClient())).RegisterRoutes()
 	return app
 }
