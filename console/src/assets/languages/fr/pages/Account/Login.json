@@ -28,12 +28,12 @@
     "subtitle": "Votre Account peut porter plusieurs Profile.",
     "back": "Retour à la connexion",
     "kind": {
-      "community": "Community",
-      "authority": "Authority"
+      "authority": "Authority",
+      "forger": "Forger"
     },
     "kindHint": {
-      "community": "Usage quotidien",
-      "authority": "Modération et rôles"
+      "authority": "Modération et rôles",
+      "forger": "Usage quotidien"
     },
     "roles": {
       "pulser": "Pulser",
@@ -45,7 +45,13 @@
       "supporter": "Support",
       "auditor": "Auditeur",
       "administrator": "Administrateur",
-      "owner": "Propriétaire"
+      "owner": "Propriétaire",
+      "forger": "Forger"
     }
+  },
+  "github": {
+    "continue": "Continuer avec GitHub",
+    "completing": "Finalisation de la connexion GitHub…",
+    "missingParams": "Le callback GitHub n'a pas de code ou de state."
   }
 }

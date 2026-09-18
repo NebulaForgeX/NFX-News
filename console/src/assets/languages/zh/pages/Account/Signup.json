@@ -23,5 +23,8 @@
   "rememberMe": "记住我",
   "submit": "创建账号",
   "hasAccount": "已有账号？",
-  "signIn": "登录"
+  "signIn": "登录",
+  "github": {
+    "continue": "使用 GitHub 继续"
+  }
 }

@@ -23,5 +23,8 @@
   "rememberMe": "Se souvenir de moi",
   "submit": "Créer le compte",
   "hasAccount": "Déjà un compte ?",
-  "signIn": "Se connecter"
+  "signIn": "Se connecter",
+  "github": {
+    "continue": "Continuer avec GitHub"
+  }
 }

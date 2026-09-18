@@ -28,12 +28,12 @@
     "subtitle": "一个 Account 可以持有多个 Profile。",
     "back": "返回登录",
     "kind": {
-      "community": "Community",
-      "authority": "Authority"
+      "authority": "Authority",
+      "forger": "Forger"
     },
     "kindHint": {
-      "community": "日常使用",
-      "authority": "审核与角色"
+      "authority": "审核与角色",
+      "forger": "日常使用"
     },
     "roles": {
       "pulser": "脉搏者",
@@ -45,7 +45,13 @@
       "supporter": "支持员",
       "auditor": "审计员",
       "administrator": "管理员",
-      "owner": "所有者"
+      "owner": "所有者",
+      "forger": "Forger"
     }
+  },
+  "github": {
+    "continue": "使用 GitHub 继续",
+    "completing": "正在完成 GitHub 登录…",
+    "missingParams": "GitHub 回调缺少 code 或 state。"
   }
 }

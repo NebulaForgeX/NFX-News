@@ -28,12 +28,12 @@
     "subtitle": "Your Account can hold more than one Profile.",
     "back": "Back to sign in",
     "kind": {
-      "community": "Community",
-      "authority": "Authority"
+      "authority": "Authority",
+      "forger": "Forger"
     },
     "kindHint": {
-      "community": "Everyday use",
-      "authority": "Moderation & roles"
+      "authority": "Moderation & roles",
+      "forger": "Everyday use"
     },
     "roles": {
       "pulser": "Pulser",
@@ -45,7 +45,13 @@
       "supporter": "Supporter",
       "auditor": "Auditor",
       "administrator": "Administrator",
-      "owner": "Owner"
+      "owner": "Owner",
+      "forger": "Forger"
     }
+  },
+  "github": {
+    "continue": "Continue with GitHub",
+    "completing": "Completing GitHub sign-in…",
+    "missingParams": "GitHub callback is missing code or state."
   }
 }
