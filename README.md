@@ -41,7 +41,7 @@ Console: `VITE_API_URL=https://news-api.example.com`, `VITE_IDENTITY_API_URL=htt
 
 Token secret/issuer **must match NFX-Identity** (`TOKEN_ISSUER=nfxidentity`) so product APIs can verify user JWTs locally.
 
-Stack: Postgres `192.168.1.64:10105`, Redis `10181`, Kafka `10183`, OTEL `10192`. Databases: `nfxnews_dev` / `nfxnews` / `nfxnews_diff`.
+Stack: Postgres `192.168.1.64:10104`, Redis `10106`, Kafka `10108`, OTEL OTLP gRPC `10116`. Databases: `nfxnews_dev` / `nfxnews` / `nfxnews_diff`.
 
 ## Run / 运行
 
