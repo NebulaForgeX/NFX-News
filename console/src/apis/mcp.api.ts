@@ -12,8 +12,3 @@ export const RunMCPTool = async (name: string, argumentsJson?: Record<string, un
   const { data } = await protectedClient.post<DataResponse<unknown>>(URL_PATHS.MCP.byName(name), { arguments: argumentsJson ?? {} });
   return data.data;
 };
-
-export const RunMCPJSON = async (toolName: string, args?: Record<string, unknown>): Promise<unknown> => {
-  const { data } = await protectedClient.post<DataResponse<unknown>>(URL_PATHS.MCP.run, { tool_name: toolName, arguments: args ?? {} });
-  return data.data;
-};

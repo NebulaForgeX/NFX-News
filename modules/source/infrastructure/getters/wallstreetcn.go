@@ -6,11 +6,11 @@ func (r *Registry) wallstreetcnQuick(ctx context.Context) ([]Item, error) {
 	var res struct {
 		Data struct {
 			Items []struct {
-				URI          string `json:"uri"`
-				ID           int    `json:"id"`
-				Title        string `json:"title"`
-				ContentText  string `json:"content_text"`
-				DisplayTime  int64  `json:"display_time"`
+				URI         string `json:"uri"`
+				ID          int    `json:"id"`
+				Title       string `json:"title"`
+				ContentText string `json:"content_text"`
+				DisplayTime int64  `json:"display_time"`
 			} `json:"items"`
 		} `json:"data"`
 	}
@@ -80,26 +80,4 @@ func (r *Registry) wallstreetcnHot(ctx context.Context) ([]Item, error) {
 		out = append(out, Item{ID: itoa(h.ID), Title: h.Title, URL: h.URI})
 	}
 	return out, nil
-}
-
-func itoa(n int) string {
-	if n == 0 {
-		return "0"
-	}
-	neg := n < 0
-	if neg {
-		n = -n
-	}
-	var b [20]byte
-	i := len(b)
-	for n > 0 {
-		i--
-		b[i] = byte('0' + n%10)
-		n /= 10
-	}
-	if neg {
-		i--
-		b[i] = '-'
-	}
-	return string(b[i:])
 }

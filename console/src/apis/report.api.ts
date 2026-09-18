@@ -1,24 +1,11 @@
 import type { DataResponse } from "nfx-ui/types";
 
+import type { Keyword, Snapshot } from "@/types/domain";
+
 import { protectedClient } from "./clients";
 import { URL_PATHS } from "./ip";
 
-export type Keyword = {
-  id: string;
-  groupName: string;
-  word: string;
-  kind: string;
-  countLimit: number;
-};
-
-export type Snapshot = {
-  id: string;
-  mode: string;
-  title: string;
-  itemCount: number;
-  createdAt: string;
-  payload?: unknown;
-};
+export type { Keyword, Snapshot };
 
 export const ListKeywords = async (): Promise<Keyword[]> => {
   const { data } = await protectedClient.get<DataResponse<Keyword[]>>(URL_PATHS.REPORT.keywords);

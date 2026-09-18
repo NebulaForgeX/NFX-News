@@ -1,15 +1,11 @@
 import type { DataResponse } from "nfx-ui/types";
 
+import type { Channel, Delivery } from "@/types/domain";
+
 import { protectedClient } from "./clients";
 import { URL_PATHS } from "./ip";
 
-export type Channel = {
-  id: string;
-  kind: string;
-  name: string;
-  enabled: boolean;
-  config?: Record<string, unknown>;
-};
+export type { Channel, Delivery };
 
 export const ListNotifyKinds = async (): Promise<string[]> => {
   const { data } = await protectedClient.get<DataResponse<string[]>>(URL_PATHS.NOTIFY.kinds);
@@ -41,16 +37,6 @@ export const DispatchReport = async (params: {
     payload_json: params.payloadJson,
   });
   return data.data;
-};
-
-export type Delivery = {
-  id: string;
-  channelId: string;
-  reportId?: string | null;
-  status: string;
-  errorMessage?: string | null;
-  createdAt: string;
-  sentAt?: string | null;
 };
 
 export const ListDeliveries = async (limit = 50): Promise<Delivery[]> => {

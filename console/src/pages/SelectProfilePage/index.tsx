@@ -1,5 +1,6 @@
 import { Button, Flex, Heading, Text } from "@radix-ui/themes";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { useAuthRepository } from "nfx-ui/apis";
 import { AuthStore, ensureDeviceIdStorage } from "nfx-ui/stores";
 import { LanguageEnum, ProfileKind, ProfileKindEnum } from "nfx-ui/enums";
@@ -8,6 +9,7 @@ import type { Login, Profile } from "nfx-ui/types";
 import AuthShell from "@/pages/LoginPage/AuthShell";
 
 export default function SelectProfilePage() {
+  const { t } = useTranslation("SelectProfilePage");
   const auth = useAuthRepository();
   const forgers = useQuery({
     queryKey: ["me-forger-profiles"],
@@ -67,10 +69,10 @@ export default function SelectProfilePage() {
   const error = (select.error || create.error) as Error | null;
 
   return (
-    <AuthShell brandEyebrow="NFX News" brandTitle="Pick an edition desk" heroFooter="Identity still issues the token. This slip only chooses which profile reads the paper.">
+    <AuthShell brandEyebrow={t("eyebrow")} brandTitle={t("title")} heroFooter={t("heroFooter")}>
       <Flex direction="column" gap="4">
         <Heading as="h2" size="5">
-          Profiles
+          {t("heading")}
         </Heading>
         {profiles.map((profile) => (
           <Button key={profile.profileId} variant="soft" onClick={() => select.mutate(profile)} loading={select.isPending}>
@@ -79,7 +81,7 @@ export default function SelectProfilePage() {
         ))}
         {profiles.length === 0 ? (
           <Button onClick={() => create.mutate()} loading={create.isPending}>
-            Create Forger profile
+            {t("createForger")}
           </Button>
         ) : null}
         {error ? (

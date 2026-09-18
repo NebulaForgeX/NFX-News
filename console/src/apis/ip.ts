@@ -5,32 +5,38 @@ export const URL_PATHS = {
     sources: "/source/sources",
     byId: (id: string) => `/source/sources/${id}`,
     fetch: (id: string) => `/source/sources/${id}/fetch`,
+    i18nErrors: (lang: string) => `/source/i18n/errors/${lang}`,
   },
   NEWS: {
     items: "/news/items",
     search: "/news/search",
     preferences: "/news/preferences",
+    i18nErrors: (lang: string) => `/news/i18n/errors/${lang}`,
   },
   CRAWL: {
     sessions: "/crawl/sessions",
     byId: (id: string) => `/crawl/sessions/${id}`,
+    i18nErrors: (lang: string) => `/crawl/i18n/errors/${lang}`,
   },
   REPORT: {
     keywords: "/report/keywords",
     snapshots: "/report/snapshots",
     byId: (id: string) => `/report/snapshots/${id}`,
     html: (id: string) => `/report/snapshots/${id}/html`,
+    i18nErrors: (lang: string) => `/report/i18n/errors/${lang}`,
   },
   NOTIFY: {
     kinds: "/notify/kinds",
     channels: "/notify/channels",
     deliveries: "/notify/deliveries",
     dispatch: "/notify/dispatch",
+    i18nErrors: (lang: string) => `/notify/i18n/errors/${lang}`,
   },
   MCP: {
     tools: "/mcp/tools",
     run: "/mcp/run",
     byName: (name: string) => `/mcp/tools/${name}`,
+    i18nErrors: (lang: string) => `/mcp/i18n/errors/${lang}`,
   },
   SYSTEM: {
     latest: "/system/system-state/latest",

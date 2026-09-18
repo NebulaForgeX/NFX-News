@@ -1,0 +1,15 @@
+export const NEWS_QUERY_KEYS = {
+  sources: ["sources"] as const,
+  source: (id: string) => ["source", id] as const,
+  items: (sourceId?: string) => ["news", sourceId] as const,
+  search: (q: string) => ["news-search", q] as const,
+  preferences: ["news-preferences"] as const,
+  keywords: ["keywords"] as const,
+  snapshots: ["snapshots"] as const,
+  crawlSessions: ["crawl-sessions"] as const,
+  notifyKinds: ["notify-kinds"] as const,
+  notifyChannels: ["notify-channels"] as const,
+  notifyDeliveries: ["notify-deliveries"] as const,
+  mcpTools: ["mcp-tools"] as const,
+  systemState: ["system-state"] as const,
+};

@@ -1,30 +1,11 @@
 import type { DataResponse } from "nfx-ui/types";
 
+import type { NewsItem, SourceMeta } from "@/types/domain";
+
 import { protectedClient, publicClient } from "./clients";
 import { URL_PATHS } from "./ip";
 
-export type SourceMeta = {
-  id: string;
-  name: string;
-  title: string;
-  column: string;
-  home: string;
-  color: string;
-  intervalMs: number;
-  type: string;
-  redirect: string;
-};
-
-export type NewsItem = {
-  id: string;
-  sourceId: string;
-  originalId: string;
-  title: string;
-  url: string;
-  mobileUrl?: string;
-  pubDate?: number;
-  extra?: Record<string, unknown>;
-};
+export type { NewsItem, SourceMeta };
 
 export const ListSources = async (): Promise<SourceMeta[]> => {
   const { data } = await publicClient.get<DataResponse<SourceMeta[]>>(URL_PATHS.SOURCE.sources);

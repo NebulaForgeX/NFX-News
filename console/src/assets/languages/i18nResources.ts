@@ -19,6 +19,12 @@ import fr_ReportsPage from "./fr/ReportsPage.json";
 import fr_CrawlPage from "./fr/CrawlPage.json";
 import fr_MCPPage from "./fr/MCPPage.json";
 import fr_SettingsPage from "./fr/SettingsPage.json";
+import en_NotFoundPage from "./en/NotFoundPage.json";
+import en_SelectProfilePage from "./en/SelectProfilePage.json";
+import zh_NotFoundPage from "./zh/NotFoundPage.json";
+import zh_SelectProfilePage from "./zh/SelectProfilePage.json";
+import fr_NotFoundPage from "./fr/NotFoundPage.json";
+import fr_SelectProfilePage from "./fr/SelectProfilePage.json";
 
 export const RESOURCES = {
   en: {
@@ -29,6 +35,8 @@ export const RESOURCES = {
     CrawlPage: en_CrawlPage,
     MCPPage: en_MCPPage,
     SettingsPage: en_SettingsPage,
+    NotFoundPage: en_NotFoundPage,
+    SelectProfilePage: en_SelectProfilePage,
   },
   zh: {
     components: zh_components,
@@ -38,6 +46,8 @@ export const RESOURCES = {
     CrawlPage: zh_CrawlPage,
     MCPPage: zh_MCPPage,
     SettingsPage: zh_SettingsPage,
+    NotFoundPage: zh_NotFoundPage,
+    SelectProfilePage: zh_SelectProfilePage,
   },
   fr: {
     components: fr_components,
@@ -47,6 +57,8 @@ export const RESOURCES = {
     CrawlPage: fr_CrawlPage,
     MCPPage: fr_MCPPage,
     SettingsPage: fr_SettingsPage,
+    NotFoundPage: fr_NotFoundPage,
+    SelectProfilePage: fr_SelectProfilePage,
   },
 };
 
@@ -58,6 +70,8 @@ export const NAME_SPACES_MAP = {
   CrawlPage: "CrawlPage",
   MCPPage: "MCPPage",
   SettingsPage: "SettingsPage",
+  NotFoundPage: "NotFoundPage",
+  SelectProfilePage: "SelectProfilePage",
 };
 
 export const NAME_SPACES = Object.values(NAME_SPACES_MAP);

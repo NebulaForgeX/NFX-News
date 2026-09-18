@@ -36,6 +36,40 @@ services:
       - ./data:/app/data
       - ./assets:/app/assets
       - ./errors/langs:/app/errors/langs
+    develop:
+      watch:
+        - action: sync
+          path: inputs/source/base
+          target: /app/inputs/source/base
+        - action: sync
+          path: inputs/source/configuration
+          target: /app/inputs/source/configuration
+        - action: sync
+          path: modules/source
+          target: /app/modules/source
+        - action: sync
+          path: enums
+          target: /app/enums
+        - action: sync
+          path: errors/src
+          target: /app/errors/src
+        - action: sync
+          path: pkgs
+          target: /app/pkgs
+        - action: sync
+          path: protos
+          target: /app/protos
+        - action: sync
+          path: go.mod
+          target: /app/go.mod
+        - action: sync
+          path: go.sum
+          target: /app/go.sum
+        - action: sync
+          path: .env
+          target: /app/.env
+        - action: rebuild
+          path: inputs/source/configuration/Dockerfile.Base
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
@@ -73,6 +107,40 @@ services:
       - ./data:/app/data
       - ./assets:/app/assets
       - ./errors/langs:/app/errors/langs
+    develop:
+      watch:
+        - action: sync
+          path: inputs/news/base
+          target: /app/inputs/news/base
+        - action: sync
+          path: inputs/news/configuration
+          target: /app/inputs/news/configuration
+        - action: sync
+          path: modules/news
+          target: /app/modules/news
+        - action: sync
+          path: enums
+          target: /app/enums
+        - action: sync
+          path: errors/src
+          target: /app/errors/src
+        - action: sync
+          path: pkgs
+          target: /app/pkgs
+        - action: sync
+          path: protos
+          target: /app/protos
+        - action: sync
+          path: go.mod
+          target: /app/go.mod
+        - action: sync
+          path: go.sum
+          target: /app/go.sum
+        - action: sync
+          path: .env
+          target: /app/.env
+        - action: rebuild
+          path: inputs/news/configuration/Dockerfile.Base
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
@@ -110,6 +178,40 @@ services:
       - ./data:/app/data
       - ./assets:/app/assets
       - ./errors/langs:/app/errors/langs
+    develop:
+      watch:
+        - action: sync
+          path: inputs/crawl/base
+          target: /app/inputs/crawl/base
+        - action: sync
+          path: inputs/crawl/configuration
+          target: /app/inputs/crawl/configuration
+        - action: sync
+          path: modules/crawl
+          target: /app/modules/crawl
+        - action: sync
+          path: enums
+          target: /app/enums
+        - action: sync
+          path: errors/src
+          target: /app/errors/src
+        - action: sync
+          path: pkgs
+          target: /app/pkgs
+        - action: sync
+          path: protos
+          target: /app/protos
+        - action: sync
+          path: go.mod
+          target: /app/go.mod
+        - action: sync
+          path: go.sum
+          target: /app/go.sum
+        - action: sync
+          path: .env
+          target: /app/.env
+        - action: rebuild
+          path: inputs/crawl/configuration/Dockerfile.Base
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
@@ -147,6 +249,40 @@ services:
       - ./data:/app/data
       - ./assets:/app/assets
       - ./errors/langs:/app/errors/langs
+    develop:
+      watch:
+        - action: sync
+          path: inputs/report/base
+          target: /app/inputs/report/base
+        - action: sync
+          path: inputs/report/configuration
+          target: /app/inputs/report/configuration
+        - action: sync
+          path: modules/report
+          target: /app/modules/report
+        - action: sync
+          path: enums
+          target: /app/enums
+        - action: sync
+          path: errors/src
+          target: /app/errors/src
+        - action: sync
+          path: pkgs
+          target: /app/pkgs
+        - action: sync
+          path: protos
+          target: /app/protos
+        - action: sync
+          path: go.mod
+          target: /app/go.mod
+        - action: sync
+          path: go.sum
+          target: /app/go.sum
+        - action: sync
+          path: .env
+          target: /app/.env
+        - action: rebuild
+          path: inputs/report/configuration/Dockerfile.Base
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
@@ -184,6 +320,40 @@ services:
       - ./data:/app/data
       - ./assets:/app/assets
       - ./errors/langs:/app/errors/langs
+    develop:
+      watch:
+        - action: sync
+          path: inputs/notify/base
+          target: /app/inputs/notify/base
+        - action: sync
+          path: inputs/notify/configuration
+          target: /app/inputs/notify/configuration
+        - action: sync
+          path: modules/notify
+          target: /app/modules/notify
+        - action: sync
+          path: enums
+          target: /app/enums
+        - action: sync
+          path: errors/src
+          target: /app/errors/src
+        - action: sync
+          path: pkgs
+          target: /app/pkgs
+        - action: sync
+          path: protos
+          target: /app/protos
+        - action: sync
+          path: go.mod
+          target: /app/go.mod
+        - action: sync
+          path: go.sum
+          target: /app/go.sum
+        - action: sync
+          path: .env
+          target: /app/.env
+        - action: rebuild
+          path: inputs/notify/configuration/Dockerfile.Base
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
@@ -221,6 +391,40 @@ services:
       - ./data:/app/data
       - ./assets:/app/assets
       - ./errors/langs:/app/errors/langs
+    develop:
+      watch:
+        - action: sync
+          path: inputs/mcp/base
+          target: /app/inputs/mcp/base
+        - action: sync
+          path: inputs/mcp/configuration
+          target: /app/inputs/mcp/configuration
+        - action: sync
+          path: modules/mcp
+          target: /app/modules/mcp
+        - action: sync
+          path: enums
+          target: /app/enums
+        - action: sync
+          path: errors/src
+          target: /app/errors/src
+        - action: sync
+          path: pkgs
+          target: /app/pkgs
+        - action: sync
+          path: protos
+          target: /app/protos
+        - action: sync
+          path: go.mod
+          target: /app/go.mod
+        - action: sync
+          path: go.sum
+          target: /app/go.sum
+        - action: sync
+          path: .env
+          target: /app/.env
+        - action: rebuild
+          path: inputs/mcp/configuration/Dockerfile.Base
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
@@ -258,6 +462,40 @@ services:
       - ./data:/app/data
       - ./assets:/app/assets
       - ./errors/langs:/app/errors/langs
+    develop:
+      watch:
+        - action: sync
+          path: inputs/system/base
+          target: /app/inputs/system/base
+        - action: sync
+          path: inputs/system/configuration
+          target: /app/inputs/system/configuration
+        - action: sync
+          path: modules/system
+          target: /app/modules/system
+        - action: sync
+          path: enums
+          target: /app/enums
+        - action: sync
+          path: errors/src
+          target: /app/errors/src
+        - action: sync
+          path: pkgs
+          target: /app/pkgs
+        - action: sync
+          path: protos
+          target: /app/protos
+        - action: sync
+          path: go.mod
+          target: /app/go.mod
+        - action: sync
+          path: go.sum
+          target: /app/go.sum
+        - action: sync
+          path: .env
+          target: /app/.env
+        - action: rebuild
+          path: inputs/system/configuration/Dockerfile.Base
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:

@@ -46,10 +46,6 @@ cache/
 !.example.env
 !.env.example
 
-# Redis SSH tunnel (task run / scripts/redis_ssh_tunnel.sh)
-.env.redis-tunnel
-.redis-ssh-tunnel.pid
-
 ## Logs
 logs/
 *.log

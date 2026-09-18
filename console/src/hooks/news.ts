@@ -1,19 +1,20 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { useNewsRepositories } from "@/apis/repositories";
-import type { SourceMeta } from "@/apis/news.api";
+import { NEWS_QUERY_KEYS } from "@/constants";
+import type { SourceMeta } from "@/types/domain";
 
 export type { SourceMeta };
 
 export function useSources() {
   const repos = useNewsRepositories();
-  return useQuery({ queryKey: ["sources"], queryFn: repos.news.ListSources });
+  return useQuery({ queryKey: NEWS_QUERY_KEYS.sources, queryFn: repos.news.ListSources });
 }
 
 export function useSource(id: string) {
   const repos = useNewsRepositories();
   return useQuery({
-    queryKey: ["source", id],
+    queryKey: NEWS_QUERY_KEYS.source(id),
     queryFn: () => repos.news.GetSource(id),
     enabled: id.trim().length > 0,
   });
@@ -21,13 +22,13 @@ export function useSource(id: string) {
 
 export function useNotifyKinds() {
   const repos = useNewsRepositories();
-  return useQuery({ queryKey: ["notify-kinds"], queryFn: repos.notify.ListNotifyKinds });
+  return useQuery({ queryKey: NEWS_QUERY_KEYS.notifyKinds, queryFn: repos.notify.ListNotifyKinds });
 }
 
 export function useNewsItems(sourceId?: string) {
   const repos = useNewsRepositories();
   return useQuery({
-    queryKey: ["news", sourceId],
+    queryKey: NEWS_QUERY_KEYS.items(sourceId),
     queryFn: () => repos.news.ListNews({ sourceId, limit: 40 }),
   });
 }
@@ -35,7 +36,7 @@ export function useNewsItems(sourceId?: string) {
 export function useSearchNews(q: string) {
   const repos = useNewsRepositories();
   return useQuery({
-    queryKey: ["news-search", q],
+    queryKey: NEWS_QUERY_KEYS.search(q),
     queryFn: () => repos.news.SearchNews(q),
     enabled: q.trim().length > 0,
   });
@@ -43,32 +44,32 @@ export function useSearchNews(q: string) {
 
 export function useKeywords() {
   const repos = useNewsRepositories();
-  return useQuery({ queryKey: ["keywords"], queryFn: repos.report.ListKeywords });
+  return useQuery({ queryKey: NEWS_QUERY_KEYS.keywords, queryFn: repos.report.ListKeywords });
 }
 
 export function useSnapshots() {
   const repos = useNewsRepositories();
-  return useQuery({ queryKey: ["snapshots"], queryFn: () => repos.report.ListSnapshots(20) });
+  return useQuery({ queryKey: NEWS_QUERY_KEYS.snapshots, queryFn: () => repos.report.ListSnapshots(20) });
 }
 
 export function useCrawlSessions() {
   const repos = useNewsRepositories();
-  return useQuery({ queryKey: ["crawl-sessions"], queryFn: () => repos.crawl.ListCrawlSessions(30) });
+  return useQuery({ queryKey: NEWS_QUERY_KEYS.crawlSessions, queryFn: () => repos.crawl.ListCrawlSessions(30) });
 }
 
 export function useChannels() {
   const repos = useNewsRepositories();
-  return useQuery({ queryKey: ["notify-channels"], queryFn: repos.notify.ListChannels });
+  return useQuery({ queryKey: NEWS_QUERY_KEYS.notifyChannels, queryFn: repos.notify.ListChannels });
 }
 
 export function useDeliveries() {
   const repos = useNewsRepositories();
-  return useQuery({ queryKey: ["notify-deliveries"], queryFn: () => repos.notify.ListDeliveries(30) });
+  return useQuery({ queryKey: NEWS_QUERY_KEYS.notifyDeliveries, queryFn: () => repos.notify.ListDeliveries(30) });
 }
 
 export function useColumnPreferences() {
   const repos = useNewsRepositories();
-  return useQuery({ queryKey: ["news-preferences"], queryFn: repos.news.GetPreferences });
+  return useQuery({ queryKey: NEWS_QUERY_KEYS.preferences, queryFn: repos.news.GetPreferences });
 }
 
 export function useFetchSource() {
@@ -77,7 +78,7 @@ export function useFetchSource() {
   return useMutation({
     mutationFn: (id: string) => repos.news.FetchSource(id),
     onSuccess: (items, id) => {
-      qc.setQueryData(["news", id], items);
+      qc.setQueryData(NEWS_QUERY_KEYS.items(id), items);
     },
   });
 }
@@ -94,7 +95,7 @@ export function useTriggerCrawl() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (sourceId?: string) => repos.crawl.TriggerCrawl(sourceId),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["crawl-sessions"] }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: NEWS_QUERY_KEYS.crawlSessions }),
   });
 }
 
@@ -103,7 +104,7 @@ export function useAddKeyword() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (body: { word: string; kind: string; groupName?: string }) => repos.report.AddKeyword(body),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["keywords"] }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: NEWS_QUERY_KEYS.keywords }),
   });
 }
 
@@ -122,13 +123,13 @@ export function useDispatchReport() {
         payloadJson: payload,
       });
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["notify-deliveries"] }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: NEWS_QUERY_KEYS.notifyDeliveries }),
   });
 }
 
 export function useMCPTools() {
   const repos = useNewsRepositories();
-  return useQuery({ queryKey: ["mcp-tools"], queryFn: repos.mcp.ListMCPTools });
+  return useQuery({ queryKey: NEWS_QUERY_KEYS.mcpTools, queryFn: repos.mcp.ListMCPTools });
 }
 
 export function useRunMCPTool() {
@@ -140,7 +141,7 @@ export function useRunMCPTool() {
 
 export function useSystemState() {
   const repos = useNewsRepositories();
-  return useQuery({ queryKey: ["system-state"], queryFn: repos.system.getLatestSystemState });
+  return useQuery({ queryKey: NEWS_QUERY_KEYS.systemState, queryFn: repos.system.getLatestSystemState });
 }
 
 export function useInitializeSystem() {
@@ -148,7 +149,7 @@ export function useInitializeSystem() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: () => repos.system.initializeSystem(),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["system-state"] }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: NEWS_QUERY_KEYS.systemState }),
   });
 }
 
@@ -164,7 +165,7 @@ export function useGenerateReport() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (mode: string) => repos.report.GenerateReport(mode),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["snapshots"] }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: NEWS_QUERY_KEYS.snapshots }),
   });
 }
 
@@ -174,6 +175,6 @@ export function useUpsertChannel() {
   return useMutation({
     mutationFn: (body: { kind: string; name: string; enabled: boolean; config: Record<string, unknown> }) =>
       repos.notify.UpsertChannel(body),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["notify-channels"] }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: NEWS_QUERY_KEYS.notifyChannels }),
   });
 }

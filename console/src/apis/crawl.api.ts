@@ -1,17 +1,11 @@
 import type { DataResponse } from "nfx-ui/types";
 
+import type { CrawlSession } from "@/types/domain";
+
 import { protectedClient } from "./clients";
 import { URL_PATHS } from "./ip";
 
-export type CrawlSession = {
-  id: string;
-  sourceId?: string;
-  status: string;
-  itemCount: number;
-  errorMessage?: string;
-  startedAt: string;
-  finishedAt?: string;
-};
+export type { CrawlSession };
 
 export const TriggerCrawl = async (sourceId?: string): Promise<CrawlSession> => {
   const { data } = await protectedClient.post<DataResponse<CrawlSession>>(URL_PATHS.CRAWL.sessions, { sourceId: sourceId ?? "" });
