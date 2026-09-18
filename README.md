@@ -26,11 +26,14 @@ NFX-News/
 
 HTTP 走 **NFX-Edge**（先启动 Edge）。本仓不跑 Traefik。Avoid Stack MinIO Console `10188`.
 
+容器内 `GRPC_PORT_*` 为 50071+（对齐 PulsoLink-API）；主机只映射 `GRPC_EXT_*`（10200 起）。
+
 | Use | Variable | Port |
 |-----|----------|------|
-| Identity auth gRPC | `GRPC_PORT_AUTH` | 10156 (Identity) |
-| gRPC source…system | `GRPC_PORT_*` | 10171–10177 |
-| Console (optional host map) | `CONSOLE_EXTERNAL_PORT` | 10190 |
+| Identity auth gRPC (container / via nfx-edge) | `GRPC_PORT_AUTH` | 50071 (`GRPC_HOST_AUTH=NFX-Identity-Auth-Base-Dev`) |
+| gRPC source…system (container) | `GRPC_PORT_*` | 50072–50078 |
+| gRPC source…system (host) | `GRPC_EXT_PORT_*` | 10204–10210 |
+| Console (optional host map) | `CONSOLE_EXTERNAL_PORT` | 10211 |
 
 HTTP prefixes via Edge Host `TRAEFIK_API_HOST`: `/source` `/news` `/crawl` `/report` `/notify` `/mcp` `/system`.
 
@@ -53,7 +56,7 @@ task console                  # Vite on VITE_PORT (5174)
 sudo docker compose -f docker-compose.dev.yml up --build
 ```
 
-MCP Streamable HTTP: `POST/GET http://127.0.0.1:10178/mcp/protocol`. REST tools: `/mcp/tools`, `/mcp/run`.
+MCP Streamable HTTP: Edge Host `TRAEFIK_API_HOST` + PathPrefix `/mcp`（`POST/GET /mcp/protocol`）。REST tools: `/mcp/tools`, `/mcp/run`.
 
 Console Docker uses `additional_contexts.nfx-ui: ../NFX-UI` and `"nfx-ui": "file:../../NFX-UI"`. Build NFX-UI (`npm run build` in that repo) first.
 

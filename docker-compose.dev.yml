@@ -19,7 +19,7 @@ services:
       - "${HTTP_PORT}"
       - "${GRPC_PORT_SOURCE}"
     ports:
-      - "${GRPC_PORT_SOURCE}:${GRPC_PORT_SOURCE}"
+      - "${GRPC_EXT_PORT_SOURCE}:${GRPC_PORT_SOURCE}"
     labels:
       traefik.enable: "true"
       traefik.project: "nfx-news"
@@ -90,7 +90,7 @@ services:
       - "${HTTP_PORT}"
       - "${GRPC_PORT_NEWS}"
     ports:
-      - "${GRPC_PORT_NEWS}:${GRPC_PORT_NEWS}"
+      - "${GRPC_EXT_PORT_NEWS}:${GRPC_PORT_NEWS}"
     labels:
       traefik.enable: "true"
       traefik.project: "nfx-news"
@@ -161,7 +161,7 @@ services:
       - "${HTTP_PORT}"
       - "${GRPC_PORT_CRAWL}"
     ports:
-      - "${GRPC_PORT_CRAWL}:${GRPC_PORT_CRAWL}"
+      - "${GRPC_EXT_PORT_CRAWL}:${GRPC_PORT_CRAWL}"
     labels:
       traefik.enable: "true"
       traefik.project: "nfx-news"
@@ -232,7 +232,7 @@ services:
       - "${HTTP_PORT}"
       - "${GRPC_PORT_REPORT}"
     ports:
-      - "${GRPC_PORT_REPORT}:${GRPC_PORT_REPORT}"
+      - "${GRPC_EXT_PORT_REPORT}:${GRPC_PORT_REPORT}"
     labels:
       traefik.enable: "true"
       traefik.project: "nfx-news"
@@ -303,7 +303,7 @@ services:
       - "${HTTP_PORT}"
       - "${GRPC_PORT_NOTIFY}"
     ports:
-      - "${GRPC_PORT_NOTIFY}:${GRPC_PORT_NOTIFY}"
+      - "${GRPC_EXT_PORT_NOTIFY}:${GRPC_PORT_NOTIFY}"
     labels:
       traefik.enable: "true"
       traefik.project: "nfx-news"
@@ -374,7 +374,7 @@ services:
       - "${HTTP_PORT}"
       - "${GRPC_PORT_MCP}"
     ports:
-      - "${GRPC_PORT_MCP}:${GRPC_PORT_MCP}"
+      - "${GRPC_EXT_PORT_MCP}:${GRPC_PORT_MCP}"
     labels:
       traefik.enable: "true"
       traefik.project: "nfx-news"
@@ -445,7 +445,7 @@ services:
       - "${HTTP_PORT}"
       - "${GRPC_PORT_SYSTEM}"
     ports:
-      - "${GRPC_PORT_SYSTEM}:${GRPC_PORT_SYSTEM}"
+      - "${GRPC_EXT_PORT_SYSTEM}:${GRPC_PORT_SYSTEM}"
     labels:
       traefik.enable: "true"
       traefik.project: "nfx-news"

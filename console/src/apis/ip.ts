@@ -1,4 +1,4 @@
-const HTTP_BASE_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:10178";
+const HTTP_BASE_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:10166";
 
 export const URL_PATHS = {
   SOURCE: {
