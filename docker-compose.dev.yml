@@ -23,6 +23,7 @@ services:
     labels:
       traefik.enable: "true"
       traefik.project: "nfx-news"
+      traefik.docker.network: nfx-edge
       traefik.http.services.news-source-base.loadbalancer.server.port: "${HTTP_PORT}"
       traefik.http.routers.news-source-base.entrypoints: web
       traefik.http.middlewares.nfx-news-source-gw.stripprefix.prefixes: ${API_GATEWAY_PREFIX}
@@ -101,6 +102,7 @@ services:
     labels:
       traefik.enable: "true"
       traefik.project: "nfx-news"
+      traefik.docker.network: nfx-edge
       traefik.http.services.news-base.loadbalancer.server.port: "${HTTP_PORT}"
       traefik.http.routers.news-base.entrypoints: web
       traefik.http.middlewares.nfx-news-news-gw.stripprefix.prefixes: ${API_GATEWAY_PREFIX}
@@ -179,6 +181,7 @@ services:
     labels:
       traefik.enable: "true"
       traefik.project: "nfx-news"
+      traefik.docker.network: nfx-edge
       traefik.http.services.news-crawl-base.loadbalancer.server.port: "${HTTP_PORT}"
       traefik.http.routers.news-crawl-base.entrypoints: web
       traefik.http.middlewares.nfx-news-crawl-gw.stripprefix.prefixes: ${API_GATEWAY_PREFIX}
@@ -257,6 +260,7 @@ services:
     labels:
       traefik.enable: "true"
       traefik.project: "nfx-news"
+      traefik.docker.network: nfx-edge
       traefik.http.services.news-report-base.loadbalancer.server.port: "${HTTP_PORT}"
       traefik.http.routers.news-report-base.entrypoints: web
       traefik.http.middlewares.nfx-news-report-gw.stripprefix.prefixes: ${API_GATEWAY_PREFIX}
@@ -335,6 +339,7 @@ services:
     labels:
       traefik.enable: "true"
       traefik.project: "nfx-news"
+      traefik.docker.network: nfx-edge
       traefik.http.services.news-notify-base.loadbalancer.server.port: "${HTTP_PORT}"
       traefik.http.routers.news-notify-base.entrypoints: web
       traefik.http.middlewares.nfx-news-notify-gw.stripprefix.prefixes: ${API_GATEWAY_PREFIX}
@@ -413,6 +418,7 @@ services:
     labels:
       traefik.enable: "true"
       traefik.project: "nfx-news"
+      traefik.docker.network: nfx-edge
       traefik.http.services.news-mcp-base.loadbalancer.server.port: "${HTTP_PORT}"
       traefik.http.routers.news-mcp-base.entrypoints: web
       traefik.http.middlewares.nfx-news-mcp-gw.stripprefix.prefixes: ${API_GATEWAY_PREFIX}
@@ -491,6 +497,7 @@ services:
     labels:
       traefik.enable: "true"
       traefik.project: "nfx-news"
+      traefik.docker.network: nfx-edge
       traefik.http.services.news-system-base.loadbalancer.server.port: "${HTTP_PORT}"
       traefik.http.routers.news-system-base.entrypoints: web
       traefik.http.middlewares.nfx-news-system-gw.stripprefix.prefixes: ${API_GATEWAY_PREFIX}
@@ -552,49 +559,35 @@ services:
       - nfx-stack
 
   console:
-    image: nfx-news-console:dev
+    image: node:22-bookworm-slim
     container_name: NFX-News-Console-Dev
-    build:
-      context: ./console
-      dockerfile: Dockerfile
-      target: dev
-      args:
-        VITE_API_URL: ${VITE_API_URL}
-        VITE_IDENTITY_API_URL: ${VITE_IDENTITY_API_URL}
+    working_dir: /app
+    volumes:
+      - ./console:/app
+    command: ["node", "node_modules/vite/bin/vite.js", "--mode", "dev", "--host", "0.0.0.0"]
     environment:
       VITE_API_URL: ${VITE_API_URL}
       VITE_IDENTITY_API_URL: ${VITE_IDENTITY_API_URL}
       VITE_PORT: ${VITE_PORT}
+      VITE_BASE: ${VITE_BASE}
       DOCKER: "1"
-    ports:
-      - "${CONSOLE_EXTERNAL_PORT}:${VITE_PORT}"
+    expose:
+      - "${VITE_PORT}"
     labels:
       traefik.enable: "true"
       traefik.project: "nfx-news"
+      traefik.docker.network: nfx-edge
       traefik.http.services.news-console.loadbalancer.server.port: "${VITE_PORT}"
       traefik.http.routers.news-console.entrypoints: web
-      traefik.http.routers.news-console.rule: Host(`${TRAEFIK_CONSOLE_HOST}`)
+      traefik.http.routers.news-console.rule: PathPrefix(`/console/nfx-news`)
       traefik.http.routers.news-console.service: news-console
-      traefik.http.routers.news-console.priority: "1"
+      traefik.http.routers.news-console.priority: "25"
       traefik.http.routers.news-console-secure.entrypoints: websecure
-      traefik.http.routers.news-console-secure.rule: Host(`${TRAEFIK_CONSOLE_HOST}`)
+      traefik.http.routers.news-console-secure.rule: PathPrefix(`/console/nfx-news`)
       traefik.http.routers.news-console-secure.service: news-console
       traefik.http.routers.news-console-secure.tls: "true"
-      traefik.http.routers.news-console-secure.priority: "1"
-    develop:
-      watch:
-        - action: sync
-          path: ./console
-          target: /app
-          ignore:
-            - node_modules/
-            - dist/
-        - action: rebuild
-          path: ./console/package.json
-        - action: rebuild
-          path: ./console/package-lock.json
-        - action: rebuild
-          path: ./console/Dockerfile
+      traefik.http.routers.news-console-secure.priority: "25"
+    init: true
     networks:
       - nfx-news
       - nfx-edge
