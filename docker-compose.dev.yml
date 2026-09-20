@@ -75,6 +75,7 @@ services:
     networks:
       - nfx-news
       - nfx-edge
+      - nfx-stack
 
   news-base:
     image: nfx-news-news-base:dev
@@ -146,6 +147,7 @@ services:
     networks:
       - nfx-news
       - nfx-edge
+      - nfx-stack
 
   crawl-base:
     image: nfx-news-crawl-base:dev
@@ -217,6 +219,7 @@ services:
     networks:
       - nfx-news
       - nfx-edge
+      - nfx-stack
 
   report-base:
     image: nfx-news-report-base:dev
@@ -288,6 +291,7 @@ services:
     networks:
       - nfx-news
       - nfx-edge
+      - nfx-stack
 
   notify-base:
     image: nfx-news-notify-base:dev
@@ -359,6 +363,7 @@ services:
     networks:
       - nfx-news
       - nfx-edge
+      - nfx-stack
 
   mcp-base:
     image: nfx-news-mcp-base:dev
@@ -430,6 +435,7 @@ services:
     networks:
       - nfx-news
       - nfx-edge
+      - nfx-stack
 
   system-base:
     image: nfx-news-system-base:dev
@@ -501,6 +507,7 @@ services:
     networks:
       - nfx-news
       - nfx-edge
+      - nfx-stack
 
   console:
     image: nfx-news-console:dev
@@ -535,3 +542,6 @@ networks:
   nfx-edge:
     external: true
     name: nfx-edge
+  nfx-stack:
+    external: true
+    name: nfx-stack
