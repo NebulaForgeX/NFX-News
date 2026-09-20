@@ -1,7 +1,7 @@
 import { GuestRoute, ProtectedRoute } from "nfx-ui/navigations";
 import { Navigate, Route, Routes } from "react-router";
 
-import { Main, Sidebar } from "@/layouts";
+import { Sidebar } from "@/layouts";
 import { ROUTES } from "@/navigations";
 import {
   CrawlPage,
@@ -21,8 +21,10 @@ import {
 export default function App() {
   return (
     <Routes>
-      <Route element={<Main />}>
-        <Route path={ROUTES.HOME} element={<Navigate to={ROUTES.LOGIN} replace />} />
+      <Route element={<GuestRoute redirectTo={ROUTES.READER} />}>
+        <Route index element={<LoginPage />} />
+        <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+        <Route path={ROUTES.SIGNUP} element={<SignupPage />} />
       </Route>
 
       <Route element={<ProtectedRoute redirectTo={ROUTES.LOGIN} />}>
@@ -40,11 +42,6 @@ export default function App() {
           <Route path={ROUTES.USER_PROFILE_IDENTITIES} element={<ProfileIdentitiesPage />} />
           <Route path={ROUTES.USER_SETTINGS} element={<SettingsPage />} />
         </Route>
-      </Route>
-
-      <Route element={<GuestRoute redirectTo={ROUTES.READER} />}>
-        <Route path={ROUTES.LOGIN} element={<LoginPage />} />
-        <Route path={ROUTES.SIGNUP} element={<SignupPage />} />
       </Route>
 
       <Route path="*" element={<NotFoundPage />} />
