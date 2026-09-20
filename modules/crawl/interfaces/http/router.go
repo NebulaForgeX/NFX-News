@@ -18,11 +18,21 @@ func NewRouter(app fiber.Router, v token.Verifier, h *Registry) *Router {
 }
 
 func (r *Router) RegisterRoutes() {
-	g := r.app.Group("/crawl")
-	g.Get("/locales/:lang", r.handlers.I18n.GetErrorTranslations)
-	g.Get("/messages/:lang", r.handlers.I18n.GetMessageTranslations)
-	protected := g.Group("", middleware.TokenAuth(r.tokenVerifier))
-	protected.Get("/sessions", r.handlers.App.List)
-	protected.Get("/sessions/:id", r.handlers.App.Get)
-	protected.Post("/sessions", r.handlers.App.Trigger)
+	crawl := r.app.Group("/crawl")
+	r.RegisterLocalesGroup(crawl)
+	r.RegisterSessionsGroup(crawl)
+}
+
+func (r *Router) RegisterLocalesGroup(crawl fiber.Router) {
+	locales := crawl.Group("/locales")
+	locales.Get("/:lang", r.handlers.I18n.GetErrorTranslations)
+	messages := crawl.Group("/messages")
+	messages.Get("/:lang", r.handlers.I18n.GetMessageTranslations)
+}
+
+func (r *Router) RegisterSessionsGroup(crawl fiber.Router) {
+	me := crawl.Group("", middleware.TokenAuth(r.tokenVerifier))
+	me.Get("/sessions", r.handlers.App.List)
+	me.Get("/sessions/:id", r.handlers.App.Get)
+	me.Post("/sessions", r.handlers.App.Trigger)
 }

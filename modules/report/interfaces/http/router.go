@@ -18,14 +18,29 @@ func NewRouter(app fiber.Router, v token.Verifier, h *Registry) *Router {
 }
 
 func (r *Router) RegisterRoutes() {
-	g := r.app.Group("/report")
-	g.Get("/locales/:lang", r.handlers.I18n.GetErrorTranslations)
-	g.Get("/messages/:lang", r.handlers.I18n.GetMessageTranslations)
-	protected := g.Group("", middleware.TokenAuth(r.tokenVerifier))
-	protected.Get("/keywords", r.handlers.App.ListKeywords)
-	protected.Get("/snapshots", r.handlers.App.ListSnapshots)
-	protected.Get("/snapshots/:id/html", r.handlers.App.HTML)
-	protected.Get("/snapshots/:id", r.handlers.App.Get)
-	protected.Post("/keywords", r.handlers.App.AddKeyword)
-	protected.Post("/snapshots", r.handlers.App.Generate)
+	report := r.app.Group("/report")
+	r.RegisterLocalesGroup(report)
+	r.RegisterKeywordsGroup(report)
+	r.RegisterSnapshotsGroup(report)
+}
+
+func (r *Router) RegisterLocalesGroup(report fiber.Router) {
+	locales := report.Group("/locales")
+	locales.Get("/:lang", r.handlers.I18n.GetErrorTranslations)
+	messages := report.Group("/messages")
+	messages.Get("/:lang", r.handlers.I18n.GetMessageTranslations)
+}
+
+func (r *Router) RegisterKeywordsGroup(report fiber.Router) {
+	me := report.Group("", middleware.TokenAuth(r.tokenVerifier))
+	me.Get("/keywords", r.handlers.App.ListKeywords)
+	me.Post("/keywords", r.handlers.App.AddKeyword)
+}
+
+func (r *Router) RegisterSnapshotsGroup(report fiber.Router) {
+	me := report.Group("", middleware.TokenAuth(r.tokenVerifier))
+	me.Get("/snapshots", r.handlers.App.ListSnapshots)
+	me.Get("/snapshots/:id/html", r.handlers.App.HTML)
+	me.Get("/snapshots/:id", r.handlers.App.Get)
+	me.Post("/snapshots", r.handlers.App.Generate)
 }
