@@ -1,11 +1,23 @@
 {
   "title": "Crawl sessions",
-  "subtitle": "Trigger a crawl for one source or all sources.",
-  "sourceId": "Source id (optional)",
+  "subtitle": "Trigger a crawl for one source or every catalog source.",
+  "sourceId": "Source",
   "trigger": "Trigger",
   "triggerAll": "Trigger all",
-  "detail": "Detail",
+  "detail": "Session detail",
   "sessions": "Recent sessions",
   "emptySessions": "No crawl sessions",
-  "emptySessionsHint": "Trigger a crawl to see status here."
+  "emptySessionsHint": "Trigger a crawl to see status here.",
+  "allSources": "All sources",
+  "status": "Status",
+  "source": "Source",
+  "itemCount": "Items",
+  "startedAt": "Started",
+  "finishedAt": "Finished",
+  "error": "Error",
+  "statusValue": {
+    "running": "running",
+    "ok": "ok",
+    "failed": "failed"
+  }
 }

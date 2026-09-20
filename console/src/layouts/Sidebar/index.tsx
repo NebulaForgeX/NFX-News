@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 import { useEffect, useRef, useState } from "react";
 import { Avatar, Box, Button, Flex, IconButton, Text } from "@radix-ui/themes";
-import { AnimatedIcon, type AnimatedIconComponent, ArrowNarrowLeftIcon, ArrowNarrowUpIcon, DownChevron, FileDescriptionIcon, FilledBellIcon, GearIcon, LayersIcon, LogoutIcon, PassportIcon, PenIcon, RightChevron, SparklesIcon, UnorderedListIcon, UserIcon } from "nfx-ui/icons";
+import { AnimatedIcon, type AnimatedIconComponent, ArrowNarrowLeftIcon, ArrowNarrowUpIcon, DownChevron, FileDescriptionIcon, FilledBellIcon, GearIcon, GlobeIcon, LayersIcon, LogoutIcon, PassportIcon, PenIcon, PlayerIcon, RightChevron, RouterIcon, SparklesIcon, UnorderedListIcon, UserIcon } from "nfx-ui/icons";
 import { authEventEmitter, authEvents } from "nfx-ui/events";
 import { useCurrentProfile } from "nfx-ui/hooks";
 import { AuthStore, clearAuth } from "nfx-ui/stores";
@@ -101,6 +101,9 @@ function OverviewSection({ collapsed, broken, onMobileClose }: SectionProps) {
       <MenuItem component={<Link to={ROUTES.READER} />} icon={<AnimatedIcon icon={FileDescriptionIcon} size={18} />} active={active} onClick={() => broken && onMobileClose()}>
         <MenuLabel active={active}>{t("sidebar.reader")}</MenuLabel>
       </MenuItem>
+      <MenuItem component={<Link to={ROUTES.SOURCES} />} icon={<AnimatedIcon icon={GlobeIcon} size={18} />} active={location.pathname === ROUTES.SOURCES || location.pathname.startsWith(`${ROUTES.SOURCES}/`)} onClick={() => broken && onMobileClose()}>
+        <MenuLabel active={location.pathname === ROUTES.SOURCES || location.pathname.startsWith(`${ROUTES.SOURCES}/`)}>{t("sidebar.sources")}</MenuLabel>
+      </MenuItem>
     </Menu>
   );
 }
@@ -148,7 +151,7 @@ function MainMenuSection({ collapsed, broken, onMobileClose }: SectionProps) {
       <MenuItem component={<Link to={ROUTES.REPORTS} />} icon={<AnimatedIcon icon={FileDescriptionIcon} size={18} />} active={isActive(ROUTES.REPORTS)} onClick={() => broken && onMobileClose()}>
         <MenuLabel active={isActive(ROUTES.REPORTS)}>{t("sidebar.reports")}</MenuLabel>
       </MenuItem>
-      <MenuItem component={<Link to={ROUTES.CRAWL} />} icon={<AnimatedIcon icon={FileDescriptionIcon} size={18} />} active={isActive(ROUTES.CRAWL)} onClick={() => broken && onMobileClose()}>
+      <MenuItem component={<Link to={ROUTES.CRAWL} />} icon={<AnimatedIcon icon={PlayerIcon} size={18} />} active={isActive(ROUTES.CRAWL)} onClick={() => broken && onMobileClose()}>
         <MenuLabel active={isActive(ROUTES.CRAWL)}>{t("sidebar.crawl")}</MenuLabel>
       </MenuItem>
       <MenuItem component={<Link to={ROUTES.MCP} />} icon={<AnimatedIcon icon={SparklesIcon} size={18} />} active={isActive(ROUTES.MCP)} onClick={() => broken && onMobileClose()}>
@@ -176,6 +179,14 @@ function SettingsSection({ collapsed, broken, onMobileClose }: SectionProps) {
         onClick={() => broken && onMobileClose()}
       >
         <MenuLabel active={isActive(ROUTES.USER_SETTINGS)}>{t("sidebar.settingsItem")}</MenuLabel>
+      </MenuItem>
+      <MenuItem
+        component={<Link to={ROUTES.SYSTEM} />}
+        icon={<AnimatedIcon icon={RouterIcon} size={18} />}
+        active={isActive(ROUTES.SYSTEM)}
+        onClick={() => broken && onMobileClose()}
+      >
+        <MenuLabel active={isActive(ROUTES.SYSTEM)}>{t("sidebar.system")}</MenuLabel>
       </MenuItem>
     </Menu>
   );

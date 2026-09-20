@@ -1,6 +1,6 @@
 {
   "title": "Rapports",
-  "subtitle": "Mots-clés d'inclusion/exclusion et instantanés.",
+  "subtitle": "Mots inclus / exclus / requis, puis instantanés.",
   "keywords": "Mots-clés",
   "add": "Ajouter",
   "snapshots": "Instantanés",
@@ -9,7 +9,27 @@
   "incremental": "Incrémental",
   "emptyKeywords": "Aucun mot-clé",
   "emptySnapshots": "Aucun instantané",
+  "emptyItems": "Aucun titre",
   "openHtml": "Ouvrir HTML",
   "dispatch": "Notifier",
-  "group": "Groupe"
+  "group": "Groupe",
+  "word": "Mot",
+  "wordHint": "+requis / !exclure / inclure",
+  "kindLabel": "Type",
+  "kind": {
+    "include": "inclure",
+    "exclude": "exclure",
+    "required": "requis"
+  },
+  "countLimit": "Limite",
+  "createdAt": "Créé",
+  "titleCol": "Titre",
+  "mode": "Mode",
+  "itemCount": "Éléments",
+  "actions": "Actions",
+  "back": "Retour",
+  "matched": "Titres correspondants",
+  "isNew": "Nouveau",
+  "new": "new",
+  "source": "Source"
 }

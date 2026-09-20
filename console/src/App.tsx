@@ -13,9 +13,12 @@ import {
   ProfileIdentitiesPage,
   ProfileOverviewPage,
   ReaderPage,
+  ReportDetailPage,
   ReportsPage,
   SettingsPage,
   SignupPage,
+  SourcesPage,
+  SystemPage,
 } from "@/pages";
 
 export default function App() {
@@ -32,10 +35,13 @@ export default function App() {
           <Route path={ROUTES.USER} element={<Navigate to={ROUTES.READER} replace />} />
           <Route path={ROUTES.USER_OVERVIEW} element={<Navigate to={ROUTES.READER} replace />} />
           <Route path={ROUTES.READER} element={<ReaderPage />} />
+          <Route path={ROUTES.SOURCES} element={<SourcesPage />} />
           <Route path={ROUTES.REPORTS} element={<ReportsPage />} />
+          <Route path={ROUTES.REPORT_DETAIL} element={<ReportDetailPage />} />
           <Route path={ROUTES.CRAWL} element={<CrawlPage />} />
           <Route path={ROUTES.MCP} element={<MCPPage />} />
           <Route path={ROUTES.NOTIFY} element={<NotifyPage />} />
+          <Route path={ROUTES.SYSTEM} element={<SystemPage />} />
           <Route path={ROUTES.PROFILE} element={<Navigate to={ROUTES.USER_PROFILE_OVERVIEW} replace />} />
           <Route path={ROUTES.USER_PROFILE_OVERVIEW} element={<ProfileOverviewPage />} />
           <Route path={ROUTES.USER_PROFILE_EDIT} element={<ProfileEditPage />} />

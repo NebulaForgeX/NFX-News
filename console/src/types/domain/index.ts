@@ -1,9 +1,16 @@
 export type {
   SourceMeta,
+  NewsExtra,
+  NewsExtraIcon,
   NewsItem,
+  ReaderPrefsPayload,
+  ReaderPreferences,
   Keyword,
+  SnapshotItem,
+  SnapshotPayload,
   Snapshot,
   Channel,
   Delivery,
   CrawlSession,
+  SystemState,
 } from "./news.domain";

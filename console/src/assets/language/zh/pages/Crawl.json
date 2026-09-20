@@ -1,11 +1,23 @@
 {
   "title": "爬取会话",
-  "subtitle": "对单个来源或全部来源立即爬取。",
-  "sourceId": "来源 ID（可选）",
+  "subtitle": "对单个来源或全部目录来源立即爬取。",
+  "sourceId": "来源",
   "trigger": "立即爬取",
   "triggerAll": "全部爬取",
-  "detail": "详情",
+  "detail": "会话详情",
   "sessions": "最近会话",
   "emptySessions": "还没有爬取会话",
-  "emptySessionsHint": "触发一次爬取后会出现状态。"
+  "emptySessionsHint": "触发一次爬取后会出现状态。",
+  "allSources": "全部来源",
+  "status": "状态",
+  "source": "来源",
+  "itemCount": "条数",
+  "startedAt": "开始",
+  "finishedAt": "结束",
+  "error": "错误",
+  "statusValue": {
+    "running": "进行中",
+    "ok": "成功",
+    "failed": "失败"
+  }
 }

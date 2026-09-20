@@ -10,6 +10,18 @@ export type SourceMeta = {
   redirect: string;
 };
 
+export type NewsExtraIcon = {
+  url?: string;
+  scale?: number;
+};
+
+export type NewsExtra = {
+  info?: string;
+  hover?: string;
+  date?: string;
+  icon?: NewsExtraIcon;
+};
+
 export type NewsItem = {
   id: string;
   sourceId: string;
@@ -18,7 +30,18 @@ export type NewsItem = {
   url: string;
   mobileUrl?: string;
   pubDate?: number;
-  extra?: Record<string, unknown>;
+  extra?: NewsExtra;
+  updatedAt?: string;
+};
+
+export type ReaderPrefsPayload = {
+  hiddenSourceIds?: string[];
+  columnFilter?: string;
+};
+
+export type ReaderPreferences = {
+  columnOrder: string[];
+  payload: ReaderPrefsPayload;
 };
 
 export type Keyword = {
@@ -27,6 +50,22 @@ export type Keyword = {
   word: string;
   kind: string;
   countLimit: number;
+  createdAt?: string;
+};
+
+export type SnapshotItem = {
+  id: string;
+  title: string;
+  url: string;
+  sourceId: string;
+  group: string;
+  isNew: boolean;
+};
+
+export type SnapshotPayload = {
+  mode?: string;
+  items?: SnapshotItem[];
+  html?: string;
 };
 
 export type Snapshot = {
@@ -35,7 +74,7 @@ export type Snapshot = {
   title: string;
   itemCount: number;
   createdAt: string;
-  payload?: unknown;
+  payload?: SnapshotPayload;
 };
 
 export type Channel = {
@@ -44,6 +83,8 @@ export type Channel = {
   name: string;
   enabled: boolean;
   config?: Record<string, unknown>;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type Delivery = {
@@ -64,4 +105,14 @@ export type CrawlSession = {
   errorMessage?: string;
   startedAt: string;
   finishedAt?: string;
+};
+
+export type SystemState = {
+  id?: string;
+  initialized: boolean;
+  initializedAt?: string | null;
+  initializationVersion?: string | null;
+  resetCount?: number;
+  createdAt?: string;
+  updatedAt?: string;
 };

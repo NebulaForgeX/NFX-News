@@ -1,6 +1,6 @@
 {
   "title": "Keyword reports",
-  "subtitle": "Track include/exclude keywords and generate snapshots.",
+  "subtitle": "Include / exclude / required words, then generate snapshots.",
   "keywords": "Keywords",
   "add": "Add",
   "snapshots": "Snapshots",
@@ -9,7 +9,27 @@
   "incremental": "Incremental",
   "emptyKeywords": "No keywords yet",
   "emptySnapshots": "No snapshots yet",
+  "emptyItems": "No matched headlines",
   "openHtml": "Open HTML",
   "dispatch": "Notify",
-  "group": "Group"
+  "group": "Group",
+  "word": "Word",
+  "wordHint": "+required / !exclude / include",
+  "kindLabel": "Kind",
+  "kind": {
+    "include": "include",
+    "exclude": "exclude",
+    "required": "required"
+  },
+  "countLimit": "Limit",
+  "createdAt": "Created",
+  "titleCol": "Title",
+  "mode": "Mode",
+  "itemCount": "Items",
+  "actions": "Actions",
+  "back": "Back",
+  "matched": "Matched headlines",
+  "isNew": "New",
+  "new": "new",
+  "source": "Source"
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 
@@ -57,6 +58,15 @@ func (s *Service) UpsertChannel(ctx context.Context, accountID, profileID, kind,
 	if accountID == "" {
 		return nil, errx.Unauthorized("INVALID_TOKEN", "missing account")
 	}
+	normalized, err := channelDomain.NormalizeKind(kind)
+	if err != nil {
+		return nil, err
+	}
+	kind = normalized
+	name = strings.TrimSpace(name)
+	if name == "" {
+		name = kind
+	}
 	if cfg == nil {
 		cfg = map[string]any{}
 	}
@@ -68,11 +78,29 @@ func (s *Service) UpsertChannel(ctx context.Context, accountID, profileID, kind,
 	if profileID != "" {
 		pid = &profileID
 	}
-	ent, err := channelDomain.New(aid, pid, kind, name, enabled, raw)
+	existing, err := s.ListChannels(ctx, accountID)
 	if err != nil {
 		return nil, err
 	}
 	channelRepo := s.repoFactory.Channel(transaction.UoW{})
+	now := time.Now().UTC()
+	for _, row := range existing {
+		if row.Kind != kind || row.Name != name {
+			continue
+		}
+		ent := channelDomain.NewFromState(channelDomain.State{
+			ID: row.ID, AccountID: aid, ProfileID: pid, Kind: kind, Name: name, Enabled: enabled, Config: raw, CreatedAt: row.CreatedAt, UpdatedAt: now,
+		})
+		if err := channelRepo.Update.Generic(ctx, ent); err != nil {
+			return nil, errx.ErrInternal.WithCause(err)
+		}
+		st := ent.State()
+		return &Channel{ID: st.ID, Kind: st.Kind, Name: st.Name, Enabled: st.Enabled, Config: st.Config, ConfigObj: cfg, CreatedAt: st.CreatedAt, UpdatedAt: st.UpdatedAt}, nil
+	}
+	ent, err := channelDomain.New(aid, pid, kind, name, enabled, raw)
+	if err != nil {
+		return nil, err
+	}
 	if err := channelRepo.Create.New(ctx, ent); err != nil {
 		return nil, errx.ErrInternal.WithCause(err)
 	}

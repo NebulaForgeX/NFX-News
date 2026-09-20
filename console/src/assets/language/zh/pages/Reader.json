@@ -1,11 +1,16 @@
 {
   "title": "阅读器",
-  "subtitle": "拖动栏目排序。刷新会拉取当前可见来源。",
+  "subtitle": "按来源排行。拖动栏头排序，可隐藏不需要的来源。",
   "search": "搜索标题",
-  "refresh": "刷新栏目",
+  "refresh": "刷新",
+  "refreshAll": "全部刷新",
   "results": "搜索结果",
   "emptySources": "还没有来源",
-  "emptySourcesHint": "爬取或写入来源后会出现栏目。",
+  "emptySourcesHint": "触发一次爬取或等待定时抓取。",
   "emptyColumn": "暂无标题",
-  "emptySearch": "没有匹配的标题"
+  "emptySearch": "没有匹配的标题",
+  "home": "站点",
+  "hide": "隐藏",
+  "allColumns": "全部",
+  "showHidden": "显示已隐藏（{{count}}）"
 }

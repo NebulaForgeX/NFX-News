@@ -1,5 +1,7 @@
 import type { DataResponse } from "nfx-ui/types";
 
+import type { SystemState } from "@/types/domain";
+
 import { protectedClient, publicClient } from "./clients";
 import { URL_PATHS } from "./ip";
 
@@ -39,12 +41,12 @@ export const getMessageTranslations = async (lang: string, module: NewsModule = 
   return data;
 };
 
-export const getLatestSystemState = async () => {
-  const { data } = await protectedClient.get<DataResponse<{ initialized: boolean }>>(URL_PATHS.SYSTEM.latest);
+export const getLatestSystemState = async (): Promise<SystemState> => {
+  const { data } = await protectedClient.get<DataResponse<SystemState>>(URL_PATHS.SYSTEM.latest);
   return data.data;
 };
 
-export const initializeSystem = async (version = "1.0.0") => {
-  const { data } = await protectedClient.post<DataResponse<{ initialized: boolean }>>(URL_PATHS.SYSTEM.initialize, { version });
+export const initializeSystem = async (version = "1.0.0"): Promise<SystemState> => {
+  const { data } = await protectedClient.post<DataResponse<SystemState>>(URL_PATHS.SYSTEM.initialize, { version });
   return data.data;
 };

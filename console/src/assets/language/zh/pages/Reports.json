@@ -1,6 +1,6 @@
 {
   "title": "关键词报告",
-  "subtitle": "维护包含/排除词，并生成快照。",
+  "subtitle": "维护包含 / 排除 / 必选词，并生成快照。",
   "keywords": "关键词",
   "add": "添加",
   "snapshots": "快照",
@@ -9,7 +9,27 @@
   "incremental": "增量",
   "emptyKeywords": "还没有关键词",
   "emptySnapshots": "还没有快照",
+  "emptyItems": "没有匹配标题",
   "openHtml": "打开 HTML",
   "dispatch": "推送",
-  "group": "分组"
+  "group": "分组",
+  "word": "词",
+  "wordHint": "+必选 / !排除 / 包含",
+  "kindLabel": "类型",
+  "kind": {
+    "include": "包含",
+    "exclude": "排除",
+    "required": "必选"
+  },
+  "countLimit": "上限",
+  "createdAt": "创建时间",
+  "titleCol": "标题",
+  "mode": "模式",
+  "itemCount": "条数",
+  "actions": "操作",
+  "back": "返回",
+  "matched": "匹配标题",
+  "isNew": "新",
+  "new": "新",
+  "source": "来源"
 }

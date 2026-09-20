@@ -15,3 +15,6 @@ export type { PreferencesPopoverProps } from "./PreferencesPopover";
 
 export { default as VirtuosoList } from "./VirtuosoList";
 export type { VirtuosoListProps } from "./VirtuosoList";
+export { DataTable } from "./DataTable";
+export type { DataTableColumn } from "./DataTable";
+export { SectionBlock } from "./SectionBlock";

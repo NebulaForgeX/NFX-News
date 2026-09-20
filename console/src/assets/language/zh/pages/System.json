@@ -1,0 +1,19 @@
+{
+  "title": "系统",
+  "subtitle": "引导状态来自 /system/system-state。",
+  "initialize": "初始化",
+  "version": "版本",
+  "state": "最新状态",
+  "stateHint": "POST initialize 会记录版本和时间。",
+  "ready": "已初始化",
+  "pending": "未初始化",
+  "empty": "没有系统状态",
+  "field": "字段",
+  "value": "值",
+  "initialized": "已初始化",
+  "yes": "是",
+  "no": "否",
+  "initializedAt": "初始化时间",
+  "resetCount": "重置次数",
+  "updatedAt": "更新时间"
+}

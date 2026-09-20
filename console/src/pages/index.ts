@@ -1,8 +1,11 @@
 export { default as ReaderPage } from "./Reader";
 export { default as ReportsPage } from "./Reports";
+export { default as ReportDetailPage } from "./Reports/Detail";
 export { default as CrawlPage } from "./Crawl";
 export { default as MCPPage } from "./MCP";
 export { default as NotifyPage } from "./Notify";
+export { default as SourcesPage } from "./Sources";
+export { default as SystemPage } from "./System";
 export { default as SettingsPage } from "./User/Setting";
 export { default as NotFoundPage } from "./NotFound";
 export { default as LoginPage } from "./Account/Login";

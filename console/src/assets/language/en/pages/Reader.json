@@ -1,11 +1,16 @@
 {
   "title": "Reader",
-  "subtitle": "Drag columns to reorder. Refresh fetches every visible source.",
+  "subtitle": "Ranked columns. Drag a header to reorder. Hide sources you do not need.",
   "search": "Search headlines",
-  "refresh": "Refresh column",
+  "refresh": "Refresh",
+  "refreshAll": "Refresh all",
   "results": "Search results",
-  "emptySources": "No sources yet",
-  "emptySourcesHint": "Sources appear after crawl or seed.",
+  "emptySources": "No sources",
+  "emptySourcesHint": "Trigger a crawl or wait for scheduled fetch.",
   "emptyColumn": "No headlines",
-  "emptySearch": "No matching headlines"
+  "emptySearch": "No matching headlines",
+  "home": "Site",
+  "hide": "Hide",
+  "allColumns": "All",
+  "showHidden": "Show hidden ({{count}})"
 }

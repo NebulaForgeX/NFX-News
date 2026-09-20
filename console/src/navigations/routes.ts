@@ -15,9 +15,12 @@ const routeMap = defineRouter({
 
   READER: "/reader",
   REPORTS: "/reports",
+  REPORT_DETAIL: "/reports/:id",
   CRAWL: "/crawl",
   MCP: "/mcp",
   NOTIFY: "/notify",
+  SOURCES: "/sources",
+  SYSTEM: "/system",
 });
 
 const { ROUTES, matchRoute, isActiveRoute, buildPath } = createRouter(routeMap);

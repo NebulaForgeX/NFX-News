@@ -1,0 +1,19 @@
+{
+  "title": "Système",
+  "subtitle": "État d'amorçage via /system/system-state.",
+  "initialize": "Initialiser",
+  "version": "Version",
+  "state": "Dernier état",
+  "stateHint": "POST initialize enregistre version et horodatage.",
+  "ready": "Initialisé",
+  "pending": "Non initialisé",
+  "empty": "Aucun état",
+  "field": "Champ",
+  "value": "Valeur",
+  "initialized": "Initialisé",
+  "yes": "oui",
+  "no": "non",
+  "initializedAt": "Initialisé le",
+  "resetCount": "Réinitialisations",
+  "updatedAt": "Mis à jour"
+}

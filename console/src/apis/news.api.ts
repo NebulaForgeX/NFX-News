@@ -1,6 +1,6 @@
 import type { DataResponse } from "nfx-ui/types";
 
-import type { NewsItem, SourceMeta } from "@/types/domain";
+import type { NewsItem, ReaderPreferences, SourceMeta } from "@/types/domain";
 
 import { protectedClient, publicClient } from "./clients";
 import { URL_PATHS } from "./ip";
@@ -32,14 +32,12 @@ export const SearchNews = async (q: string, limit = 50): Promise<NewsItem[]> => 
   return data.data;
 };
 
-export const GetPreferences = async () => {
-  const { data } = await protectedClient.get<DataResponse<{ columnOrder: string[]; payload: Record<string, unknown> }>>(
-    URL_PATHS.NEWS.preferences,
-  );
+export const GetPreferences = async (): Promise<ReaderPreferences> => {
+  const { data } = await protectedClient.get<DataResponse<ReaderPreferences>>(URL_PATHS.NEWS.preferences);
   return data.data;
 };
 
-export const SetPreferences = async (params: { columnOrder?: string[]; payload?: Record<string, unknown> }) => {
+export const SetPreferences = async (params: { columnOrder?: string[]; payload?: ReaderPreferences["payload"] }) => {
   const { data } = await protectedClient.put<DataResponse<unknown>>(URL_PATHS.NEWS.preferences, params);
   return data.data;
 };
