@@ -24,10 +24,15 @@ services:
       traefik.project: "nfx-news"
       traefik.http.services.news-source-base.loadbalancer.server.port: "${HTTP_PORT}"
       traefik.http.routers.news-source-base.entrypoints: web
-      traefik.http.routers.news-source-base.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_SOURCE}`)
+      traefik.http.middlewares.nfx-news-source-gw.stripprefix.prefixes: ${API_GATEWAY_PREFIX}
+      traefik.http.routers.news-source-base.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_SOURCE}`)
+      traefik.http.routers.news-source-base.priority: "20"
+      traefik.http.routers.news-source-base.middlewares: nfx-news-source-gw
       traefik.http.routers.news-source-base.service: news-source-base
       traefik.http.routers.news-source-base-secure.entrypoints: websecure
-      traefik.http.routers.news-source-base-secure.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_SOURCE}`)
+      traefik.http.routers.news-source-base-secure.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_SOURCE}`)
+      traefik.http.routers.news-source-base-secure.priority: "20"
+      traefik.http.routers.news-source-base-secure.middlewares: nfx-news-source-gw
       traefik.http.routers.news-source-base-secure.service: news-source-base
       traefik.http.routers.news-source-base-secure.tls: "true"
     volumes:
@@ -35,6 +40,7 @@ services:
       - ./data:/app/data
       - ./assets:/app/assets
       - ./errors/langs:/app/errors/langs
+      - ./messages/langs:/app/messages/langs
     restart: always
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -62,10 +68,15 @@ services:
       traefik.project: "nfx-news"
       traefik.http.services.news-base.loadbalancer.server.port: "${HTTP_PORT}"
       traefik.http.routers.news-base.entrypoints: web
-      traefik.http.routers.news-base.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_NEWS}`)
+      traefik.http.middlewares.nfx-news-news-gw.stripprefix.prefixes: ${API_GATEWAY_PREFIX}
+      traefik.http.routers.news-base.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_NEWS}`)
+      traefik.http.routers.news-base.priority: "20"
+      traefik.http.routers.news-base.middlewares: nfx-news-news-gw
       traefik.http.routers.news-base.service: news-base
       traefik.http.routers.news-base-secure.entrypoints: websecure
-      traefik.http.routers.news-base-secure.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_NEWS}`)
+      traefik.http.routers.news-base-secure.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_NEWS}`)
+      traefik.http.routers.news-base-secure.priority: "20"
+      traefik.http.routers.news-base-secure.middlewares: nfx-news-news-gw
       traefik.http.routers.news-base-secure.service: news-base
       traefik.http.routers.news-base-secure.tls: "true"
     volumes:
@@ -73,6 +84,7 @@ services:
       - ./data:/app/data
       - ./assets:/app/assets
       - ./errors/langs:/app/errors/langs
+      - ./messages/langs:/app/messages/langs
     restart: always
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -100,10 +112,15 @@ services:
       traefik.project: "nfx-news"
       traefik.http.services.news-crawl-base.loadbalancer.server.port: "${HTTP_PORT}"
       traefik.http.routers.news-crawl-base.entrypoints: web
-      traefik.http.routers.news-crawl-base.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_CRAWL}`)
+      traefik.http.middlewares.nfx-news-crawl-gw.stripprefix.prefixes: ${API_GATEWAY_PREFIX}
+      traefik.http.routers.news-crawl-base.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_CRAWL}`)
+      traefik.http.routers.news-crawl-base.priority: "20"
+      traefik.http.routers.news-crawl-base.middlewares: nfx-news-crawl-gw
       traefik.http.routers.news-crawl-base.service: news-crawl-base
       traefik.http.routers.news-crawl-base-secure.entrypoints: websecure
-      traefik.http.routers.news-crawl-base-secure.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_CRAWL}`)
+      traefik.http.routers.news-crawl-base-secure.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_CRAWL}`)
+      traefik.http.routers.news-crawl-base-secure.priority: "20"
+      traefik.http.routers.news-crawl-base-secure.middlewares: nfx-news-crawl-gw
       traefik.http.routers.news-crawl-base-secure.service: news-crawl-base
       traefik.http.routers.news-crawl-base-secure.tls: "true"
     volumes:
@@ -111,6 +128,7 @@ services:
       - ./data:/app/data
       - ./assets:/app/assets
       - ./errors/langs:/app/errors/langs
+      - ./messages/langs:/app/messages/langs
     restart: always
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -138,10 +156,15 @@ services:
       traefik.project: "nfx-news"
       traefik.http.services.news-report-base.loadbalancer.server.port: "${HTTP_PORT}"
       traefik.http.routers.news-report-base.entrypoints: web
-      traefik.http.routers.news-report-base.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_REPORT}`)
+      traefik.http.middlewares.nfx-news-report-gw.stripprefix.prefixes: ${API_GATEWAY_PREFIX}
+      traefik.http.routers.news-report-base.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_REPORT}`)
+      traefik.http.routers.news-report-base.priority: "20"
+      traefik.http.routers.news-report-base.middlewares: nfx-news-report-gw
       traefik.http.routers.news-report-base.service: news-report-base
       traefik.http.routers.news-report-base-secure.entrypoints: websecure
-      traefik.http.routers.news-report-base-secure.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_REPORT}`)
+      traefik.http.routers.news-report-base-secure.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_REPORT}`)
+      traefik.http.routers.news-report-base-secure.priority: "20"
+      traefik.http.routers.news-report-base-secure.middlewares: nfx-news-report-gw
       traefik.http.routers.news-report-base-secure.service: news-report-base
       traefik.http.routers.news-report-base-secure.tls: "true"
     volumes:
@@ -149,6 +172,7 @@ services:
       - ./data:/app/data
       - ./assets:/app/assets
       - ./errors/langs:/app/errors/langs
+      - ./messages/langs:/app/messages/langs
     restart: always
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -176,10 +200,15 @@ services:
       traefik.project: "nfx-news"
       traefik.http.services.news-notify-base.loadbalancer.server.port: "${HTTP_PORT}"
       traefik.http.routers.news-notify-base.entrypoints: web
-      traefik.http.routers.news-notify-base.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_NOTIFY}`)
+      traefik.http.middlewares.nfx-news-notify-gw.stripprefix.prefixes: ${API_GATEWAY_PREFIX}
+      traefik.http.routers.news-notify-base.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_NOTIFY}`)
+      traefik.http.routers.news-notify-base.priority: "20"
+      traefik.http.routers.news-notify-base.middlewares: nfx-news-notify-gw
       traefik.http.routers.news-notify-base.service: news-notify-base
       traefik.http.routers.news-notify-base-secure.entrypoints: websecure
-      traefik.http.routers.news-notify-base-secure.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_NOTIFY}`)
+      traefik.http.routers.news-notify-base-secure.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_NOTIFY}`)
+      traefik.http.routers.news-notify-base-secure.priority: "20"
+      traefik.http.routers.news-notify-base-secure.middlewares: nfx-news-notify-gw
       traefik.http.routers.news-notify-base-secure.service: news-notify-base
       traefik.http.routers.news-notify-base-secure.tls: "true"
     volumes:
@@ -187,6 +216,7 @@ services:
       - ./data:/app/data
       - ./assets:/app/assets
       - ./errors/langs:/app/errors/langs
+      - ./messages/langs:/app/messages/langs
     restart: always
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -214,10 +244,15 @@ services:
       traefik.project: "nfx-news"
       traefik.http.services.news-mcp-base.loadbalancer.server.port: "${HTTP_PORT}"
       traefik.http.routers.news-mcp-base.entrypoints: web
-      traefik.http.routers.news-mcp-base.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_MCP}`)
+      traefik.http.middlewares.nfx-news-mcp-gw.stripprefix.prefixes: ${API_GATEWAY_PREFIX}
+      traefik.http.routers.news-mcp-base.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_MCP}`)
+      traefik.http.routers.news-mcp-base.priority: "20"
+      traefik.http.routers.news-mcp-base.middlewares: nfx-news-mcp-gw
       traefik.http.routers.news-mcp-base.service: news-mcp-base
       traefik.http.routers.news-mcp-base-secure.entrypoints: websecure
-      traefik.http.routers.news-mcp-base-secure.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_MCP}`)
+      traefik.http.routers.news-mcp-base-secure.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_MCP}`)
+      traefik.http.routers.news-mcp-base-secure.priority: "20"
+      traefik.http.routers.news-mcp-base-secure.middlewares: nfx-news-mcp-gw
       traefik.http.routers.news-mcp-base-secure.service: news-mcp-base
       traefik.http.routers.news-mcp-base-secure.tls: "true"
     volumes:
@@ -225,6 +260,7 @@ services:
       - ./data:/app/data
       - ./assets:/app/assets
       - ./errors/langs:/app/errors/langs
+      - ./messages/langs:/app/messages/langs
     restart: always
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -252,10 +288,15 @@ services:
       traefik.project: "nfx-news"
       traefik.http.services.news-system-base.loadbalancer.server.port: "${HTTP_PORT}"
       traefik.http.routers.news-system-base.entrypoints: web
-      traefik.http.routers.news-system-base.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_SYSTEM}`)
+      traefik.http.middlewares.nfx-news-system-gw.stripprefix.prefixes: ${API_GATEWAY_PREFIX}
+      traefik.http.routers.news-system-base.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_SYSTEM}`)
+      traefik.http.routers.news-system-base.priority: "20"
+      traefik.http.routers.news-system-base.middlewares: nfx-news-system-gw
       traefik.http.routers.news-system-base.service: news-system-base
       traefik.http.routers.news-system-base-secure.entrypoints: websecure
-      traefik.http.routers.news-system-base-secure.rule: Host(`${TRAEFIK_API_HOST}`) && PathPrefix(`${API_PREFIX_PATH_SYSTEM}`)
+      traefik.http.routers.news-system-base-secure.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_SYSTEM}`)
+      traefik.http.routers.news-system-base-secure.priority: "20"
+      traefik.http.routers.news-system-base-secure.middlewares: nfx-news-system-gw
       traefik.http.routers.news-system-base-secure.service: news-system-base
       traefik.http.routers.news-system-base-secure.tls: "true"
     volumes:
@@ -263,6 +304,7 @@ services:
       - ./data:/app/data
       - ./assets:/app/assets
       - ./errors/langs:/app/errors/langs
+      - ./messages/langs:/app/messages/langs
     restart: always
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -278,6 +320,9 @@ services:
       context: ./console
       dockerfile: Dockerfile
       target: prod
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+        VITE_IDENTITY_API_URL: ${VITE_IDENTITY_API_URL}
     ports:
       - "${CONSOLE_EXTERNAL_PORT}:${CONSOLE_PORT}"
     labels:

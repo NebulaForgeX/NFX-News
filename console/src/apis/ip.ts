@@ -1,47 +1,54 @@
-const HTTP_BASE_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:10166";
+const HTTP_BASE_URL = import.meta.env.VITE_API_URL || "";
 
 export const URL_PATHS = {
   SOURCE: {
     sources: "/source/sources",
     byId: (id: string) => `/source/sources/${id}`,
     fetch: (id: string) => `/source/sources/${id}/fetch`,
-    i18nErrors: (lang: string) => `/source/i18n/errors/${lang}`,
+    locales: (lang: string) => `/source/locales/${lang}`,
+    messages: (lang: string) => `/source/messages/${lang}`,
   },
   NEWS: {
     items: "/news/items",
     search: "/news/search",
     preferences: "/news/preferences",
-    i18nErrors: (lang: string) => `/news/i18n/errors/${lang}`,
+    locales: (lang: string) => `/news/locales/${lang}`,
+    messages: (lang: string) => `/news/messages/${lang}`,
   },
   CRAWL: {
     sessions: "/crawl/sessions",
     byId: (id: string) => `/crawl/sessions/${id}`,
-    i18nErrors: (lang: string) => `/crawl/i18n/errors/${lang}`,
+    locales: (lang: string) => `/crawl/locales/${lang}`,
+    messages: (lang: string) => `/crawl/messages/${lang}`,
   },
   REPORT: {
     keywords: "/report/keywords",
     snapshots: "/report/snapshots",
     byId: (id: string) => `/report/snapshots/${id}`,
     html: (id: string) => `/report/snapshots/${id}/html`,
-    i18nErrors: (lang: string) => `/report/i18n/errors/${lang}`,
+    locales: (lang: string) => `/report/locales/${lang}`,
+    messages: (lang: string) => `/report/messages/${lang}`,
   },
   NOTIFY: {
     kinds: "/notify/kinds",
     channels: "/notify/channels",
     deliveries: "/notify/deliveries",
     dispatch: "/notify/dispatch",
-    i18nErrors: (lang: string) => `/notify/i18n/errors/${lang}`,
+    locales: (lang: string) => `/notify/locales/${lang}`,
+    messages: (lang: string) => `/notify/messages/${lang}`,
   },
   MCP: {
     tools: "/mcp/tools",
     run: "/mcp/run",
     byName: (name: string) => `/mcp/tools/${name}`,
-    i18nErrors: (lang: string) => `/mcp/i18n/errors/${lang}`,
+    locales: (lang: string) => `/mcp/locales/${lang}`,
+    messages: (lang: string) => `/mcp/messages/${lang}`,
   },
   SYSTEM: {
     latest: "/system/system-state/latest",
     initialize: "/system/system-state/initialize",
-    i18nErrors: (lang: string) => `/system/i18n/errors/${lang}`,
+    locales: (lang: string) => `/system/locales/${lang}`,
+    messages: (lang: string) => `/system/messages/${lang}`,
   },
 } as const;
 

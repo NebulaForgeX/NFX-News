@@ -19,7 +19,8 @@ func NewRouter(app fiber.Router, v token.Verifier, h *Registry) *Router {
 
 func (r *Router) RegisterRoutes() {
 	g := r.app.Group("/report")
-	g.Get("/i18n/errors/:lang", r.handlers.I18n.GetErrorTranslations)
+	g.Get("/locales/:lang", r.handlers.I18n.GetErrorTranslations)
+	g.Get("/messages/:lang", r.handlers.I18n.GetMessageTranslations)
 	protected := g.Group("", middleware.TokenAuth(r.tokenVerifier))
 	protected.Get("/keywords", r.handlers.App.ListKeywords)
 	protected.Get("/snapshots", r.handlers.App.ListSnapshots)

@@ -21,5 +21,6 @@ func (r *Router) RegisterRoutes() {
 	g.Get("/sources", r.handlers.Source.List)
 	g.Get("/sources/:id", r.handlers.Source.Get)
 	g.Post("/sources/:id/fetch", r.handlers.Source.Fetch)
-	g.Get("/i18n/errors/:lang", r.handlers.I18n.GetErrorTranslations)
+	g.Get("/locales/:lang", r.handlers.I18n.GetErrorTranslations)
+	g.Get("/messages/:lang", r.handlers.I18n.GetMessageTranslations)
 }

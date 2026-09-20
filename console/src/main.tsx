@@ -21,10 +21,18 @@ import "./index.css";
 void ensureDeviceIdStorage();
 
 async function onLoadExtraBundles(lng: LanguageEnum) {
+  const lang = lng.toString();
   try {
-    const bundle = await newsRepositories.system.getErrorTranslations(lng);
-    return { namespace: "errors", bundle: bundle as Record<string, unknown> };
-  } catch {
+    const [newsErrors, newsMessages] = await Promise.all([
+      newsRepositories.system.getErrorTranslations(lang),
+      newsRepositories.system.getMessageTranslations(lang),
+    ]);
+    const bundles = [];
+    if (newsErrors) bundles.push({ namespace: "errors", bundle: newsErrors as Record<string, unknown> });
+    if (newsMessages) bundles.push({ namespace: "messages", bundle: newsMessages as Record<string, unknown> });
+    return bundles.length > 0 ? bundles : null;
+  } catch (error) {
+    console.error("Failed to load product translation bundles", error);
     return null;
   }
 }

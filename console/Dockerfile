@@ -1,8 +1,10 @@
 # syntax=docker/dockerfile:1
 FROM node:22-alpine AS builder
 WORKDIR /app
-ARG VITE_API_URL=http://127.0.0.1:10188
+ARG VITE_API_URL=http://192.168.1.64/nfx-news
+ARG VITE_IDENTITY_API_URL=http://192.168.1.64/nfx-identity
 ENV VITE_API_URL=${VITE_API_URL}
+ENV VITE_IDENTITY_API_URL=${VITE_IDENTITY_API_URL}
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .

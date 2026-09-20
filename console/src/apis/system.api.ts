@@ -5,17 +5,37 @@ import { URL_PATHS } from "./ip";
 
 export type NewsModule = "source" | "news" | "crawl" | "report" | "notify" | "mcp" | "system";
 
+function moduleLocales(module: NewsModule) {
+  return {
+    source: URL_PATHS.SOURCE.locales,
+    news: URL_PATHS.NEWS.locales,
+    crawl: URL_PATHS.CRAWL.locales,
+    report: URL_PATHS.REPORT.locales,
+    notify: URL_PATHS.NOTIFY.locales,
+    mcp: URL_PATHS.MCP.locales,
+    system: URL_PATHS.SYSTEM.locales,
+  }[module];
+}
+
+function moduleMessages(module: NewsModule) {
+  return {
+    source: URL_PATHS.SOURCE.messages,
+    news: URL_PATHS.NEWS.messages,
+    crawl: URL_PATHS.CRAWL.messages,
+    report: URL_PATHS.REPORT.messages,
+    notify: URL_PATHS.NOTIFY.messages,
+    mcp: URL_PATHS.MCP.messages,
+    system: URL_PATHS.SYSTEM.messages,
+  }[module];
+}
+
 export const getErrorTranslations = async (lang: string, module: NewsModule = "system"): Promise<Record<string, unknown>> => {
-  const path = {
-    source: URL_PATHS.SOURCE.i18nErrors,
-    news: URL_PATHS.NEWS.i18nErrors,
-    crawl: URL_PATHS.CRAWL.i18nErrors,
-    report: URL_PATHS.REPORT.i18nErrors,
-    notify: URL_PATHS.NOTIFY.i18nErrors,
-    mcp: URL_PATHS.MCP.i18nErrors,
-    system: URL_PATHS.SYSTEM.i18nErrors,
-  }[module](lang);
-  const { data } = await publicClient.get<Record<string, unknown>>(path);
+  const { data } = await publicClient.get<Record<string, unknown>>(moduleLocales(module)(lang));
+  return data;
+};
+
+export const getMessageTranslations = async (lang: string, module: NewsModule = "system"): Promise<Record<string, unknown>> => {
+  const { data } = await publicClient.get<Record<string, unknown>>(moduleMessages(module)(lang));
   return data;
 };
 

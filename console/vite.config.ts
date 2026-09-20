@@ -1,20 +1,36 @@
-import path from "path";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import react from "@vitejs/plugin-react";
-import { defineConfig, loadEnv } from "vite";
+import { defineConfig } from "vite";
 
-export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), "");
+import {
+  loadNfxConsoleEnv,
+  nfxUiAtAliasPlugin,
+  nfxUiDedupe,
+  nfxUiOptimizeDepsExclude,
+  nfxUiViteAliases,
+  nfxViteDefine,
+  resolveNfxUiRoot,
+} from "./vite.nfx-ui";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const root = path.resolve(__dirname);
+const nfxUiRoot = resolveNfxUiRoot(root);
+
+export default defineConfig(({ mode, command }) => {
+  const env = loadNfxConsoleEnv(root, mode);
   const port = Number(env.VITE_PORT) || 5174;
+  const hasApiUrl = Boolean(env.VITE_API_URL);
+  const proxyTarget = env.VITE_DEV_API_PROXY_TARGET || env.VITE_API_URL || "http://192.168.1.64/nfx-news";
+  const identityTarget = env.VITE_IDENTITY_API_URL || "http://192.168.1.64/nfx-identity";
+
   return {
-    plugins: [react()],
     base: "/",
+    define: nfxViteDefine(env),
+    plugins: [nfxUiAtAliasPlugin(root, nfxUiRoot), react()],
     resolve: {
-      alias: {
-        "@": path.resolve(__dirname, "./src"),
-        react: path.resolve(__dirname, "./node_modules/react"),
-        "react-dom": path.resolve(__dirname, "./node_modules/react-dom"),
-      },
-      dedupe: ["react", "react-dom", "react/jsx-runtime", "@tanstack/react-query", "zustand"],
+      alias: nfxUiViteAliases(root, nfxUiRoot),
+      dedupe: nfxUiDedupe,
     },
     css: {
       modules: {
@@ -22,10 +38,29 @@ export default defineConfig(({ mode }) => {
         generateScopedName: "[name]__[local]___[hash:base64:5]",
       },
     },
+    optimizeDeps: {
+      exclude: nfxUiOptimizeDepsExclude,
+    },
     server: {
       port,
       host: "0.0.0.0",
       open: true,
+      fs: { allow: [root, nfxUiRoot] },
+      ...(command === "serve" && !hasApiUrl
+        ? {
+            proxy: {
+              "/source": { target: proxyTarget, changeOrigin: true },
+              "/news": { target: proxyTarget, changeOrigin: true },
+              "/crawl": { target: proxyTarget, changeOrigin: true },
+              "/report": { target: proxyTarget, changeOrigin: true },
+              "/notify": { target: proxyTarget, changeOrigin: true },
+              "/mcp": { target: proxyTarget, changeOrigin: true },
+              "/system": { target: proxyTarget, changeOrigin: true },
+              "/auth": { target: identityTarget, changeOrigin: true },
+              "/asset": { target: identityTarget, changeOrigin: true },
+            },
+          }
+        : {}),
     },
     preview: { port, host: "0.0.0.0" },
   };
