@@ -1,5 +1,8 @@
 # NFX-News
 
+> 部署、网络、配置与安全的详细说明见 [NFX-Documentation](https://github.com/NebulaForgeX/NFX-Documentation)。
+> Deploy, network, config, and security: [NFX-Documentation](https://github.com/NebulaForgeX/NFX-Documentation).
+
 中文 / English
 
 Identity-shaped Go microservices for news reading, crawling, keyword reports, MCP, and multi-channel notify. Browser talks **HTTP REST**; services talk **native gRPC**; Kafka sits on **NFX-Stack**. Login is **NFX-Identity** via `nfx-ui` AuthRepository + product `connections/auth` gRPC.
