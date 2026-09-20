@@ -18,12 +18,26 @@ func NewRouter(app fiber.Router, v token.Verifier, h *Registry) *Router {
 }
 
 func (r *Router) RegisterRoutes() {
-	g := r.app.Group("/news")
-	g.Get("/items", r.handlers.App.List)
-	g.Get("/search", r.handlers.App.Search)
-	g.Get("/locales/:lang", r.handlers.I18n.GetErrorTranslations)
-	g.Get("/messages/:lang", r.handlers.I18n.GetMessageTranslations)
-	protected := g.Group("", middleware.TokenAuth(r.tokenVerifier))
-	protected.Get("/preferences", r.handlers.App.GetPreferences)
-	protected.Put("/preferences", r.handlers.App.SetPreferences)
+	news := r.app.Group("/news")
+	r.RegisterLocalesGroup(news)
+	r.RegisterPublicGroup(news)
+	r.RegisterMeGroup(news)
+}
+
+func (r *Router) RegisterLocalesGroup(news fiber.Router) {
+	locales := news.Group("/locales")
+	locales.Get("/:lang", r.handlers.I18n.GetErrorTranslations)
+	messages := news.Group("/messages")
+	messages.Get("/:lang", r.handlers.I18n.GetMessageTranslations)
+}
+
+func (r *Router) RegisterPublicGroup(news fiber.Router) {
+	news.Get("/items", r.handlers.App.List)
+	news.Get("/search", r.handlers.App.Search)
+}
+
+func (r *Router) RegisterMeGroup(news fiber.Router) {
+	me := news.Group("", middleware.TokenAuth(r.tokenVerifier))
+	me.Get("/preferences", r.handlers.App.GetPreferences)
+	me.Put("/preferences", r.handlers.App.SetPreferences)
 }

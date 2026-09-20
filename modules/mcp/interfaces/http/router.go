@@ -18,11 +18,21 @@ func NewRouter(app fiber.Router, v token.Verifier, h *Registry) *Router {
 }
 
 func (r *Router) RegisterRoutes() {
-	g := r.app.Group("/mcp")
-	g.Get("/locales/:lang", r.handlers.I18n.GetErrorTranslations)
-	g.Get("/messages/:lang", r.handlers.I18n.GetMessageTranslations)
-	protected := g.Group("", middleware.TokenAuth(r.tokenVerifier))
-	protected.Get("/tools", r.handlers.App.Tools)
-	protected.Post("/tools/:name", r.handlers.App.RunTool)
-	protected.Post("/run", r.handlers.App.RunJSON)
+	mcp := r.app.Group("/mcp")
+	r.RegisterLocalesGroup(mcp)
+	r.RegisterToolsGroup(mcp)
+}
+
+func (r *Router) RegisterLocalesGroup(mcp fiber.Router) {
+	locales := mcp.Group("/locales")
+	locales.Get("/:lang", r.handlers.I18n.GetErrorTranslations)
+	messages := mcp.Group("/messages")
+	messages.Get("/:lang", r.handlers.I18n.GetMessageTranslations)
+}
+
+func (r *Router) RegisterToolsGroup(mcp fiber.Router) {
+	me := mcp.Group("", middleware.TokenAuth(r.tokenVerifier))
+	me.Get("/tools", r.handlers.App.Tools)
+	me.Post("/tools/:name", r.handlers.App.RunTool)
+	me.Post("/run", r.handlers.App.RunJSON)
 }
