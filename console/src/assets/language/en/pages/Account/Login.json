@@ -1,14 +1,32 @@
 {
   "title": "Sign in",
-  "brand": {
-    "access": "{{name}} access",
-    "title": "Open the desk that holds every channel."
+  "masthead": {
+    "edition": "Morning edition"
   },
-  "heroFooter": "Sign in once. Carry the same Account into the News console.",
+  "wire": {
+    "world": {
+      "name": "World wire",
+      "meta": "Static desk copy",
+      "items": [
+        { "title": "Channels stay ranked until you hide them.", "meta": "Reader" },
+        { "title": "Keyword desks compile daily snapshots.", "meta": "Reports" },
+        { "title": "Crawl sessions pull sources on a timer.", "meta": "Crawl" },
+        { "title": "Notify fans out to the tools you already use.", "meta": "Notify" }
+      ]
+    },
+    "desk": {
+      "name": "Copy desk",
+      "meta": "How this console works",
+      "items": [
+        { "title": "One NFX Account. Multiple Profiles.", "meta": "Identity" },
+        { "title": "HTTP through Edge. Kafka on Stack.", "meta": "Infra" },
+        { "title": "MCP tools sit beside the same news corpus.", "meta": "MCP" }
+      ]
+    }
+  },
   "form": {
-    "welcomeBack": "Welcome back",
-    "title": "Sign in to {{name}}",
-    "subtitle": "Continue with your NFX Account — identity first, newsroom next.",
+    "column": "Sign-in desk",
+    "columnMeta": "Continue the edition",
     "emailLabel": "Email",
     "emailPlaceholder": "you@example.com",
     "passwordLabel": "Password",
@@ -19,13 +37,15 @@
     "submit": "Sign in"
   },
   "promo": {
-    "newTo": "New to {{name}}?",
+    "column": "New correspondent",
+    "columnMeta": "Issue credentials",
+    "blurb": "Need a desk? Create an Account, verify the wire, then pick a Profile.",
     "createAccount": "Create an account"
   },
   "selectProfile": {
-    "eyebrow": "Choose identity",
-    "title": "Which Profile continues?",
-    "subtitle": "Your Account can hold more than one Profile.",
+    "eyebrow": "Assignment board",
+    "title": "Which desk continues?",
+    "subtitle": "One Account can hold more than one Profile. Pick the column you file under.",
     "back": "Back to sign in",
     "kind": {
       "authority": "Authority",

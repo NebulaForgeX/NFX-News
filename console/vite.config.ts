@@ -5,6 +5,7 @@ import { defineConfig } from "vite";
 
 import {
   loadNfxConsoleEnv,
+  nfxKillListenPortPlugin,
   nfxUiAtAliasPlugin,
   nfxUiDedupe,
   nfxUiOptimizeDepsExclude,
@@ -27,7 +28,7 @@ export default defineConfig(({ mode, command }) => {
   return {
     base: "/",
     define: nfxViteDefine(env),
-    plugins: [nfxUiAtAliasPlugin(root, nfxUiRoot), react()],
+    plugins: [nfxKillListenPortPlugin(port), nfxUiAtAliasPlugin(root, nfxUiRoot), react()],
     resolve: {
       alias: nfxUiViteAliases(root, nfxUiRoot),
       dedupe: nfxUiDedupe,
@@ -43,6 +44,7 @@ export default defineConfig(({ mode, command }) => {
     },
     server: {
       port,
+      strictPort: true,
       host: "0.0.0.0",
       open: process.env.DOCKER !== "1",
       fs: { allow: [root, nfxUiRoot] },
@@ -62,6 +64,6 @@ export default defineConfig(({ mode, command }) => {
           }
         : {}),
     },
-    preview: { port, host: "0.0.0.0" },
+    preview: { port, strictPort: true, host: "0.0.0.0" },
   };
 });

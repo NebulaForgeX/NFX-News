@@ -2,7 +2,6 @@ import type { CreateI18nResourcesResult, NameSpacesMap, Resources } from "nfx-ui
 
 import enHooks from "./en/hooks.json";
 import enLanguage from "./en/language.json";
-import enAuthShell from "./en/pages/Account/AuthShell.json";
 import enLogin from "./en/pages/Account/Login.json";
 import enSignup from "./en/pages/Account/Signup.json";
 import enCrawl from "./en/pages/Crawl.json";
@@ -19,7 +18,6 @@ import enUserProfileOverview from "./en/pages/User/Profile/Overview.json";
 import enUserSetting from "./en/pages/User/Setting.json";
 import frHooks from "./fr/hooks.json";
 import frLanguage from "./fr/language.json";
-import frAuthShell from "./fr/pages/Account/AuthShell.json";
 import frLogin from "./fr/pages/Account/Login.json";
 import frSignup from "./fr/pages/Account/Signup.json";
 import frCrawl from "./fr/pages/Crawl.json";
@@ -36,7 +34,6 @@ import frUserProfileOverview from "./fr/pages/User/Profile/Overview.json";
 import frUserSetting from "./fr/pages/User/Setting.json";
 import zhHooks from "./zh/hooks.json";
 import zhLanguage from "./zh/language.json";
-import zhAuthShell from "./zh/pages/Account/AuthShell.json";
 import zhLogin from "./zh/pages/Account/Login.json";
 import zhSignup from "./zh/pages/Account/Signup.json";
 import zhCrawl from "./zh/pages/Crawl.json";
@@ -53,7 +50,6 @@ import zhUserProfileOverview from "./zh/pages/User/Profile/Overview.json";
 import zhUserSetting from "./zh/pages/User/Setting.json";
 
 const PAGE = {
-  AuthShell: "pages.Account.AuthShell",
   Login: "pages.Account.Login",
   Signup: "pages.Account.Signup",
   UserSetting: "pages.User.Setting",
@@ -81,7 +77,6 @@ export function getBuiltinI18nBundles(): CreateI18nResourcesResult {
     en: {
       language: enLanguage,
       hooks: enHooks,
-      [PAGE.AuthShell]: enAuthShell,
       [PAGE.Login]: enLogin,
       [PAGE.Signup]: enSignup,
       [PAGE.UserSetting]: enUserSetting,
@@ -100,7 +95,6 @@ export function getBuiltinI18nBundles(): CreateI18nResourcesResult {
     zh: {
       language: zhLanguage,
       hooks: zhHooks,
-      [PAGE.AuthShell]: zhAuthShell,
       [PAGE.Login]: zhLogin,
       [PAGE.Signup]: zhSignup,
       [PAGE.UserSetting]: zhUserSetting,
@@ -119,7 +113,6 @@ export function getBuiltinI18nBundles(): CreateI18nResourcesResult {
     fr: {
       language: frLanguage,
       hooks: frHooks,
-      [PAGE.AuthShell]: frAuthShell,
       [PAGE.Login]: frLogin,
       [PAGE.Signup]: frSignup,
       [PAGE.UserSetting]: frUserSetting,

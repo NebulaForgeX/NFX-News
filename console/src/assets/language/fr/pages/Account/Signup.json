@@ -1,17 +1,24 @@
 {
   "title": "Créer un compte",
-  "brand": {
-    "access": "Accès {{name}}",
-    "title": "Ouvrez le bureau qui tient chaque canal."
+  "ticker": "Rejoindre le pupitre · Vérifier le fil · Ouvrir le lecteur",
+  "ticket": {
+    "kicker": "Badge de correspondant",
+    "title": "Délivrer un laissez-passer {{name}}",
+    "subtitle": "C'est un bon de copie, pas un split marketing. Vérifiez l'adresse, choisissez un mot de passe, puis le tableau Lecteur s'ouvre."
   },
-  "heroFooter": "Un Account devient l'accès à la console News — jamais un second signup.",
-  "pageEyebrow": "Créer un compte",
-  "pageTitle": "Rejoindre {{name}}",
-  "pageSubtitle": "Vérifiez l'e-mail, choisissez un mot de passe, ouvrez la console News.",
+  "briefing": {
+    "kicker": "Affectation",
+    "title": "Avant de filer",
+    "steps": [
+      { "rank": "01", "title": "Vérifier l'e-mail", "body": "Nous envoyons un code à six caractères à l'adresse du badge." },
+      { "rank": "02", "title": "Choisir un mot de passe", "body": "Le même Account que le reste de NFX. Pas de second signup." },
+      { "rank": "03", "title": "Ouvrir le Lecteur", "body": "Colonnes, rapports et crawl sont derrière ce laissez-passer." }
+    ]
+  },
   "emailLabel": "E-mail",
   "emailPlaceholder": "vous@exemple.com",
   "emailHint": "Nous envoyons un code à 6 caractères à cette adresse.",
-  "codeLabel": "Code de vérification",
+  "codeLabel": "Code fil",
   "codePlaceholder": "Code à 6 caractères",
   "sendCode": "Envoyer",
   "passwordLabel": "Mot de passe",
@@ -21,7 +28,7 @@
   "showPassword": "Afficher",
   "hidePassword": "Masquer",
   "rememberMe": "Se souvenir de moi",
-  "submit": "Créer le compte",
-  "hasAccount": "Déjà un compte ?",
+  "submit": "Délivrer le badge",
+  "hasAccount": "Déjà au pupitre ?",
   "signIn": "Se connecter"
 }
