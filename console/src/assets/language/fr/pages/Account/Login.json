@@ -1,14 +1,32 @@
 {
   "title": "Connexion",
-  "brand": {
-    "access": "Accès {{name}}",
-    "title": "Ouvrez le bureau qui tient chaque canal."
+  "masthead": {
+    "edition": "Édition du matin"
   },
-  "heroFooter": "Connectez-vous une fois. Le même Account ouvre la console News.",
+  "wire": {
+    "world": {
+      "name": "Fil monde",
+      "meta": "Copie de bureau",
+      "items": [
+        { "title": "Les canaux restent classés jusqu'à ce que vous les masquiez.", "meta": "Lecteur" },
+        { "title": "Les bureaux mots-clés compilent les instantanés du jour.", "meta": "Rapports" },
+        { "title": "Les sessions de crawl tirent les sources à l'heure.", "meta": "Crawl" },
+        { "title": "Notify envoie vers les outils que vous utilisez déjà.", "meta": "Notify" }
+      ]
+    },
+    "desk": {
+      "name": "Pupitre",
+      "meta": "Comment la console marche",
+      "items": [
+        { "title": "Un Account NFX. Plusieurs Profile.", "meta": "Identité" },
+        { "title": "HTTP via Edge. Kafka sur Stack.", "meta": "Infra" },
+        { "title": "Les outils MCP lisent le même corpus.", "meta": "MCP" }
+      ]
+    }
+  },
   "form": {
-    "welcomeBack": "Bon retour",
-    "title": "Connexion à {{name}}",
-    "subtitle": "Continuez avec votre Account NFX — l'identité d'abord.",
+    "column": "Pupitre de connexion",
+    "columnMeta": "Continuer l'édition",
     "emailLabel": "E-mail",
     "emailPlaceholder": "vous@exemple.com",
     "passwordLabel": "Mot de passe",
@@ -19,13 +37,15 @@
     "submit": "Se connecter"
   },
   "promo": {
-    "newTo": "Nouveau sur {{name}} ?",
+    "column": "Nouveau correspondant",
+    "columnMeta": "Délivrer un badge",
+    "blurb": "Pas encore de pupitre ? Créez un Account, vérifiez le fil, puis choisissez un Profile.",
     "createAccount": "Créer un compte"
   },
   "selectProfile": {
-    "eyebrow": "Choisir l'identité",
-    "title": "Quel Profile continuer ?",
-    "subtitle": "Votre Account peut porter plusieurs Profile.",
+    "eyebrow": "Tableau d'affectation",
+    "title": "Quel pupitre continue ?",
+    "subtitle": "Un Account peut porter plusieurs Profile. Choisissez la colonne où vous filez.",
     "back": "Retour à la connexion",
     "kind": {
       "authority": "Authority",
