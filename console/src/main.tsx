@@ -10,7 +10,7 @@ import { LanguageProvider, ThemeProvider } from "nfx-ui/providers";
 import { ensureDeviceIdStorage } from "nfx-ui/stores";
 
 import { newsRepositories } from "@/apis/repositories";
-import { getBuiltinI18nBundles } from "@/assets/languages/i18nResources";
+import { getBuiltinI18nBundles } from "@/assets/language";
 import { syncDocumentLogo } from "@/constants";
 import { DataProvider, ModalProvider, QueryProvider, RouterProvider } from "@/providers";
 

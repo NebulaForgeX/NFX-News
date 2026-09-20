@@ -44,7 +44,7 @@ export default defineConfig(({ mode, command }) => {
     server: {
       port,
       host: "0.0.0.0",
-      open: true,
+      open: process.env.DOCKER !== "1",
       fs: { allow: [root, nfxUiRoot] },
       ...(command === "serve" && !hasApiUrl
         ? {

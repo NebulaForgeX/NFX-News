@@ -2,25 +2,7 @@ import type { ReactNode } from "react";
 
 import { useEffect, useRef, useState } from "react";
 import { Avatar, Box, Button, Flex, IconButton, Text } from "@radix-ui/themes";
-import {
-  Bell,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  ChevronUp,
-  Contact,
-  FileText,
-  IdCard,
-  LayoutGrid,
-  LogOut,
-  LucideIcon as LucideIconType,
-  Menu as MenuIcon,
-  Newspaper,
-  Pencil,
-  Settings as SettingsIcon,
-  UserRound,
-  Wand2,
-} from "lucide-react";
+import { AnimatedIcon, type AnimatedIconComponent, ArrowNarrowLeftIcon, ArrowNarrowUpIcon, DownChevron, FileDescriptionIcon, FilledBellIcon, GearIcon, LayersIcon, LogoutIcon, PassportIcon, PenIcon, RightChevron, SparklesIcon, UnorderedListIcon, UserIcon } from "nfx-ui/icons";
 import { authEventEmitter, authEvents } from "nfx-ui/events";
 import { useCurrentProfile } from "nfx-ui/hooks";
 import { AuthStore, clearAuth } from "nfx-ui/stores";
@@ -28,8 +10,6 @@ import { useTranslation } from "react-i18next";
 import { Menu, Sidebar as ProSidebar } from "react-pro-sidebar";
 import { Link, Outlet, useLocation } from "react-router";
 
-import { LucideIcon } from "@/components";
-import UserTopBar from "@/layouts/UserTopBar";
 import { ROUTES } from "@/navigations";
 import { buildImageUrl, resolveAccountDisplayName, safeNullable } from "@/utils";
 
@@ -47,13 +27,13 @@ function MenuLabel({ children, active = false }: { children: ReactNode; active?:
   );
 }
 
-function SectionTitle({ label, icon }: { label: string; icon: LucideIconType }) {
+function SectionTitle({ label, icon }: { label: string; icon: AnimatedIconComponent }) {
   return (
     <Flex align="center" justify="between" gap="2" className={styles.sectionTitle}>
       <Text as="span" size="2" weight="bold">
         {label}
       </Text>
-      <LucideIcon icon={icon} size={16} className={styles.sectionTitleIcon} />
+      <AnimatedIcon icon={icon} size={16} className={styles.sectionTitleIcon} />
     </Flex>
   );
 }
@@ -117,8 +97,8 @@ function OverviewSection({ collapsed, broken, onMobileClose }: SectionProps) {
   const active = location.pathname === ROUTES.READER || location.pathname.startsWith(`${ROUTES.READER}/`);
 
   return (
-    <Menu renderExpandIcon={({ open }) => <LucideIcon icon={open ? ChevronUp : ChevronDown} size={14} />} menuItemStyles={createMenuItemStyles(collapsed)} closeOnClick>
-      <MenuItem component={<Link to={ROUTES.READER} />} icon={<LucideIcon icon={Newspaper} size={18} />} active={active} onClick={() => broken && onMobileClose()}>
+    <Menu renderExpandIcon={({ open }) => <AnimatedIcon icon={open ? ArrowNarrowUpIcon : DownChevron} size={14} />} menuItemStyles={createMenuItemStyles(collapsed)} closeOnClick>
+      <MenuItem component={<Link to={ROUTES.READER} />} icon={<AnimatedIcon icon={FileDescriptionIcon} size={18} />} active={active} onClick={() => broken && onMobileClose()}>
         <MenuLabel active={active}>{t("sidebar.reader")}</MenuLabel>
       </MenuItem>
     </Menu>
@@ -136,19 +116,19 @@ function MainMenuSection({ collapsed, broken, onMobileClose }: SectionProps) {
     {
       key: "profileOverview",
       to: ROUTES.USER_PROFILE_OVERVIEW,
-      icon: <LucideIcon icon={Contact} size={16} />,
+      icon: <AnimatedIcon icon={UserIcon} size={16} />,
       label: t("sidebar.profileOverview"),
     },
     {
       key: "profileEdit",
       to: ROUTES.USER_PROFILE_EDIT,
-      icon: <LucideIcon icon={Pencil} size={16} />,
+      icon: <AnimatedIcon icon={PenIcon} size={16} />,
       label: t("sidebar.profileEdit"),
     },
     {
       key: "profileIdentities",
       to: ROUTES.USER_PROFILE_IDENTITIES,
-      icon: <LucideIcon icon={IdCard} size={16} />,
+      icon: <AnimatedIcon icon={PassportIcon} size={16} />,
       label: t("sidebar.profileIdentities"),
     },
   ];
@@ -156,25 +136,25 @@ function MainMenuSection({ collapsed, broken, onMobileClose }: SectionProps) {
   const isProfileChildActive = profileSubItems.some((item) => isActive(item.to));
 
   return (
-    <Menu renderExpandIcon={({ open }) => <LucideIcon icon={open ? ChevronUp : ChevronDown} size={14} />} menuItemStyles={createMenuItemStyles(collapsed)} closeOnClick>
-      <SectionTitle label={t("sidebar.mainMenu")} icon={LayoutGrid} />
-      <SubMenu label={t("sidebar.profile")} icon={<LucideIcon icon={UserRound} size={18} />} open={profileOpen} onOpenChange={setProfileOpen} active={isProfileChildActive}>
+    <Menu renderExpandIcon={({ open }) => <AnimatedIcon icon={open ? ArrowNarrowUpIcon : DownChevron} size={14} />} menuItemStyles={createMenuItemStyles(collapsed)} closeOnClick>
+      <SectionTitle label={t("sidebar.mainMenu")} icon={LayersIcon} />
+      <SubMenu label={t("sidebar.profile")} icon={<AnimatedIcon icon={UserIcon} size={18} />} open={profileOpen} onOpenChange={setProfileOpen} active={isProfileChildActive}>
         {profileSubItems.map((item) => (
           <MenuItem key={item.key} component={<Link to={item.to} />} icon={item.icon} active={isActive(item.to)} onClick={() => broken && onMobileClose()}>
             <MenuLabel active={isActive(item.to)}>{item.label}</MenuLabel>
           </MenuItem>
         ))}
       </SubMenu>
-      <MenuItem component={<Link to={ROUTES.REPORTS} />} icon={<LucideIcon icon={FileText} size={18} />} active={isActive(ROUTES.REPORTS)} onClick={() => broken && onMobileClose()}>
+      <MenuItem component={<Link to={ROUTES.REPORTS} />} icon={<AnimatedIcon icon={FileDescriptionIcon} size={18} />} active={isActive(ROUTES.REPORTS)} onClick={() => broken && onMobileClose()}>
         <MenuLabel active={isActive(ROUTES.REPORTS)}>{t("sidebar.reports")}</MenuLabel>
       </MenuItem>
-      <MenuItem component={<Link to={ROUTES.CRAWL} />} icon={<LucideIcon icon={FileText} size={18} />} active={isActive(ROUTES.CRAWL)} onClick={() => broken && onMobileClose()}>
+      <MenuItem component={<Link to={ROUTES.CRAWL} />} icon={<AnimatedIcon icon={FileDescriptionIcon} size={18} />} active={isActive(ROUTES.CRAWL)} onClick={() => broken && onMobileClose()}>
         <MenuLabel active={isActive(ROUTES.CRAWL)}>{t("sidebar.crawl")}</MenuLabel>
       </MenuItem>
-      <MenuItem component={<Link to={ROUTES.MCP} />} icon={<LucideIcon icon={Wand2} size={18} />} active={isActive(ROUTES.MCP)} onClick={() => broken && onMobileClose()}>
+      <MenuItem component={<Link to={ROUTES.MCP} />} icon={<AnimatedIcon icon={SparklesIcon} size={18} />} active={isActive(ROUTES.MCP)} onClick={() => broken && onMobileClose()}>
         <MenuLabel active={isActive(ROUTES.MCP)}>{t("sidebar.mcp")}</MenuLabel>
       </MenuItem>
-      <MenuItem component={<Link to={ROUTES.NOTIFY} />} icon={<LucideIcon icon={Bell} size={18} />} active={isActive(ROUTES.NOTIFY)} onClick={() => broken && onMobileClose()}>
+      <MenuItem component={<Link to={ROUTES.NOTIFY} />} icon={<AnimatedIcon icon={FilledBellIcon} size={18} />} active={isActive(ROUTES.NOTIFY)} onClick={() => broken && onMobileClose()}>
         <MenuLabel active={isActive(ROUTES.NOTIFY)}>{t("sidebar.notify")}</MenuLabel>
       </MenuItem>
     </Menu>
@@ -187,11 +167,11 @@ function SettingsSection({ collapsed, broken, onMobileClose }: SectionProps) {
   const isActive = (to: string) => location.pathname === to || location.pathname.startsWith(`${to}/`);
 
   return (
-    <Menu renderExpandIcon={({ open }) => <LucideIcon icon={open ? ChevronUp : ChevronDown} size={14} />} menuItemStyles={createMenuItemStyles(collapsed)} closeOnClick>
-      <SectionTitle label={t("sidebar.settings")} icon={SettingsIcon} />
+    <Menu renderExpandIcon={({ open }) => <AnimatedIcon icon={open ? ArrowNarrowUpIcon : DownChevron} size={14} />} menuItemStyles={createMenuItemStyles(collapsed)} closeOnClick>
+      <SectionTitle label={t("sidebar.settings")} icon={GearIcon} />
       <MenuItem
         component={<Link to={ROUTES.USER_SETTINGS} />}
-        icon={<LucideIcon icon={SettingsIcon} size={18} />}
+        icon={<AnimatedIcon icon={GearIcon} size={18} />}
         active={isActive(ROUTES.USER_SETTINGS)}
         onClick={() => broken && onMobileClose()}
       >
@@ -297,7 +277,7 @@ function Sidebar() {
                   size="3"
                   className={styles.avatar}
                   src={avatarImageId ? buildImageUrl(avatarImageId) : undefined}
-                  fallback={<UserRound size={20} />}
+                  fallback={<UserIcon size={20} />}
                   alt=""
                   aria-hidden="true"
                 />
@@ -316,7 +296,7 @@ function Sidebar() {
                 aria-expanded={!collapsed}
                 onClick={() => (broken ? setToggled(false) : setCollapsed((value) => !value))}
               >
-                <LucideIcon icon={collapsed ? ChevronRight : ChevronLeft} size={14} />
+                <AnimatedIcon icon={collapsed ? RightChevron : ArrowNarrowLeftIcon} size={14} />
               </IconButton>
             </div>
 
@@ -334,7 +314,7 @@ function Sidebar() {
                 aria-label={t("sidebar.logout")}
                 title={collapsed ? t("sidebar.logout") : undefined}
               >
-                <LucideIcon icon={LogOut} size={18} />
+                <AnimatedIcon icon={LogoutIcon} size={18} />
                 {!collapsed && t("sidebar.logout")}
               </Button>
             </div>
@@ -345,10 +325,9 @@ function Sidebar() {
       <Flex direction="column" flexGrow="1" minWidth="0" inert={broken && toggled ? true : undefined} className={styles.content}>
         {broken ? (
           <IconButton variant="surface" color="gray" size="3" className={styles.mobileToggle} onClick={() => setToggled(true)} aria-label={t("sidebar.openMenu")}>
-            <LucideIcon icon={MenuIcon} size={18} />
+            <AnimatedIcon icon={UnorderedListIcon} size={18} />
           </IconButton>
         ) : null}
-        <UserTopBar />
         <Box flexGrow="1" minWidth="0" minHeight="0" className={styles.contentInner}>
           <Outlet />
         </Box>
