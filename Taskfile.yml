@@ -242,7 +242,13 @@ tasks:
       - |
         ENV_ARGS=(--env-file "{{.ENV_FILE}}")
         echo "==> compose env: {{.ENV_FILE}}"
-        svcs=(source-base news-base crawl-base report-base notify-base mcp-base system-base console)
+        svcs=(source-base news-base crawl-base report-base notify-base mcp-base system-base)
+        if [[ "{{.ENV}}" == "secure" ]]; then
+          svcs+=(console)
+        else
+          echo "==> host npm install ./console (bind-mounted into container)"
+          npm --prefix console install
+        fi
         for svc in "${svcs[@]}"; do
           echo "==> docker compose build $svc"
           sudo docker compose "${ENV_ARGS[@]}" -f {{.APP_COMPOSE}} build "$svc"
@@ -265,7 +271,13 @@ tasks:
         fi
       - |
         ENV_ARGS=(--env-file "{{.ENV_FILE}}")
-        svcs=(source-base news-base crawl-base report-base notify-base mcp-base system-base console)
+        svcs=(source-base news-base crawl-base report-base notify-base mcp-base system-base)
+        if [[ "{{.ENV}}" == "secure" ]]; then
+          svcs+=(console)
+        else
+          echo "==> host npm install ./console (bind-mounted into container)"
+          npm --prefix console install
+        fi
         for svc in "${svcs[@]}"; do
           echo "==> docker compose build --no-cache $svc"
           sudo docker compose "${ENV_ARGS[@]}" -f {{.APP_COMPOSE}} build --no-cache "$svc"
