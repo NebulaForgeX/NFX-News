@@ -41,3 +41,13 @@ export const SetPreferences = async (params: { columnOrder?: string[]; payload?:
   const { data } = await protectedClient.put<DataResponse<unknown>>(URL_PATHS.NEWS.preferences, params);
   return data.data;
 };
+
+export const getErrorTranslations = async (lang: string): Promise<Record<string, unknown>> => {
+  const { data } = await publicClient.get<Record<string, unknown>>(URL_PATHS.NEWS.locales(lang));
+  return data;
+};
+
+export const getMessageTranslations = async (lang: string): Promise<Record<string, unknown>> => {
+  const { data } = await publicClient.get<Record<string, unknown>>(URL_PATHS.NEWS.messages(lang));
+  return data;
+};

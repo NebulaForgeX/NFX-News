@@ -6,4 +6,3 @@
 -- atlas:import schemas/report/main.sql
 -- atlas:import schemas/notify/main.sql
 -- atlas:import schemas/mcp/main.sql
--- atlas:import schemas/system/main.sql

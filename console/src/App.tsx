@@ -18,7 +18,6 @@ import {
   SettingsPage,
   SignupPage,
   SourcesPage,
-  SystemPage,
 } from "@/pages";
 
 export default function App() {
@@ -41,7 +40,6 @@ export default function App() {
           <Route path={ROUTES.CRAWL} element={<CrawlPage />} />
           <Route path={ROUTES.MCP} element={<MCPPage />} />
           <Route path={ROUTES.NOTIFY} element={<NotifyPage />} />
-          <Route path={ROUTES.SYSTEM} element={<SystemPage />} />
           <Route path={ROUTES.PROFILE} element={<Navigate to={ROUTES.USER_PROFILE_OVERVIEW} replace />} />
           <Route path={ROUTES.USER_PROFILE_OVERVIEW} element={<ProfileOverviewPage />} />
           <Route path={ROUTES.USER_PROFILE_EDIT} element={<ProfileEditPage />} />

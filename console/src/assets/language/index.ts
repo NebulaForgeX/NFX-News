@@ -10,7 +10,6 @@ import enNotFound from "./en/pages/NotFound.json";
 import enReader from "./en/pages/Reader.json";
 import enReports from "./en/pages/Reports.json";
 import enSources from "./en/pages/Sources.json";
-import enSystem from "./en/pages/System.json";
 import enSettings from "./en/pages/Notify.json";
 import enUserProfileEdit from "./en/pages/User/Profile/Edit.json";
 import enUserProfileIdentities from "./en/pages/User/Profile/Identities.json";
@@ -26,7 +25,6 @@ import frNotFound from "./fr/pages/NotFound.json";
 import frReader from "./fr/pages/Reader.json";
 import frReports from "./fr/pages/Reports.json";
 import frSources from "./fr/pages/Sources.json";
-import frSystem from "./fr/pages/System.json";
 import frSettings from "./fr/pages/Notify.json";
 import frUserProfileEdit from "./fr/pages/User/Profile/Edit.json";
 import frUserProfileIdentities from "./fr/pages/User/Profile/Identities.json";
@@ -42,7 +40,6 @@ import zhNotFound from "./zh/pages/NotFound.json";
 import zhReader from "./zh/pages/Reader.json";
 import zhReports from "./zh/pages/Reports.json";
 import zhSources from "./zh/pages/Sources.json";
-import zhSystem from "./zh/pages/System.json";
 import zhSettings from "./zh/pages/Notify.json";
 import zhUserProfileEdit from "./zh/pages/User/Profile/Edit.json";
 import zhUserProfileIdentities from "./zh/pages/User/Profile/Identities.json";
@@ -62,7 +59,6 @@ const PAGE = {
   MCP: "pages.MCP",
   Notify: "pages.Notify",
   Sources: "pages.Sources",
-  System: "pages.System",
   NotFound: "pages.NotFound",
 } as const;
 
@@ -89,7 +85,6 @@ export function getBuiltinI18nBundles(): CreateI18nResourcesResult {
       [PAGE.MCP]: enMCP,
       [PAGE.Notify]: enSettings,
       [PAGE.Sources]: enSources,
-      [PAGE.System]: enSystem,
       [PAGE.NotFound]: enNotFound,
     },
     zh: {
@@ -107,7 +102,6 @@ export function getBuiltinI18nBundles(): CreateI18nResourcesResult {
       [PAGE.MCP]: zhMCP,
       [PAGE.Notify]: zhSettings,
       [PAGE.Sources]: zhSources,
-      [PAGE.System]: zhSystem,
       [PAGE.NotFound]: zhNotFound,
     },
     fr: {
@@ -125,7 +119,6 @@ export function getBuiltinI18nBundles(): CreateI18nResourcesResult {
       [PAGE.MCP]: frMCP,
       [PAGE.Notify]: frSettings,
       [PAGE.Sources]: frSources,
-      [PAGE.System]: frSystem,
       [PAGE.NotFound]: frNotFound,
     },
   };

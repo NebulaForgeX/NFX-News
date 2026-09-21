@@ -20,7 +20,6 @@ const routeMap = defineRouter({
   MCP: "/mcp",
   NOTIFY: "/notify",
   SOURCES: "/sources",
-  SYSTEM: "/system",
 });
 
 const { ROUTES, matchRoute, isActiveRoute, buildPath } = createRouter(routeMap);

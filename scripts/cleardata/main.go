@@ -19,7 +19,7 @@ import (
 	"nfxnews/pkgs/postgresqlx"
 )
 
-var schemas = []string{"source", "news", "crawl", "report", "notify", "mcp", "system"}
+var schemas = []string{"source", "news", "crawl", "report", "notify", "mcp"}
 
 func main() {
 	skipConfirm := flag.Bool("yes", false, "Skip the interactive confirmation prompt")

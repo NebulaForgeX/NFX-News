@@ -13,5 +13,4 @@ export const NEWS_QUERY_KEYS = {
   notifyChannels: ["notify-channels"] as const,
   notifyDeliveries: ["notify-deliveries"] as const,
   mcpTools: ["mcp-tools"] as const,
-  systemState: ["system-state"] as const,
 };

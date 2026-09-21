@@ -106,13 +106,3 @@ export type CrawlSession = {
   startedAt: string;
   finishedAt?: string;
 };
-
-export type SystemState = {
-  id?: string;
-  initialized: boolean;
-  initializedAt?: string | null;
-  initializationVersion?: string | null;
-  resetCount?: number;
-  createdAt?: string;
-  updatedAt?: string;
-};

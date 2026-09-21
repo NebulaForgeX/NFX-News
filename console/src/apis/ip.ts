@@ -44,12 +44,6 @@ export const URL_PATHS = {
     locales: (lang: string) => `/mcp/locales/${lang}`,
     messages: (lang: string) => `/mcp/messages/${lang}`,
   },
-  SYSTEM: {
-    latest: "/system/system-state/latest",
-    initialize: "/system/system-state/initialize",
-    locales: (lang: string) => `/system/locales/${lang}`,
-    messages: (lang: string) => `/system/messages/${lang}`,
-  },
 } as const;
 
 export const API_ENDPOINTS = {

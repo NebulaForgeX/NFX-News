@@ -7,7 +7,6 @@ const (
 	ServiceReport = "report"
 	ServiceNotify = "notify"
 	ServiceMCP    = "mcp"
-	ServiceSystem = "system"
 )
 
 func AllServices() []string {
@@ -18,6 +17,5 @@ func AllServices() []string {
 		ServiceReport,
 		ServiceNotify,
 		ServiceMCP,
-		ServiceSystem,
 	}
 }

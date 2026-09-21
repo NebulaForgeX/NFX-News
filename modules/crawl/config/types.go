@@ -36,7 +36,6 @@ type GRPCClientConfig struct {
 	ReportAddr string `koanf:"report_addr"`
 	NotifyAddr string `koanf:"notify_addr"`
 	MCPAddr    string `koanf:"mcp_addr"`
-	SystemAddr string `koanf:"system_addr"`
 }
 
 type ServerConfig struct {

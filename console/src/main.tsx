@@ -24,8 +24,8 @@ async function onLoadExtraBundles(lng: LanguageEnum) {
   const lang = lng.toString();
   try {
     const [newsErrors, newsMessages] = await Promise.all([
-      newsRepositories.system.getErrorTranslations(lang),
-      newsRepositories.system.getMessageTranslations(lang),
+      newsRepositories.news.getErrorTranslations(lang),
+      newsRepositories.news.getMessageTranslations(lang),
     ]);
     const bundles = [];
     if (newsErrors) bundles.push({ namespace: "errors", bundle: newsErrors as Record<string, unknown> });
