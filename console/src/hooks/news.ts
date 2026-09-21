@@ -2,7 +2,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { useNewsRepositories } from "@/apis/repositories";
 import { NEWS_QUERY_KEYS } from "@/constants";
+import { showSuccess } from "@/stores/modal";
 import type { ReaderPreferences, ReaderPrefsPayload, SourceMeta } from "@/types/domain";
+import { getCommandMessage } from "@/utils";
 
 export type { SourceMeta };
 
@@ -148,7 +150,10 @@ export function useTriggerCrawl() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (sourceId?: string) => repos.crawl.TriggerCrawl(sourceId),
-    onSuccess: () => qc.invalidateQueries({ queryKey: NEWS_QUERY_KEYS.crawlSessions }),
+    onSuccess: () => {
+      showSuccess(getCommandMessage("CRAWL_TRIGGERED"));
+      qc.invalidateQueries({ queryKey: NEWS_QUERY_KEYS.crawlSessions });
+    },
   });
 }
 
@@ -158,7 +163,10 @@ export function useAddKeyword() {
   return useMutation({
     mutationFn: (body: { word: string; kind: string; groupName?: string; countLimit?: number }) =>
       repos.report.AddKeyword(body),
-    onSuccess: () => qc.invalidateQueries({ queryKey: NEWS_QUERY_KEYS.keywords }),
+    onSuccess: () => {
+      showSuccess(getCommandMessage("KEYWORD_ADDED"));
+      qc.invalidateQueries({ queryKey: NEWS_QUERY_KEYS.keywords });
+    },
   });
 }
 
@@ -202,7 +210,10 @@ export function useDispatchReport() {
         payloadJson: snapshotPayloadJson(snap.payload),
       });
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: NEWS_QUERY_KEYS.notifyDeliveries }),
+    onSuccess: () => {
+      showSuccess(getCommandMessage("NOTIFY_DISPATCHED"));
+      qc.invalidateQueries({ queryKey: NEWS_QUERY_KEYS.notifyDeliveries });
+    },
   });
 }
 
@@ -225,6 +236,7 @@ export function useGenerateReport() {
   return useMutation({
     mutationFn: (mode: string) => repos.report.GenerateReport(mode),
     onSuccess: () => {
+      showSuccess(getCommandMessage("REPORT_GENERATED"));
       qc.invalidateQueries({ queryKey: NEWS_QUERY_KEYS.snapshots });
     },
   });
@@ -236,6 +248,9 @@ export function useUpsertChannel() {
   return useMutation({
     mutationFn: (body: { kind: string; name: string; enabled: boolean; config: Record<string, unknown> }) =>
       repos.notify.UpsertChannel(body),
-    onSuccess: () => qc.invalidateQueries({ queryKey: NEWS_QUERY_KEYS.notifyChannels }),
+    onSuccess: () => {
+      showSuccess(getCommandMessage("CHANNEL_CREATED"));
+      qc.invalidateQueries({ queryKey: NEWS_QUERY_KEYS.notifyChannels });
+    },
   });
 }
