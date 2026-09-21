@@ -31,12 +31,12 @@ services:
       traefik.http.routers.news-source-base.priority: "20"
       traefik.http.routers.news-source-base.middlewares: nfx-news-source-gw
       traefik.http.routers.news-source-base.service: news-source-base
-      traefik.http.routers.news-source-base-secure.entrypoints: websecure
-      traefik.http.routers.news-source-base-secure.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_SOURCE}`)
-      traefik.http.routers.news-source-base-secure.priority: "20"
-      traefik.http.routers.news-source-base-secure.middlewares: nfx-news-source-gw
-      traefik.http.routers.news-source-base-secure.service: news-source-base
-      traefik.http.routers.news-source-base-secure.tls: "true"
+      traefik.http.routers.news-source-base-tls.entrypoints: websecure
+      traefik.http.routers.news-source-base-tls.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_SOURCE}`)
+      traefik.http.routers.news-source-base-tls.priority: "20"
+      traefik.http.routers.news-source-base-tls.middlewares: nfx-news-source-gw
+      traefik.http.routers.news-source-base-tls.service: news-source-base
+      traefik.http.routers.news-source-base-tls.tls: "true"
     volumes:
       - ./static:/app/static
       - ./data:/app/data
@@ -110,12 +110,12 @@ services:
       traefik.http.routers.news-base.priority: "20"
       traefik.http.routers.news-base.middlewares: nfx-news-news-gw
       traefik.http.routers.news-base.service: news-base
-      traefik.http.routers.news-base-secure.entrypoints: websecure
-      traefik.http.routers.news-base-secure.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_NEWS}`)
-      traefik.http.routers.news-base-secure.priority: "20"
-      traefik.http.routers.news-base-secure.middlewares: nfx-news-news-gw
-      traefik.http.routers.news-base-secure.service: news-base
-      traefik.http.routers.news-base-secure.tls: "true"
+      traefik.http.routers.news-base-tls.entrypoints: websecure
+      traefik.http.routers.news-base-tls.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_NEWS}`)
+      traefik.http.routers.news-base-tls.priority: "20"
+      traefik.http.routers.news-base-tls.middlewares: nfx-news-news-gw
+      traefik.http.routers.news-base-tls.service: news-base
+      traefik.http.routers.news-base-tls.tls: "true"
     volumes:
       - ./static:/app/static
       - ./data:/app/data
@@ -189,12 +189,12 @@ services:
       traefik.http.routers.news-crawl-base.priority: "20"
       traefik.http.routers.news-crawl-base.middlewares: nfx-news-crawl-gw
       traefik.http.routers.news-crawl-base.service: news-crawl-base
-      traefik.http.routers.news-crawl-base-secure.entrypoints: websecure
-      traefik.http.routers.news-crawl-base-secure.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_CRAWL}`)
-      traefik.http.routers.news-crawl-base-secure.priority: "20"
-      traefik.http.routers.news-crawl-base-secure.middlewares: nfx-news-crawl-gw
-      traefik.http.routers.news-crawl-base-secure.service: news-crawl-base
-      traefik.http.routers.news-crawl-base-secure.tls: "true"
+      traefik.http.routers.news-crawl-base-tls.entrypoints: websecure
+      traefik.http.routers.news-crawl-base-tls.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_CRAWL}`)
+      traefik.http.routers.news-crawl-base-tls.priority: "20"
+      traefik.http.routers.news-crawl-base-tls.middlewares: nfx-news-crawl-gw
+      traefik.http.routers.news-crawl-base-tls.service: news-crawl-base
+      traefik.http.routers.news-crawl-base-tls.tls: "true"
     volumes:
       - ./static:/app/static
       - ./data:/app/data
@@ -268,12 +268,12 @@ services:
       traefik.http.routers.news-report-base.priority: "20"
       traefik.http.routers.news-report-base.middlewares: nfx-news-report-gw
       traefik.http.routers.news-report-base.service: news-report-base
-      traefik.http.routers.news-report-base-secure.entrypoints: websecure
-      traefik.http.routers.news-report-base-secure.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_REPORT}`)
-      traefik.http.routers.news-report-base-secure.priority: "20"
-      traefik.http.routers.news-report-base-secure.middlewares: nfx-news-report-gw
-      traefik.http.routers.news-report-base-secure.service: news-report-base
-      traefik.http.routers.news-report-base-secure.tls: "true"
+      traefik.http.routers.news-report-base-tls.entrypoints: websecure
+      traefik.http.routers.news-report-base-tls.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_REPORT}`)
+      traefik.http.routers.news-report-base-tls.priority: "20"
+      traefik.http.routers.news-report-base-tls.middlewares: nfx-news-report-gw
+      traefik.http.routers.news-report-base-tls.service: news-report-base
+      traefik.http.routers.news-report-base-tls.tls: "true"
     volumes:
       - ./static:/app/static
       - ./data:/app/data
@@ -347,12 +347,12 @@ services:
       traefik.http.routers.news-notify-base.priority: "20"
       traefik.http.routers.news-notify-base.middlewares: nfx-news-notify-gw
       traefik.http.routers.news-notify-base.service: news-notify-base
-      traefik.http.routers.news-notify-base-secure.entrypoints: websecure
-      traefik.http.routers.news-notify-base-secure.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_NOTIFY}`)
-      traefik.http.routers.news-notify-base-secure.priority: "20"
-      traefik.http.routers.news-notify-base-secure.middlewares: nfx-news-notify-gw
-      traefik.http.routers.news-notify-base-secure.service: news-notify-base
-      traefik.http.routers.news-notify-base-secure.tls: "true"
+      traefik.http.routers.news-notify-base-tls.entrypoints: websecure
+      traefik.http.routers.news-notify-base-tls.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_NOTIFY}`)
+      traefik.http.routers.news-notify-base-tls.priority: "20"
+      traefik.http.routers.news-notify-base-tls.middlewares: nfx-news-notify-gw
+      traefik.http.routers.news-notify-base-tls.service: news-notify-base
+      traefik.http.routers.news-notify-base-tls.tls: "true"
     volumes:
       - ./static:/app/static
       - ./data:/app/data
@@ -426,12 +426,12 @@ services:
       traefik.http.routers.news-mcp-base.priority: "20"
       traefik.http.routers.news-mcp-base.middlewares: nfx-news-mcp-gw
       traefik.http.routers.news-mcp-base.service: news-mcp-base
-      traefik.http.routers.news-mcp-base-secure.entrypoints: websecure
-      traefik.http.routers.news-mcp-base-secure.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_MCP}`)
-      traefik.http.routers.news-mcp-base-secure.priority: "20"
-      traefik.http.routers.news-mcp-base-secure.middlewares: nfx-news-mcp-gw
-      traefik.http.routers.news-mcp-base-secure.service: news-mcp-base
-      traefik.http.routers.news-mcp-base-secure.tls: "true"
+      traefik.http.routers.news-mcp-base-tls.entrypoints: websecure
+      traefik.http.routers.news-mcp-base-tls.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_MCP}`)
+      traefik.http.routers.news-mcp-base-tls.priority: "20"
+      traefik.http.routers.news-mcp-base-tls.middlewares: nfx-news-mcp-gw
+      traefik.http.routers.news-mcp-base-tls.service: news-mcp-base
+      traefik.http.routers.news-mcp-base-tls.tls: "true"
     volumes:
       - ./static:/app/static
       - ./data:/app/data
@@ -505,12 +505,12 @@ services:
       traefik.http.routers.news-system-base.priority: "20"
       traefik.http.routers.news-system-base.middlewares: nfx-news-system-gw
       traefik.http.routers.news-system-base.service: news-system-base
-      traefik.http.routers.news-system-base-secure.entrypoints: websecure
-      traefik.http.routers.news-system-base-secure.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_SYSTEM}`)
-      traefik.http.routers.news-system-base-secure.priority: "20"
-      traefik.http.routers.news-system-base-secure.middlewares: nfx-news-system-gw
-      traefik.http.routers.news-system-base-secure.service: news-system-base
-      traefik.http.routers.news-system-base-secure.tls: "true"
+      traefik.http.routers.news-system-base-tls.entrypoints: websecure
+      traefik.http.routers.news-system-base-tls.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_SYSTEM}`)
+      traefik.http.routers.news-system-base-tls.priority: "20"
+      traefik.http.routers.news-system-base-tls.middlewares: nfx-news-system-gw
+      traefik.http.routers.news-system-base-tls.service: news-system-base
+      traefik.http.routers.news-system-base-tls.tls: "true"
     volumes:
       - ./static:/app/static
       - ./data:/app/data
@@ -582,11 +582,11 @@ services:
       traefik.http.routers.news-console.rule: PathPrefix(`/console/nfx-news`)
       traefik.http.routers.news-console.service: news-console
       traefik.http.routers.news-console.priority: "25"
-      traefik.http.routers.news-console-secure.entrypoints: websecure
-      traefik.http.routers.news-console-secure.rule: PathPrefix(`/console/nfx-news`)
-      traefik.http.routers.news-console-secure.service: news-console
-      traefik.http.routers.news-console-secure.tls: "true"
-      traefik.http.routers.news-console-secure.priority: "25"
+      traefik.http.routers.news-console-tls.entrypoints: websecure
+      traefik.http.routers.news-console-tls.rule: PathPrefix(`/console/nfx-news`)
+      traefik.http.routers.news-console-tls.service: news-console
+      traefik.http.routers.news-console-tls.tls: "true"
+      traefik.http.routers.news-console-tls.priority: "25"
     init: true
     networks:
       - nfx-news

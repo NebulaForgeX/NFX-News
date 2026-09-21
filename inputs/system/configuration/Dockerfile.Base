@@ -1,4 +1,4 @@
-# Base 服务专用：docker-compose.yml 用 target: prod；docker-compose.dev.yml 用 target: dev
+# Base 服务专用：docker-compose.yml 用 target: secure；docker-compose.dev.yml 用 target: dev
 
 FROM golang:1.26.0-alpine AS base-builder
 WORKDIR /src
@@ -8,7 +8,7 @@ ENV GOSUMDB=sum.golang.google.cn
 COPY go.mod go.sum ./
 RUN go mod download
 
-FROM base-builder AS prod-build
+FROM base-builder AS secure-build
 COPY . ./
 ARG APP_VERSION=dev
 ENV CGO_ENABLED=0 GOOS=linux
@@ -20,14 +20,15 @@ RUN --mount=type=cache,target=/go/pkg/mod \
 FROM alpine:latest AS alpine-runtime
 RUN apk add --no-cache --no-scripts ca-certificates tzdata && update-ca-certificates
 
-FROM alpine-runtime AS prod
+FROM alpine-runtime AS secure
 WORKDIR /app
-COPY --from=prod-build /out/system-base-service /app/system-base-service
-COPY inputs/system/configuration/prod.toml /app/config.toml
-ENV APP_ENV=prod
+COPY --from=secure-build /out/system-base-service /app/system-base-service
+COPY inputs/system/configuration/secure.toml /app/config.toml
+ENV APP_ENV=secure
 ENV CONFIG_FILE=/app/config.toml
 EXPOSE 8080
 ENTRYPOINT ["/app/system-base-service"]
+CMD ["-env", "secure"]
 
 FROM base-builder AS dev
 WORKDIR /app

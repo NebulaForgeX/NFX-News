@@ -1,10 +1,10 @@
-# NFX-News Source Service (prod)
+# NFX-News System Service (secure)
 
 [server]
-    name = "Source Service"
+    name = "System Service"
     host = "0.0.0.0"
     http_port = "${HTTP_PORT}"
-    grpc_port = "${GRPC_PORT_SOURCE}"
+    grpc_port = "${GRPC_PORT_SYSTEM}"
 
     [server.access_log]
     mode = "logger"
@@ -49,7 +49,7 @@
     level = "info"
     format = "json"
     output = "stdout"
-    file_path = "logs/source.log"
+    file_path = "logs/system.log"
     max_size_mb = 100
     max_backups = 10
     max_age_day = 30
@@ -57,7 +57,7 @@
 
 [kafka]
     brokers = ["${KAFKA_BROKERS}"]
-    client_id = "nfxnews-source-service"
+    client_id = "nfxnews-system-service"
 
     [kafka.network]
         max_open_requests = 1
@@ -71,7 +71,7 @@
         idempotent = true
 
     [kafka.consumer]
-        group_id = "nfxnews-source"
+        group_id = "nfxnews-system"
         initial_offset = "latest"
         session_timeout_ms = 10000
         heartbeat_interval_ms = 3000
@@ -80,12 +80,12 @@
         return_errors = true
 
     [kafka.producer_topics]
-        source = "nfxnews.source"
-        source_poison = "nfxnews.source_poison"
+        system = "nfxnews.system"
+        system_poison = "nfxnews.system_poison"
 
     [kafka.consumer_topics]
-        source = "nfxnews.source"
-        source_poison = "nfxnews.source_poison"
+        system = "nfxnews.system"
+        system_poison = "nfxnews.system_poison"
 
     [kafka.security]
         enabled = false

@@ -44,6 +44,7 @@ cache/
 .env.*.local
 *.env
 !.example.env
+!.example.secure.env
 !.env.example
 
 ## Logs
@@ -167,6 +168,6 @@ databases/bin/
 /console/node_modules/
 /console/.turbo/
 !/console/.env.dev
-!/console/.env.prod
+!/console/.env.secure
 !/console/.env.example
 !/console/.example.env
