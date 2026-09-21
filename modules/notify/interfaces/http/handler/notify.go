@@ -5,6 +5,7 @@ import (
 
 	authconn "nfxnews/connections/auth"
 	"nfxnews/events"
+	notifymsg "nfxnews/messages/src/notify"
 	notifyapp "nfxnews/modules/notify/application/notify"
 	"nfxnews/pkgs/errx"
 	"nfxnews/pkgs/fiberx"
@@ -101,7 +102,7 @@ func (h *NotifyHandler) UpsertChannel(c fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	return fiberx.Created(c, "created", httpx.SuccessOptions{Data: row})
+	return fiberx.Created(c, notifymsg.CHANNEL_CREATED, httpx.SuccessOptions{Data: row})
 }
 
 func (h *NotifyHandler) Dispatch(c fiber.Ctx) error {
@@ -119,5 +120,5 @@ func (h *NotifyHandler) Dispatch(c fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	return fiberx.OK(c, "ok", httpx.SuccessOptions{Data: map[string]any{"queued": n}})
+	return fiberx.OK(c, notifymsg.NOTIFY_DISPATCHED, httpx.SuccessOptions{Data: map[string]any{"queued": n}})
 }

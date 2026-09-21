@@ -1,7 +1,27 @@
 {
+  "CHANNEL_CREATED": {
+    "title": "Canal enregistré",
+    "body": "Le canal de notification a été enregistré"
+  },
+  "CRAWL_TRIGGERED": {
+    "title": "Crawl lancé",
+    "body": "Le crawl a été déclenché"
+  },
+  "KEYWORD_ADDED": {
+    "title": "Mot-clé ajouté",
+    "body": "Le mot-clé a été ajouté"
+  },
+  "NOTIFY_DISPATCHED": {
+    "title": "Notification mise en file",
+    "body": "La notification a été mise en file"
+  },
   "NOTIFY_REPORT_PUSH": {
     "title": "Rapport d'actualités",
     "body": "Un nouveau rapport filtré est disponible"
+  },
+  "PREFERENCES_UPDATED": {
+    "title": "Préférences mises à jour",
+    "body": "Les préférences d'actualités ont été enregistrées"
   },
   "REPORT_CURRENT_READY": {
     "title": "Rapport actuel prêt",
@@ -10,6 +30,10 @@
   "REPORT_DAILY_READY": {
     "title": "Rapport quotidien prêt",
     "body": "Votre rapport d'actualités quotidien est prêt"
+  },
+  "REPORT_GENERATED": {
+    "title": "Rapport généré",
+    "body": "Le rapport a été généré"
   },
   "REPORT_INCREMENTAL_READY": {
     "title": "Rapport incrémental prêt",

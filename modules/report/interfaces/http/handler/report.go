@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	authconn "nfxnews/connections/auth"
+	reportmsg "nfxnews/messages/src/report"
 	reportapp "nfxnews/modules/report/application/report"
 	"nfxnews/pkgs/errx"
 	"nfxnews/pkgs/fiberx"
@@ -79,7 +80,7 @@ func (h *ReportHandler) AddKeyword(c fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	return fiberx.Created(c, "created", httpx.SuccessOptions{Data: row})
+	return fiberx.Created(c, reportmsg.KEYWORD_ADDED, httpx.SuccessOptions{Data: row})
 }
 
 func (h *ReportHandler) Generate(c fiber.Ctx) error {
@@ -93,7 +94,7 @@ func (h *ReportHandler) Generate(c fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	return fiberx.Created(c, "generated", httpx.SuccessOptions{Data: snap})
+	return fiberx.Created(c, reportmsg.REPORT_GENERATED, httpx.SuccessOptions{Data: snap})
 }
 
 func (h *ReportHandler) ListSnapshots(c fiber.Ctx) error {
