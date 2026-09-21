@@ -10,9 +10,21 @@
     "kicker": "Assignment",
     "title": "Before you file",
     "steps": [
-      { "rank": "01", "title": "Verify email", "body": "We send a six-character code to the address on the ticket." },
-      { "rank": "02", "title": "Set a password", "body": "Same Account as the rest of NFX. No second signup later." },
-      { "rank": "03", "title": "Open Reader", "body": "Columns, reports, and crawl sit behind this pass." }
+      {
+        "rank": "01",
+        "title": "Verify email",
+        "body": "We send a six-character code to the address on the ticket."
+      },
+      {
+        "rank": "02",
+        "title": "Set a password",
+        "body": "Same Account as the rest of NFX. No second signup later."
+      },
+      {
+        "rank": "03",
+        "title": "Open Reader",
+        "body": "Columns, reports, and crawl sit behind this pass."
+      }
     ]
   },
   "emailLabel": "Email",
@@ -30,5 +42,15 @@
   "rememberMe": "Remember me",
   "submit": "Issue credentials",
   "hasAccount": "Already on the desk?",
-  "signIn": "Sign in"
+  "signIn": "Sign in",
+  "validation": {
+    "emailRequired": "Email is required",
+    "emailInvalid": "Enter a valid email",
+    "codeRequired": "Verification code is required",
+    "codeInvalid": "Enter the 6-character code",
+    "passwordRequired": "Password is required",
+    "passwordMin": "Password must be at least 8 characters",
+    "confirmRequired": "Confirm your password",
+    "passwordMismatch": "Passwords do not match"
+  }
 }

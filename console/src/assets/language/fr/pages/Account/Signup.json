@@ -10,9 +10,21 @@
     "kicker": "Affectation",
     "title": "Avant de filer",
     "steps": [
-      { "rank": "01", "title": "Vérifier l'e-mail", "body": "Nous envoyons un code à six caractères à l'adresse du badge." },
-      { "rank": "02", "title": "Choisir un mot de passe", "body": "Le même Account que le reste de NFX. Pas de second signup." },
-      { "rank": "03", "title": "Ouvrir le Lecteur", "body": "Colonnes, rapports et crawl sont derrière ce laissez-passer." }
+      {
+        "rank": "01",
+        "title": "Vérifier l'e-mail",
+        "body": "Nous envoyons un code à six caractères à l'adresse du badge."
+      },
+      {
+        "rank": "02",
+        "title": "Choisir un mot de passe",
+        "body": "Le même Account que le reste de NFX. Pas de second signup."
+      },
+      {
+        "rank": "03",
+        "title": "Ouvrir le Lecteur",
+        "body": "Colonnes, rapports et crawl sont derrière ce laissez-passer."
+      }
     ]
   },
   "emailLabel": "E-mail",
@@ -30,5 +42,15 @@
   "rememberMe": "Se souvenir de moi",
   "submit": "Délivrer le badge",
   "hasAccount": "Déjà au pupitre ?",
-  "signIn": "Se connecter"
+  "signIn": "Se connecter",
+  "validation": {
+    "emailRequired": "L'e-mail est requis",
+    "emailInvalid": "Entrez un e-mail valide",
+    "codeRequired": "Le code de vérification est requis",
+    "codeInvalid": "Entrez le code à 6 caractères",
+    "passwordRequired": "Le mot de passe est requis",
+    "passwordMin": "Le mot de passe doit contenir au moins 8 caractères",
+    "confirmRequired": "Confirmez le mot de passe",
+    "passwordMismatch": "Les mots de passe ne correspondent pas"
+  }
 }

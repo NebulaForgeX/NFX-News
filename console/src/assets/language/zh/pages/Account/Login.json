@@ -8,19 +8,40 @@
       "name": "世界电讯",
       "meta": "静态稿件栏",
       "items": [
-        { "title": "频道按排名排列，直到你把它们藏起。", "meta": "阅读" },
-        { "title": "关键词稿件台汇总每日快照。", "meta": "报告" },
-        { "title": "抓取会话按定时拉取源。", "meta": "抓取" },
-        { "title": "通知发到你已经在用的渠道。", "meta": "通知" }
+        {
+          "title": "频道按排名排列，直到你把它们藏起。",
+          "meta": "阅读"
+        },
+        {
+          "title": "关键词稿件台汇总每日快照。",
+          "meta": "报告"
+        },
+        {
+          "title": "抓取会话按定时拉取源。",
+          "meta": "抓取"
+        },
+        {
+          "title": "通知发到你已经在用的渠道。",
+          "meta": "通知"
+        }
       ]
     },
     "desk": {
       "name": "稿件台",
       "meta": "控制台怎么运转",
       "items": [
-        { "title": "一份 NFX Account，多个 Profile。", "meta": "身份" },
-        { "title": "HTTP 走 Edge，Kafka 在 Stack。", "meta": "基础设施" },
-        { "title": "MCP 工具对着同一份新闻语料。", "meta": "MCP" }
+        {
+          "title": "一份 NFX Account，多个 Profile。",
+          "meta": "身份"
+        },
+        {
+          "title": "HTTP 走 Edge，Kafka 在 Stack。",
+          "meta": "基础设施"
+        },
+        {
+          "title": "MCP 工具对着同一份新闻语料。",
+          "meta": "MCP"
+        }
       ]
     }
   },
@@ -34,7 +55,18 @@
     "showPassword": "显示密码",
     "hidePassword": "隐藏密码",
     "rememberMe": "记住我",
-    "submit": "登录"
+    "submit": "登录",
+    "phoneLabel": "手机",
+    "phonePlaceholder": "+15551234567",
+    "channelEmail": "邮箱",
+    "channelPhone": "手机",
+    "validation": {
+      "emailRequired": "请输入邮箱",
+      "emailInvalid": "邮箱格式不正确",
+      "phoneRequired": "请输入手机号",
+      "phoneInvalid": "手机号格式不正确",
+      "passwordRequired": "请输入密码"
+    }
   },
   "promo": {
     "column": "新通讯员",
@@ -49,11 +81,11 @@
     "back": "返回登录",
     "kind": {
       "authority": "Authority",
-      "forger": "Forger"
+      "community": "Community"
     },
     "kindHint": {
       "authority": "审核与角色",
-      "forger": "日常使用"
+      "community": "日常使用"
     },
     "roles": {
       "pulser": "脉搏者",

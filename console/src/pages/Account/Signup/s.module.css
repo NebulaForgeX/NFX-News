@@ -7,14 +7,17 @@
 }
 
 .ticker {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 8px 16px;
   border-bottom: 1px solid var(--gray-a5);
   background: var(--gray-2);
   flex-shrink: 0;
+}
+
+.tickerPx {
+  padding-inline: 16px;
+}
+
+.tickerPy {
+  padding-block: 8px;
 }
 
 .tickerText {
@@ -39,10 +42,15 @@
 .ticket {
   flex: 1 1 56%;
   min-width: 0;
-  display: flex;
-  flex-direction: column;
-  padding: 28px 32px 32px;
   border-right: 1px dashed var(--gray-a6);
+}
+
+.ticketPx {
+  padding-inline: 32px;
+}
+
+.ticketPy {
+  padding-block: 28px 32px;
 }
 
 .kicker {
@@ -72,9 +80,6 @@
 }
 
 .form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
   max-width: 440px;
 }
 
@@ -103,10 +108,15 @@
 .briefing {
   flex: 0 0 36%;
   min-width: 260px;
-  display: flex;
-  flex-direction: column;
-  padding: 28px 24px;
   background: var(--gray-2);
+}
+
+.briefingPx {
+  padding-inline: 24px;
+}
+
+.briefingPy {
+  padding-block: 28px;
 }
 
 .briefKicker {
@@ -125,11 +135,17 @@
 }
 
 .step {
+  border-top: 1px solid var(--gray-a4);
+}
+
+.stepPy {
+  padding-block: 14px;
+}
+
+.stepGrid {
   display: grid;
   grid-template-columns: 2.2em 1fr;
   gap: 10px;
-  padding: 14px 0;
-  border-top: 1px solid var(--gray-a4);
 }
 
 .stepRank {
@@ -162,18 +178,28 @@
 
   .ticket {
     border-right: 0;
-    padding: 20px 16px 24px;
+  }
+
+  .ticketPx {
+    padding-inline: 16px;
+  }
+
+  .ticketPy {
+    padding-block: 20px 24px;
   }
 
   .briefing {
     flex: 0 0 auto;
     min-width: 0;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    gap: 0 16px;
-    padding: 16px;
     border-top: 1px solid var(--gray-a5);
+  }
+
+  .briefingPx {
+    padding-inline: 16px;
+  }
+
+  .briefingPy {
+    padding-block: 16px;
   }
 
   .briefTitle {
@@ -184,6 +210,9 @@
   .step {
     flex: 1 1 180px;
     border-top: 0;
-    padding: 8px 0;
+  }
+
+  .stepPy {
+    padding-block: 8px;
   }
 }

@@ -1,6 +1,6 @@
 import { FilledBellIcon } from "nfx-ui/icons";
 import { memo, useMemo, useState } from "react";
-import { Badge, Button, Flex, Select, Switch, Text, TextField } from "@radix-ui/themes";
+import { Badge, Box, Button, Flex, Select, Switch, Text, TextField } from "@radix-ui/themes";
 import { useTranslation } from "react-i18next";
 import { DataTable, PageHeader, SectionBlock } from "@/components";
 import { PageFrame } from "@/layouts";
@@ -76,7 +76,8 @@ const NotifyPage = memo(() => {
       <PageHeader icon={FilledBellIcon} title={t("title")} description={t("webhookHint")} />
       <Flex direction="column" gap="6">
         <SectionBlock title={t("channels")}>
-          <Flex direction="column" gap="3" mb="4">
+          <Box pb="4">
+          <Flex direction="column" gap="3">
             <Flex gap="2" wrap="wrap" align="center">
               <Select.Root value={kind} onValueChange={(v) => onKindChange(v as NotifyKind)}>
                 <Select.Trigger />
@@ -123,6 +124,7 @@ const NotifyPage = memo(() => {
               })}
             </Flex>
           </Flex>
+          </Box>
           <DataTable
             loading={channelsLoading}
             empty={t("emptyChannels")}
@@ -136,7 +138,7 @@ const NotifyPage = memo(() => {
                 key: "enabled",
                 header: t("enabled"),
                 render: (row) => (
-                  <Badge color={row.enabled ? "green" : "gray"} variant="soft">
+                  <Badge color={row.enabled ? "green" : "gray"} variant="outline">
                     {row.enabled ? t("on") : t("off")}
                   </Badge>
                 ),
@@ -160,7 +162,7 @@ const NotifyPage = memo(() => {
                 key: "status",
                 header: t("status"),
                 render: (row) => (
-                  <Badge color={row.status === "sent" ? "green" : row.status === "failed" ? "red" : "orange"} variant="soft">
+                  <Badge color={row.status === "sent" ? "green" : row.status === "failed" ? "red" : "orange"} variant="outline">
                     {row.status}
                   </Badge>
                 ),

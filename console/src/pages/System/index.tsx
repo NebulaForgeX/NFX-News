@@ -1,6 +1,6 @@
 import { RouterIcon } from "nfx-ui/icons";
 import { memo, useState } from "react";
-import { Badge, Button, Flex, Text, TextField } from "@radix-ui/themes";
+import { Badge, Box, Button, Flex, Text, TextField } from "@radix-ui/themes";
 import { useTranslation } from "react-i18next";
 import { DataTable, PageHeader, SectionBlock } from "@/components";
 import { PageFrame } from "@/layouts";
@@ -39,17 +39,17 @@ const SystemPage = memo(() => {
         }
       />
       <SectionBlock title={t("state")} description={t("stateHint")}>
-        <Flex mb="3">
+        <Box pb="3">
           {data?.initialized ? (
-            <Badge color="green" variant="soft">
+            <Badge color="green" variant="outline">
               {t("ready")}
             </Badge>
           ) : (
-            <Badge color="orange" variant="soft">
+            <Badge color="orange" variant="outline">
               {t("pending")}
             </Badge>
           )}
-        </Flex>
+        </Box>
         <DataTable
           loading={isLoading}
           empty={t("empty")}

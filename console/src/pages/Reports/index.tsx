@@ -1,6 +1,6 @@
 import { FileDescriptionIcon, HashtagIcon } from "nfx-ui/icons";
 import { memo, useMemo, useState } from "react";
-import { Badge, Button, Flex, Select, Text, TextField } from "@radix-ui/themes";
+import { Badge, Box, Button, Flex, Select, Text, TextField } from "@radix-ui/themes";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { DataTable, EmptyState, PageHeader, SectionBlock } from "@/components";
@@ -45,7 +45,7 @@ const ReportsPage = memo(() => {
         actions={
           <Flex gap="2">
             {REPORT_MODES.map((mode) => (
-              <Button key={mode} variant="soft" onClick={() => generate.mutate(mode)} disabled={generate.isPending}>
+              <Button key={mode} variant="outline" onClick={() => generate.mutate(mode)} disabled={generate.isPending}>
                 {t(mode)}
               </Button>
             ))}
@@ -54,7 +54,8 @@ const ReportsPage = memo(() => {
       />
       <Flex direction="column" gap="6">
         <SectionBlock title={t("keywords")}>
-          <Flex gap="2" wrap="wrap" mb="3">
+          <Box pb="3">
+          <Flex gap="2" wrap="wrap">
             <TextField.Root value={groupName} onChange={(e) => setGroupName(e.target.value)} placeholder={t("group")} />
             <TextField.Root value={word} onChange={(e) => setWord(e.target.value)} placeholder={t("wordHint")} />
             <Select.Root value={kind} onValueChange={(v) => setKind(v as (typeof KEYWORD_KINDS)[number])}>
@@ -86,11 +87,13 @@ const ReportsPage = memo(() => {
               {t("add")}
             </Button>
           </Flex>
+          </Box>
           {keywordsLoading || grouped.length === 0 ? (
             <EmptyState icon={HashtagIcon} title={t("emptyKeywords")} />
           ) : (
             grouped.map(([group, rows]) => (
-              <Flex key={group} direction="column" gap="2" mb="4">
+              <Box key={group} pb="4">
+              <Flex direction="column" gap="2">
                 <Text size="2" weight="medium">
                   {group}
                 </Text>
@@ -104,7 +107,7 @@ const ReportsPage = memo(() => {
                       key: "kind",
                       header: t("kindLabel"),
                       render: (row) => (
-                        <Badge variant="soft" color={row.kind === "exclude" ? "red" : row.kind === "required" ? "amber" : "green"}>
+                        <Badge variant="outline" color={row.kind === "exclude" ? "red" : row.kind === "required" ? "amber" : "green"}>
                           {t(`kind.${row.kind}`, { defaultValue: row.kind })}
                         </Badge>
                       ),
@@ -115,11 +118,12 @@ const ReportsPage = memo(() => {
                       header: t("createdAt"),
                       render: (row) => (row.createdAt ? formatDateTime(row.createdAt) : "—"),
                     },
-                  ]}
-                />
-              </Flex>
-            ))
-          )}
+                    ]}
+                  />
+                </Flex>
+                </Box>
+              ))
+            )}
         </SectionBlock>
         <SectionBlock title={t("snapshots")}>
           <DataTable
@@ -140,7 +144,7 @@ const ReportsPage = memo(() => {
               {
                 key: "mode",
                 header: t("mode"),
-                render: (row) => <Badge variant="soft">{t(row.mode, { defaultValue: row.mode })}</Badge>,
+                render: (row) => <Badge variant="outline">{t(row.mode, { defaultValue: row.mode })}</Badge>,
               },
               { key: "itemCount", header: t("itemCount") },
               {
@@ -153,10 +157,10 @@ const ReportsPage = memo(() => {
                 header: t("actions"),
                 render: (row) => (
                   <Flex gap="2">
-                    <Button size="1" variant="soft" onClick={() => void openHtml.mutateAsync(row.id)}>
+                    <Button size="1" variant="outline" onClick={() => void openHtml.mutateAsync(row.id)}>
                       {t("openHtml")}
                     </Button>
-                    <Button size="1" variant="soft" onClick={() => dispatch.mutate(row.id)} disabled={dispatch.isPending}>
+                    <Button size="1" variant="outline" onClick={() => dispatch.mutate(row.id)} disabled={dispatch.isPending}>
                       {t("dispatch")}
                     </Button>
                   </Flex>

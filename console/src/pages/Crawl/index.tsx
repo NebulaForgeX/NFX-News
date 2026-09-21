@@ -72,7 +72,7 @@ const CrawlPage = memo(() => {
                 key: "status",
                 header: t("status"),
                 render: (row) => (
-                  <Badge color={statusColor(row.status)} variant="soft">
+                  <Badge color={statusColor(row.status)} variant="outline">
                     {t(`statusValue.${row.status}`, { defaultValue: row.status })}
                   </Badge>
                 ),

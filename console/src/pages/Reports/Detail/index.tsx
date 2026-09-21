@@ -41,10 +41,10 @@ const ReportDetailPage = memo(() => {
             </Button>
             {id ? (
               <>
-                <Button variant="soft" onClick={() => void openHtml.mutateAsync(id)}>
+                <Button variant="outline" onClick={() => void openHtml.mutateAsync(id)}>
                   {t("openHtml")}
                 </Button>
-                <Button variant="soft" onClick={() => dispatch.mutate(id)} disabled={dispatch.isPending}>
+                <Button variant="outline" onClick={() => dispatch.mutate(id)} disabled={dispatch.isPending}>
                   {t("dispatch")}
                 </Button>
               </>
@@ -68,7 +68,7 @@ const ReportDetailPage = memo(() => {
               width: "72px",
               render: (row) =>
                 row.isNew ? (
-                  <Badge color="amber" variant="soft">
+                  <Badge color="amber" variant="outline">
                     {t("new")}
                   </Badge>
                 ) : (

@@ -1,17 +1,18 @@
-import { AnimatedIcon, ArrowNarrowRightIcon, EyeIcon, EyeOffIcon } from "nfx-ui/icons";
+import { AnimatedIcon, ArrowNarrowRightIcon } from "nfx-ui/icons";
 import type { Login } from "nfx-ui/types";
 
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, type ReactNode } from "react";
 import { useGSAP } from "@gsap/react";
-import { Button, Checkbox, Flex, Link, Text, TextField } from "@radix-ui/themes";
+import { Box, Button, Flex, Link, Tabs, Text } from "@radix-ui/themes";
 import gsap from "gsap";
 import { APP_NAME } from "nfx-ui/config";
-import { useLoginWithEmail } from "nfx-ui/hooks";
-import { LoginFormData, useInitLoginForm } from "nfx-ui/schemas";
-import { Controller, FormProvider, SubmitHandler } from "react-hook-form";
+import { useLoginWithEmail, useLoginWithPhone } from "nfx-ui/hooks";
+import { LoginFormData, LoginWithPhoneFormData, useInitLoginForm, useInitLoginWithPhoneForm } from "nfx-ui/schemas";
+import { FormProvider, SubmitHandler } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { routerEventEmitter } from "@/events/router";
+import { LoginEmailController, LoginPasswordController, LoginPhoneController, LoginRememberController } from "@/features/account";
 import { ROUTES } from "@/navigations";
 import AuthToolbar from "@/pages/Account/shared/AuthToolbar";
 import { safeArray, safeOr } from "@/utils";
@@ -25,10 +26,12 @@ type WireItem = { title: string; meta: string };
 
 export default function LoginPage() {
   const { t, i18n } = useTranslation("pages.Account.Login");
-  const form = useInitLoginForm();
-  const login = useLoginWithEmail();
+  const emailForm = useInitLoginForm();
+  const phoneForm = useInitLoginWithPhoneForm();
+  const loginEmail = useLoginWithEmail();
+  const loginPhone = useLoginWithPhone();
   const [profiles, setProfiles] = useState<Login.ProfileItem[]>([]);
-  const [showPassword, setShowPassword] = useState(false);
+  const [channel, setChannel] = useState<"email" | "phone">("email");
   const pageRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
@@ -43,18 +46,31 @@ export default function LoginPage() {
     { scope: pageRef, dependencies: [profiles.length] },
   );
 
-  const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
-    const result = await login.mutateAsync({
-      email: data.email,
-      password: data.password,
-      rememberMe: safeOr(data.rememberMe, false),
-    });
+  const finishLogin = (result: Login.Response.LoginWithEmail) => {
     const list = safeArray(result?.profiles);
     if (list.length > 0) {
       setProfiles(list);
       return;
     }
     routerEventEmitter.navigate({ to: ROUTES.USER_OVERVIEW, replace: true });
+  };
+
+  const onEmail: SubmitHandler<LoginFormData> = async (data) => {
+    const result = await loginEmail.mutateAsync({
+      email: data.email,
+      password: data.password,
+      rememberMe: safeOr(data.rememberMe, false),
+    });
+    finishLogin(result);
+  };
+
+  const onPhone: SubmitHandler<LoginWithPhoneFormData> = async (data) => {
+    const result = await loginPhone.mutateAsync({
+      phone: data.phone,
+      password: data.password,
+      rememberMe: safeOr(data.rememberMe, false),
+    });
+    finishLogin(result);
   };
 
   const dateLabel = useMemo(
@@ -78,186 +94,208 @@ export default function LoginPage() {
   }
 
   return (
-    <main ref={pageRef} className={styles.page}>
-      <header className={styles.masthead}>
-        <div className={styles.brand}>
-          <span className={styles.wordmark}>{APP_NAME}</span>
-          <time className={styles.dateline} dateTime={new Date().toISOString()}>
-            {dateLabel}
-          </time>
-          <span className={styles.edition}>{t("masthead.edition")}</span>
-        </div>
-        <AuthToolbar />
-      </header>
+    <Flex ref={pageRef} direction="column" className={styles.page} asChild>
+      <main>
+        <Box className={styles.masthead}>
+          <Box className={styles.mastheadPx}>
+            <Box className={styles.mastheadPy}>
+              <Flex asChild align="baseline" justify="between" gap="4">
+                <header>
+                  <Flex className={styles.brand} align="baseline" gap="4" wrap="wrap">
+                    <Text as="span" className={styles.wordmark}>
+                      {APP_NAME}
+                    </Text>
+                    <Text as="span" className={styles.dateline}>
+                      <time dateTime={new Date().toISOString()}>{dateLabel}</time>
+                    </Text>
+                    <Text as="span" className={styles.edition}>
+                      {t("masthead.edition")}
+                    </Text>
+                  </Flex>
+                  <AuthToolbar />
+                </header>
+              </Flex>
+            </Box>
+          </Box>
+        </Box>
 
-      <div className={styles.board}>
-        <section className={`${styles.column} ${styles.wire} js-col`}>
-          <div className={styles.columnHeader}>
-            <span className={styles.rail} style={{ background: "var(--blue-9)" }} />
-            <div className={styles.headText}>
-              <span className={styles.headName}>{t("wire.world.name")}</span>
-              <span className={styles.headMeta}>{t("wire.world.meta")}</span>
-            </div>
-          </div>
-          <div className={styles.list}>
-            {worldItems.map((item, index) => (
-              <div key={item.title} className={styles.item}>
-                <span className={styles.rank}>{String(index + 1).padStart(2, "0")}</span>
-                <span className={styles.body}>
-                  <span className={styles.title}>{item.title}</span>
-                  <span className={styles.meta}>{item.meta}</span>
-                </span>
-              </div>
-            ))}
-          </div>
-        </section>
+        <Flex className={styles.board}>
+          <Box asChild className={`${styles.column} ${styles.wire} js-col`}>
+            <section>
+              <ColumnHead rail={styles.railWorld} name={t("wire.world.name")} meta={t("wire.world.meta")} />
+              <Box className={styles.list}>
+                {worldItems.map((item, index) => (
+                  <WireItem key={item.title} index={index} title={item.title} meta={item.meta} />
+                ))}
+              </Box>
+            </section>
+          </Box>
 
-        <section className={`${styles.column} ${styles.wire} js-col`}>
-          <div className={styles.columnHeader}>
-            <span className={styles.rail} style={{ background: "var(--orange-9)" }} />
-            <div className={styles.headText}>
-              <span className={styles.headName}>{t("wire.desk.name")}</span>
-              <span className={styles.headMeta}>{t("wire.desk.meta")}</span>
-            </div>
-          </div>
-          <div className={styles.list}>
-            {deskItems.map((item, index) => (
-              <div key={item.title} className={styles.item}>
-                <span className={styles.rank}>{String(index + 1).padStart(2, "0")}</span>
-                <span className={styles.body}>
-                  <span className={styles.title}>{item.title}</span>
-                  <span className={styles.meta}>{item.meta}</span>
-                </span>
-              </div>
-            ))}
-          </div>
-        </section>
+          <Box asChild className={`${styles.column} ${styles.wire} js-col`}>
+            <section>
+              <ColumnHead rail={styles.railDesk} name={t("wire.desk.name")} meta={t("wire.desk.meta")} />
+              <Box className={styles.list}>
+                {deskItems.map((item, index) => (
+                  <WireItem key={item.title} index={index} title={item.title} meta={item.meta} />
+                ))}
+              </Box>
+            </section>
+          </Box>
 
-        <section className={`${styles.column} ${styles.desk} js-col`}>
-          <div className={styles.columnHeader}>
-            <span className={styles.rail} style={{ background: "var(--accent-9)" }} />
-            <div className={styles.headText}>
-              <span className={styles.headName}>{t("form.column")}</span>
-              <span className={styles.headMeta}>{t("form.columnMeta")}</span>
-            </div>
-          </div>
-          <FormProvider {...form}>
-            <form noValidate onSubmit={form.handleSubmit(onSubmit)} className={styles.list}>
-              <Controller
-                name="email"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <div className={`${styles.field} js-field`}>
-                    <span className={styles.rank}>01</span>
-                    <span className={styles.fieldBody}>
-                      <label className={styles.fieldLabel} htmlFor="login-email">
-                        {t("form.emailLabel")}
-                      </label>
-                      <TextField.Root id="login-email" size="3" type="email" autoComplete="email" placeholder={t("form.emailPlaceholder")} radius="none" {...field} />
-                      {fieldState.error ? (
-                        <Text size="1" color="red">
-                          {fieldState.error.message}
-                        </Text>
-                      ) : null}
-                    </span>
-                  </div>
-                )}
-              />
-
-              <Controller
-                name="password"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <div className={`${styles.field} js-field`}>
-                    <span className={styles.rank}>02</span>
-                    <span className={styles.fieldBody}>
-                      <label className={styles.fieldLabel} htmlFor="login-password">
-                        {t("form.passwordLabel")}
-                      </label>
-                      <TextField.Root
-                        id="login-password"
-                        size="3"
-                        type={showPassword ? "text" : "password"}
-                        autoComplete="current-password"
-                        placeholder={t("form.passwordPlaceholder")}
-                        radius="none"
-                        {...field}
-                      >
-                        <TextField.Slot side="right">
-                          <Button
-                            type="button"
-                            size="1"
-                            variant="ghost"
-                            color="gray"
-                            onClick={() => setShowPassword((v) => !v)}
-                            aria-label={showPassword ? t("form.hidePassword") : t("form.showPassword")}
-                          >
-                            <AnimatedIcon icon={showPassword ? EyeOffIcon : EyeIcon} size={14} />
+          <Box asChild className={`${styles.column} ${styles.desk} js-col`}>
+            <section>
+              <ColumnHead rail={styles.railForm} name={t("form.column")} meta={t("form.columnMeta")} />
+              <Tabs.Root value={channel} onValueChange={(value) => setChannel(value as "email" | "phone")}>
+                <Box className={styles.channelsWrap}>
+                  <Box className={styles.channelsPx}>
+                    <Box className={styles.channelsPy}>
+                      <Tabs.List className={styles.channels}>
+                        <Tabs.Trigger value="email">{t("form.channelEmail")}</Tabs.Trigger>
+                        <Tabs.Trigger value="phone">{t("form.channelPhone")}</Tabs.Trigger>
+                      </Tabs.List>
+                    </Box>
+                  </Box>
+                </Box>
+                <Tabs.Content value="email">
+                  <FormProvider {...emailForm}>
+                    <form noValidate onSubmit={emailForm.handleSubmit(onEmail)} className={styles.list}>
+                      <FieldRow rank="01">
+                        <LoginEmailController />
+                      </FieldRow>
+                      <FieldRow rank="02">
+                        <LoginPasswordController />
+                      </FieldRow>
+                      <FieldRow rank="03">
+                        <LoginRememberController />
+                      </FieldRow>
+                      <Box className={`${styles.submitPx} js-field`}>
+                        <Box className={styles.submitPy}>
+                          <Button type="submit" size="3" loading={loginEmail.isPending} radius="none" className={styles.fullWidth}>
+                            {t("form.submit")}
+                            <AnimatedIcon icon={ArrowNarrowRightIcon} size={16} />
                           </Button>
-                        </TextField.Slot>
-                      </TextField.Root>
-                      {fieldState.error ? (
-                        <Text size="1" color="red">
-                          {fieldState.error.message}
-                        </Text>
-                      ) : null}
-                    </span>
-                  </div>
-                )}
-              />
+                        </Box>
+                      </Box>
+                    </form>
+                  </FormProvider>
+                </Tabs.Content>
+                <Tabs.Content value="phone">
+                  <FormProvider {...phoneForm}>
+                    <form noValidate onSubmit={phoneForm.handleSubmit(onPhone)} className={styles.list}>
+                      <FieldRow rank="01">
+                        <LoginPhoneController />
+                      </FieldRow>
+                      <FieldRow rank="02">
+                        <LoginPasswordController />
+                      </FieldRow>
+                      <FieldRow rank="03">
+                        <LoginRememberController />
+                      </FieldRow>
+                      <Box className={`${styles.submitPx} js-field`}>
+                        <Box className={styles.submitPy}>
+                          <Button type="submit" size="3" loading={loginPhone.isPending} radius="none" className={styles.fullWidth}>
+                            {t("form.submit")}
+                            <AnimatedIcon icon={ArrowNarrowRightIcon} size={16} />
+                          </Button>
+                        </Box>
+                      </Box>
+                    </form>
+                  </FormProvider>
+                </Tabs.Content>
+              </Tabs.Root>
+            </section>
+          </Box>
 
-              <div className={`${styles.field} js-field`}>
-                <span className={styles.rank}>03</span>
-                <span className={styles.fieldBody}>
-                  <Controller
-                    name="rememberMe"
-                    control={form.control}
-                    render={({ field }) => (
-                      <Flex asChild align="center" gap="2">
-                        <Text as="label" size="2">
-                          <Checkbox checked={!!field.value} onCheckedChange={(v) => field.onChange(v === true)} />
-                          {t("form.rememberMe")}
-                        </Text>
-                      </Flex>
-                    )}
-                  />
-                </span>
-              </div>
+          <Box asChild className={`${styles.column} ${styles.promo} js-col`}>
+            <aside>
+              <ColumnHead rail={styles.railPromo} name={t("promo.column")} meta={t("promo.columnMeta")} />
+              <Box className={styles.promoPx}>
+                <Box className={styles.promoPy}>
+                  <Flex direction="column" gap="3">
+                    <Text as="p" className={styles.promoBlurb}>
+                      {t("promo.blurb")}
+                    </Text>
+                    <Link
+                      href={ROUTES.SIGNUP}
+                      size="2"
+                      weight="bold"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        routerEventEmitter.navigate({ to: ROUTES.SIGNUP });
+                      }}
+                    >
+                      {t("promo.createAccount")}
+                    </Link>
+                  </Flex>
+                </Box>
+              </Box>
+            </aside>
+          </Box>
+        </Flex>
+      </main>
+    </Flex>
+  );
+}
 
-              <div className={`${styles.submit} js-field`}>
-                <Button type="submit" size="3" loading={login.isPending} radius="none" style={{ width: "100%" }}>
-                  {t("form.submit")}
-                  <AnimatedIcon icon={ArrowNarrowRightIcon} size={16} />
-                </Button>
-              </div>
-            </form>
-          </FormProvider>
-        </section>
+function ColumnHead({ rail, name, meta }: { rail: string; name: string; meta: string }) {
+  return (
+    <Box className={styles.columnHeader}>
+      <Box className={styles.columnHeaderPx}>
+        <Box className={styles.columnHeaderPy}>
+          <Flex align="start" gap="2">
+            <Box className={`${styles.rail} ${rail}`} />
+            <Box className={styles.headText}>
+              <Text as="span" className={styles.headName}>
+                {name}
+              </Text>
+              <Text as="span" className={styles.headMeta}>
+                {meta}
+              </Text>
+            </Box>
+          </Flex>
+        </Box>
+      </Box>
+    </Box>
+  );
+}
 
-        <aside className={`${styles.column} ${styles.promo} js-col`}>
-          <div className={styles.columnHeader}>
-            <span className={styles.rail} style={{ background: "var(--violet-9)" }} />
-            <div className={styles.headText}>
-              <span className={styles.headName}>{t("promo.column")}</span>
-              <span className={styles.headMeta}>{t("promo.columnMeta")}</span>
-            </div>
-          </div>
-          <div className={styles.promoBody}>
-            <p className={styles.promoBlurb}>{t("promo.blurb")}</p>
-            <Link
-              href={ROUTES.SIGNUP}
-              size="2"
-              weight="bold"
-              onClick={(e) => {
-                e.preventDefault();
-                routerEventEmitter.navigate({ to: ROUTES.SIGNUP });
-              }}
-            >
-              {t("promo.createAccount")}
-            </Link>
-          </div>
-        </aside>
-      </div>
-    </main>
+function WireItem({ index, title, meta }: { index: number; title: string; meta: string }) {
+  return (
+    <Box className={styles.item}>
+      <Box className={styles.itemPx}>
+        <Box className={styles.itemPy}>
+          <Flex gap="2">
+            <Text as="span" className={styles.rank}>
+              {String(index + 1).padStart(2, "0")}
+            </Text>
+            <Box className={styles.body}>
+              <Text as="span" className={styles.title}>
+                {title}
+              </Text>
+              <Text as="span" className={styles.meta}>
+                {meta}
+              </Text>
+            </Box>
+          </Flex>
+        </Box>
+      </Box>
+    </Box>
+  );
+}
+
+function FieldRow({ rank, children }: { rank: string; children: ReactNode }) {
+  return (
+    <Box className={`${styles.field} js-field`}>
+      <Box className={styles.fieldPx}>
+        <Box className={styles.fieldPy}>
+          <Flex gap="2">
+            <Text as="span" className={styles.rank}>
+              {rank}
+            </Text>
+            <Box className={styles.fieldBody}>{children}</Box>
+          </Flex>
+        </Box>
+      </Box>
+    </Box>
   );
 }
