@@ -29,8 +29,10 @@ export function SectionBlock({ title, description, actions, children }: SectionB
           </Flex>
         ) : null}
       </Flex>
-      <Box pt="3" style={{ borderTop: "1px solid var(--gray-a4)" }}>
-        {children}
+      <Box style={{ borderTop: "1px solid var(--gray-a4)" }}>
+        <Box pt="3">
+          {children}
+        </Box>
       </Box>
     </Flex>
   );

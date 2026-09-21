@@ -8,19 +8,40 @@
       "name": "Fil monde",
       "meta": "Copie de bureau",
       "items": [
-        { "title": "Les canaux restent classés jusqu'à ce que vous les masquiez.", "meta": "Lecteur" },
-        { "title": "Les bureaux mots-clés compilent les instantanés du jour.", "meta": "Rapports" },
-        { "title": "Les sessions de crawl tirent les sources à l'heure.", "meta": "Crawl" },
-        { "title": "Notify envoie vers les outils que vous utilisez déjà.", "meta": "Notify" }
+        {
+          "title": "Les canaux restent classés jusqu'à ce que vous les masquiez.",
+          "meta": "Lecteur"
+        },
+        {
+          "title": "Les bureaux mots-clés compilent les instantanés du jour.",
+          "meta": "Rapports"
+        },
+        {
+          "title": "Les sessions de crawl tirent les sources à l'heure.",
+          "meta": "Crawl"
+        },
+        {
+          "title": "Notify envoie vers les outils que vous utilisez déjà.",
+          "meta": "Notify"
+        }
       ]
     },
     "desk": {
       "name": "Pupitre",
       "meta": "Comment la console marche",
       "items": [
-        { "title": "Un Account NFX. Plusieurs Profile.", "meta": "Identité" },
-        { "title": "HTTP via Edge. Kafka sur Stack.", "meta": "Infra" },
-        { "title": "Les outils MCP lisent le même corpus.", "meta": "MCP" }
+        {
+          "title": "Un Account NFX. Plusieurs Profile.",
+          "meta": "Identité"
+        },
+        {
+          "title": "HTTP via Edge. Kafka sur Stack.",
+          "meta": "Infra"
+        },
+        {
+          "title": "Les outils MCP lisent le même corpus.",
+          "meta": "MCP"
+        }
       ]
     }
   },
@@ -34,7 +55,18 @@
     "showPassword": "Afficher",
     "hidePassword": "Masquer",
     "rememberMe": "Se souvenir de moi",
-    "submit": "Se connecter"
+    "submit": "Se connecter",
+    "phoneLabel": "Téléphone",
+    "phonePlaceholder": "+15551234567",
+    "channelEmail": "E-mail",
+    "channelPhone": "Téléphone",
+    "validation": {
+      "emailRequired": "L'e-mail est requis",
+      "emailInvalid": "Entrez un e-mail valide",
+      "phoneRequired": "Le téléphone est requis",
+      "phoneInvalid": "Entrez un numéro valide",
+      "passwordRequired": "Le mot de passe est requis"
+    }
   },
   "promo": {
     "column": "Nouveau correspondant",
@@ -49,11 +81,11 @@
     "back": "Retour à la connexion",
     "kind": {
       "authority": "Authority",
-      "forger": "Forger"
+      "community": "Community"
     },
     "kindHint": {
       "authority": "Modération et rôles",
-      "forger": "Usage quotidien"
+      "community": "Usage quotidien"
     },
     "roles": {
       "pulser": "Pulser",

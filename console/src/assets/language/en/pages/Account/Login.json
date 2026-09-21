@@ -8,19 +8,40 @@
       "name": "World wire",
       "meta": "Static desk copy",
       "items": [
-        { "title": "Channels stay ranked until you hide them.", "meta": "Reader" },
-        { "title": "Keyword desks compile daily snapshots.", "meta": "Reports" },
-        { "title": "Crawl sessions pull sources on a timer.", "meta": "Crawl" },
-        { "title": "Notify fans out to the tools you already use.", "meta": "Notify" }
+        {
+          "title": "Channels stay ranked until you hide them.",
+          "meta": "Reader"
+        },
+        {
+          "title": "Keyword desks compile daily snapshots.",
+          "meta": "Reports"
+        },
+        {
+          "title": "Crawl sessions pull sources on a timer.",
+          "meta": "Crawl"
+        },
+        {
+          "title": "Notify fans out to the tools you already use.",
+          "meta": "Notify"
+        }
       ]
     },
     "desk": {
       "name": "Copy desk",
       "meta": "How this console works",
       "items": [
-        { "title": "One NFX Account. Multiple Profiles.", "meta": "Identity" },
-        { "title": "HTTP through Edge. Kafka on Stack.", "meta": "Infra" },
-        { "title": "MCP tools sit beside the same news corpus.", "meta": "MCP" }
+        {
+          "title": "One NFX Account. Multiple Profiles.",
+          "meta": "Identity"
+        },
+        {
+          "title": "HTTP through Edge. Kafka on Stack.",
+          "meta": "Infra"
+        },
+        {
+          "title": "MCP tools sit beside the same news corpus.",
+          "meta": "MCP"
+        }
       ]
     }
   },
@@ -34,7 +55,18 @@
     "showPassword": "Show password",
     "hidePassword": "Hide password",
     "rememberMe": "Remember me",
-    "submit": "Sign in"
+    "submit": "Sign in",
+    "phoneLabel": "Phone",
+    "phonePlaceholder": "+15551234567",
+    "channelEmail": "Email",
+    "channelPhone": "Phone",
+    "validation": {
+      "emailRequired": "Email is required",
+      "emailInvalid": "Enter a valid email",
+      "phoneRequired": "Phone is required",
+      "phoneInvalid": "Enter a valid phone number",
+      "passwordRequired": "Password is required"
+    }
   },
   "promo": {
     "column": "New correspondent",
@@ -49,11 +81,11 @@
     "back": "Back to sign in",
     "kind": {
       "authority": "Authority",
-      "forger": "Forger"
+      "community": "Community"
     },
     "kindHint": {
       "authority": "Moderation & roles",
-      "forger": "Everyday use"
+      "community": "Everyday use"
     },
     "roles": {
       "pulser": "Pulser",

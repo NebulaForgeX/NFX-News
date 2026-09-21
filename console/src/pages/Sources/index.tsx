@@ -1,6 +1,6 @@
 import { GlobeIcon, RefreshIcon } from "nfx-ui/icons";
 import { memo, useMemo, useState } from "react";
-import { Badge, Button, Flex, Link, Text, TextField } from "@radix-ui/themes";
+import { Badge, Box, Button, Flex, Link, Text, TextField } from "@radix-ui/themes";
 import { useTranslation } from "react-i18next";
 import { DataTable, PageHeader } from "@/components";
 import { PageFrame } from "@/layouts";
@@ -44,16 +44,18 @@ const SourcesPage = memo(() => {
           </Flex>
         }
       />
-      <Flex gap="2" wrap="wrap" mb="3">
-        <Button size="1" variant={column === "" ? "solid" : "soft"} onClick={() => setColumn("")}>
-          {t("allColumns")}
-        </Button>
-        {columns.map((item) => (
-          <Button key={item} size="1" variant={column === item ? "solid" : "soft"} onClick={() => setColumn(item)}>
-            {item}
+      <Box pb="3">
+        <Flex gap="2" wrap="wrap">
+          <Button size="1" variant={column === "" ? "solid" : "outline"} onClick={() => setColumn("")}>
+            {t("allColumns")}
           </Button>
-        ))}
-      </Flex>
+          {columns.map((item) => (
+            <Button key={item} size="1" variant={column === item ? "solid" : "outline"} onClick={() => setColumn(item)}>
+              {item}
+            </Button>
+          ))}
+        </Flex>
+      </Box>
       <DataTable
         loading={isLoading}
         empty={t("empty")}
@@ -86,7 +88,7 @@ const SourcesPage = memo(() => {
             header: t("redirect"),
             render: (row) =>
               row.redirect ? (
-                <Badge color="gray" variant="soft">
+                <Badge color="gray" variant="outline">
                   {row.redirect}
                 </Badge>
               ) : (
@@ -111,7 +113,7 @@ const SourcesPage = memo(() => {
             render: (row) => (
               <Button
                 size="1"
-                variant="soft"
+                variant="outline"
                 disabled={Boolean(row.redirect) || fetchSource.isPending}
                 onClick={() => void fetchSource.mutateAsync(row.redirect || row.id)}
               >

@@ -1,26 +1,27 @@
 .page {
   display: flex;
   flex-direction: column;
-  min-height: 100dvh;
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
   background: var(--color-background);
   color: var(--gray-12);
 }
 
 .masthead {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 16px 20px 12px;
   border-bottom: 2px solid var(--gray-12);
   flex-shrink: 0;
 }
 
+.mastheadPx {
+  padding-inline: 20px;
+}
+
+.mastheadPy {
+  padding-block: 16px 12px;
+}
+
 .brand {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 10px 16px;
   min-width: 0;
 }
 
@@ -80,12 +81,16 @@
 }
 
 .columnHeader {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  padding: 12px 14px 10px;
   border-bottom: 1px solid var(--gray-a4);
   flex-shrink: 0;
+}
+
+.columnHeaderPx {
+  padding-inline: 14px;
+}
+
+.columnHeaderPy {
+  padding-block: 12px 10px;
 }
 
 .rail {
@@ -123,10 +128,15 @@
 }
 
 .item {
-  display: flex;
-  gap: 8px;
-  padding: 10px 14px;
   border-bottom: 1px solid var(--gray-a3);
+}
+
+.itemPx {
+  padding-inline: 14px;
+}
+
+.itemPy {
+  padding-block: 10px;
 }
 
 .rank {
@@ -158,18 +168,20 @@
 }
 
 .field {
-  display: flex;
-  gap: 8px;
-  padding: 12px 14px;
   border-bottom: 1px solid var(--gray-a3);
+}
+
+.fieldPx {
+  padding-inline: 14px;
+}
+
+.fieldPy {
+  padding-block: 12px;
 }
 
 .fieldBody {
   min-width: 0;
   flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
 }
 
 .fieldLabel {
@@ -179,15 +191,58 @@
   color: var(--gray-9);
 }
 
-.submit {
-  padding: 14px;
+.railWorld {
+  background: var(--blue-9);
 }
 
-.promoBody {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 16px 14px;
+.railDesk {
+  background: var(--orange-9);
+}
+
+.railForm {
+  background: var(--accent-9);
+}
+
+.railPromo {
+  background: var(--violet-9);
+}
+
+.channelsWrap {
+  border-bottom: 1px solid var(--gray-a3);
+}
+
+.channelsPx {
+  padding-inline: 14px;
+}
+
+.channelsPy {
+  padding-block: 10px 0;
+}
+
+.channels {
+  height: auto;
+  box-shadow: none;
+  background: transparent;
+}
+
+.submitPx {
+  padding-inline: 14px;
+}
+
+.submitPy {
+  padding-block: 14px;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.promoPx {
+  padding-inline: 14px;
+}
+
+.promoPy {
+  padding-block: 16px;
 }
 
 .promoBlurb {

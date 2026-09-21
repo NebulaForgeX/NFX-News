@@ -1,26 +1,28 @@
 .page {
   display: flex;
   flex-direction: column;
-  min-height: 100dvh;
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
   background: var(--color-background);
   color: var(--gray-12);
 }
 
 .masthead {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 16px 20px 12px;
   border-bottom: 1px solid var(--gray-a5);
   flex-shrink: 0;
 }
 
+.mastheadPx {
+  padding-inline: 20px;
+}
+
+.mastheadPy {
+  padding-block: 16px 12px;
+}
+
 .lead {
   min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
 }
 
 .kicker {
@@ -46,9 +48,6 @@
 }
 
 .actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
   flex-shrink: 0;
 }
 
@@ -70,12 +69,16 @@
 }
 
 .columnHeader {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  padding: 12px 14px 10px;
   border-bottom: 1px solid var(--gray-a4);
   flex-shrink: 0;
+}
+
+.columnHeaderPx {
+  padding-inline: 14px;
+}
+
+.columnHeaderPy {
+  padding-block: 12px 10px;
 }
 
 .rail {
@@ -84,6 +87,14 @@
   border-radius: 2px;
   flex-shrink: 0;
   margin-top: 2px;
+}
+
+.railCommunity {
+  background: var(--accent-9);
+}
+
+.railAuthority {
+  background: var(--amber-9);
 }
 
 .headName {
@@ -107,16 +118,26 @@
 }
 
 .item {
-  display: flex;
-  gap: 10px;
+  height: auto;
   width: 100%;
-  padding: 12px 14px;
+  justify-content: flex-start;
+  padding: 0;
   border: 0;
   border-bottom: 1px solid var(--gray-a3);
+  border-radius: 0;
   background: transparent;
   color: inherit;
   text-align: left;
-  cursor: pointer;
+}
+
+.itemPx {
+  padding-inline: 14px;
+  width: 100%;
+}
+
+.itemPy {
+  padding-block: 12px;
+  width: 100%;
 }
 
 .item:hover:not(:disabled) {
@@ -139,9 +160,6 @@
 .body {
   min-width: 0;
   flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
 }
 
 .name {
@@ -156,9 +174,7 @@
 }
 
 .roles {
-  display: flex;
   flex-wrap: wrap;
-  gap: 4px;
 }
 
 .chevron {

@@ -114,7 +114,7 @@ const MCPPage = memo(() => {
               <Button
                 key={tool}
                 size="1"
-                variant={name === tool ? "solid" : "soft"}
+                variant={name === tool ? "solid" : "outline"}
                 onClick={() => {
                   setName(tool);
                   setValues({});
