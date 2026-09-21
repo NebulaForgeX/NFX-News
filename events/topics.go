@@ -20,9 +20,6 @@ const (
 
 	TKMCP    eventbus.TopicKey = "mcp"
 	TKMCPDLQ eventbus.TopicKey = "mcp_poison"
-
-	TKSystem    eventbus.TopicKey = "system"
-	TKSystemDLQ eventbus.TopicKey = "system_poison"
 )
 
 type SourceTopic struct{}
@@ -48,7 +45,3 @@ func (NotifyTopic) TopicKey() eventbus.TopicKey { return TKNotify }
 type MCPTopic struct{}
 
 func (MCPTopic) TopicKey() eventbus.TopicKey { return TKMCP }
-
-type SystemTopic struct{}
-
-func (SystemTopic) TopicKey() eventbus.TopicKey { return TKSystem }

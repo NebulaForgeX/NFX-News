@@ -57,7 +57,6 @@ export default defineConfig(({ mode, command }) => {
               "/report": { target: proxyTarget, changeOrigin: true },
               "/notify": { target: proxyTarget, changeOrigin: true },
               "/mcp": { target: proxyTarget, changeOrigin: true },
-              "/system": { target: proxyTarget, changeOrigin: true },
               "/auth": { target: identityTarget, changeOrigin: true },
               "/asset": { target: identityTarget, changeOrigin: true },
             },

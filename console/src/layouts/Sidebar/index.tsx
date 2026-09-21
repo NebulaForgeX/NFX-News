@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 import { useEffect, useRef, useState } from "react";
 import { Avatar, Box, Button, Flex, IconButton, Text } from "@radix-ui/themes";
-import { AnimatedIcon, type AnimatedIconComponent, ArrowNarrowLeftIcon, ArrowNarrowUpIcon, DownChevron, FileDescriptionIcon, FilledBellIcon, GearIcon, GlobeIcon, LayersIcon, LogoutIcon, PassportIcon, PenIcon, PlayerIcon, RightChevron, RouterIcon, SparklesIcon, UnorderedListIcon, UserIcon } from "nfx-ui/icons";
+import { AnimatedIcon, type AnimatedIconComponent, ArrowNarrowLeftIcon, ArrowNarrowUpIcon, DownChevron, FileDescriptionIcon, FilledBellIcon, GearIcon, GlobeIcon, LayersIcon, LogoutIcon, PassportIcon, PenIcon, PlayerIcon, RightChevron, SparklesIcon, UnorderedListIcon, UserIcon } from "nfx-ui/icons";
 import { ProfileKindEnum } from "nfx-ui/enums";
 import { authEventEmitter, authEvents } from "nfx-ui/events";
 import { useCurrentProfile } from "nfx-ui/hooks";
@@ -186,14 +186,6 @@ function SettingsSection({ collapsed, broken, onMobileClose }: SectionProps) {
         onClick={() => broken && onMobileClose()}
       >
         <MenuLabel active={isActive(ROUTES.USER_SETTINGS)}>{t("sidebar.settingsItem")}</MenuLabel>
-      </MenuItem>
-      <MenuItem
-        component={<Link to={ROUTES.SYSTEM} />}
-        icon={<AnimatedIcon icon={RouterIcon} size={18} />}
-        active={isActive(ROUTES.SYSTEM)}
-        onClick={() => broken && onMobileClose()}
-      >
-        <MenuLabel active={isActive(ROUTES.SYSTEM)}>{t("sidebar.system")}</MenuLabel>
       </MenuItem>
     </Menu>
   );

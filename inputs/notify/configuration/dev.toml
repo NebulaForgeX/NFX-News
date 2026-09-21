@@ -115,7 +115,6 @@
     report_addr = "${GRPC_HOST_REPORT}:${GRPC_PORT_REPORT}"
     notify_addr = "${GRPC_HOST_NOTIFY}:${GRPC_PORT_NOTIFY}"
     mcp_addr = "${GRPC_HOST_MCP}:${GRPC_PORT_MCP}"
-    system_addr = "${GRPC_HOST_SYSTEM}:${GRPC_PORT_SYSTEM}"
 
 [otel]
     enabled = true

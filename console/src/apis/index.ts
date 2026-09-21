@@ -5,5 +5,4 @@ export * from "./crawl.api";
 export * from "./report.api";
 export * from "./notify.api";
 export * from "./mcp.api";
-export * from "./system.api";
 export * from "./repositories";

@@ -227,7 +227,7 @@ tasks:
       - npm install
 
   run:
-    desc: "Generate langs then start source/news/crawl/report/notify/mcp/system + console (ENV=dev|secure). Requires NFX-Edge network {{.EDGE_NETWORK}}."
+    desc: "Generate langs then start source/news/crawl/report/notify/mcp + console (ENV=dev|secure). Requires NFX-Edge network {{.EDGE_NETWORK}}."
     cmds:
       - go run ./errors/cmd/gen_langs/ {{.ERRORS_DIR}} {{if eq .ENV "secure"}}--prod{{end}}
       - go run ./messages/cmd/gen_langs/ {{.MESSAGES_DIR}}
@@ -242,7 +242,7 @@ tasks:
       - |
         ENV_ARGS=(--env-file "{{.ENV_FILE}}")
         echo "==> compose env: {{.ENV_FILE}}"
-        svcs=(source-base news-base crawl-base report-base notify-base mcp-base system-base)
+        svcs=(source-base news-base crawl-base report-base notify-base mcp-base)
         if [[ "{{.ENV}}" == "secure" ]]; then
           svcs+=(console)
         else
@@ -257,7 +257,7 @@ tasks:
         sudo docker compose "${ENV_ARGS[@]}" -f {{.APP_COMPOSE}} up {{if eq .ENV "secure"}}-d{{else}}--watch{{end}}
 
   run:rebuild:
-    desc: "Force-rebuild (--no-cache) source/news/crawl/report/notify/mcp/system + console (ENV=dev|secure)"
+    desc: "Force-rebuild (--no-cache) source/news/crawl/report/notify/mcp + console (ENV=dev|secure)"
     cmds:
       - go run ./errors/cmd/gen_langs/ {{.ERRORS_DIR}} {{if eq .ENV "secure"}}--prod{{end}}
       - go run ./messages/cmd/gen_langs/ {{.MESSAGES_DIR}}
@@ -271,7 +271,7 @@ tasks:
         fi
       - |
         ENV_ARGS=(--env-file "{{.ENV_FILE}}")
-        svcs=(source-base news-base crawl-base report-base notify-base mcp-base system-base)
+        svcs=(source-base news-base crawl-base report-base notify-base mcp-base)
         if [[ "{{.ENV}}" == "secure" ]]; then
           svcs+=(console)
         else

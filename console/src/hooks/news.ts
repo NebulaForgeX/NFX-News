@@ -219,20 +219,6 @@ export function useRunMCPTool() {
   });
 }
 
-export function useSystemState() {
-  const repos = useNewsRepositories();
-  return useQuery({ queryKey: NEWS_QUERY_KEYS.systemState, queryFn: repos.system.getLatestSystemState });
-}
-
-export function useInitializeSystem() {
-  const repos = useNewsRepositories();
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (version?: string) => repos.system.initializeSystem(version),
-    onSuccess: () => qc.invalidateQueries({ queryKey: NEWS_QUERY_KEYS.systemState }),
-  });
-}
-
 export function useGenerateReport() {
   const repos = useNewsRepositories();
   const qc = useQueryClient();

@@ -12,5 +12,4 @@ export type {
   Channel,
   Delivery,
   CrawlSession,
-  SystemState,
 } from "./news.domain";

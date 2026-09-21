@@ -3,7 +3,6 @@ import * as mcp from "../mcp.api";
 import * as news from "../news.api";
 import * as notify from "../notify.api";
 import * as report from "../report.api";
-import * as system from "../system.api";
 
 export const newsRepositories = {
   news,
@@ -11,5 +10,4 @@ export const newsRepositories = {
   report,
   notify,
   mcp,
-  system,
 };
