@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from "uuid";
+
 export type UserProfileBackgroundUploadStatus = "queued" | "compressing" | "preparing" | "uploading" | "complete" | "failed";
 
 export type UserProfileBackgroundDraft = {
@@ -28,7 +30,7 @@ export function applyUserProfileBackgroundSortOrders<D extends UserProfileBackgr
 
 export function createUserProfileBackgroundPlaceholder(file: File, sortOrder: number): UserProfileBackgroundDraft {
   return {
-    imageId: crypto.randomUUID(),
+    imageId: uuidv4(),
     previewUrl: URL.createObjectURL(file),
     sortOrder,
     fileName: file.name,
