@@ -1,7 +1,27 @@
 {
+  "CHANNEL_CREATED": {
+    "title": "通道已保存",
+    "body": "通知通道已保存"
+  },
+  "CRAWL_TRIGGERED": {
+    "title": "抓取已启动",
+    "body": "已触发抓取"
+  },
+  "KEYWORD_ADDED": {
+    "title": "关键词已添加",
+    "body": "关键词已添加"
+  },
+  "NOTIFY_DISPATCHED": {
+    "title": "通知已入队",
+    "body": "通知已加入队列"
+  },
   "NOTIFY_REPORT_PUSH": {
     "title": "新闻报告",
     "body": "新的筛选新闻报告已生成"
+  },
+  "PREFERENCES_UPDATED": {
+    "title": "偏好已更新",
+    "body": "新闻偏好已保存"
   },
   "REPORT_CURRENT_READY": {
     "title": "实时报告已生成",
@@ -10,6 +30,10 @@
   "REPORT_DAILY_READY": {
     "title": "每日报告已生成",
     "body": "今日新闻报告已就绪"
+  },
+  "REPORT_GENERATED": {
+    "title": "报告已生成",
+    "body": "报告已生成"
   },
   "REPORT_INCREMENTAL_READY": {
     "title": "增量报告已生成",

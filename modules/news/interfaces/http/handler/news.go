@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	authconn "nfxnews/connections/auth"
+	newsmsg "nfxnews/messages/src/news"
 	newsapp "nfxnews/modules/news/application/news"
 	"nfxnews/pkgs/errx"
 	"nfxnews/pkgs/fiberx"
@@ -95,5 +96,5 @@ func (h *NewsHandler) SetPreferences(c fiber.Ctx) error {
 	if err := h.svc.SetPreferences(c.Context(), aid, pid, req.ColumnOrder, req.Payload); err != nil {
 		return err
 	}
-	return fiberx.OK(c, "ok", httpx.SuccessOptions{Data: nil})
+	return fiberx.OK(c, newsmsg.PREFERENCES_UPDATED, httpx.SuccessOptions{Data: nil})
 }

@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	authconn "nfxnews/connections/auth"
+	crawlmsg "nfxnews/messages/src/crawl"
 	crawlapp "nfxnews/modules/crawl/application/crawl"
 	"nfxnews/pkgs/errx"
 	"nfxnews/pkgs/fiberx"
@@ -58,7 +59,7 @@ func (h *CrawlHandler) Trigger(c fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	return fiberx.Created(c, "triggered", httpx.SuccessOptions{Data: sess})
+	return fiberx.Created(c, crawlmsg.CRAWL_TRIGGERED, httpx.SuccessOptions{Data: sess})
 }
 
 func (h *CrawlHandler) List(c fiber.Ctx) error {
