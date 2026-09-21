@@ -60,8 +60,8 @@ func parseEnv(raw string) env.Env {
 	switch strings.ToLower(strings.TrimSpace(raw)) {
 	case "", "dev":
 		return env.Dev
-	case "secure", "prod":
-		return env.Prod
+	case "secure":
+		return env.Secure
 	default:
 		fmt.Fprintf(os.Stderr, "error: ENV must be dev|secure, got %q\n", raw)
 		os.Exit(1)

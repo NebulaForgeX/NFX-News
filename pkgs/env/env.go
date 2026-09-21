@@ -3,12 +3,12 @@ package env
 type Env string
 
 const (
-	Dev  Env = "dev"
-	Prod Env = "prod"
+	Dev    Env = "dev"
+	Secure Env = "secure"
 )
 
-func (e Env) IsProd() bool {
-	return e == Prod
+func (e Env) IsSecure() bool {
+	return e == Secure
 }
 
 func (e Env) IsDev() bool {

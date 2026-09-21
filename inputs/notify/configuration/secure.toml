@@ -1,10 +1,10 @@
-# NFX-News System Service (prod)
+# NFX-News Notify Service (secure)
 
 [server]
-    name = "System Service"
+    name = "Notify Service"
     host = "0.0.0.0"
     http_port = "${HTTP_PORT}"
-    grpc_port = "${GRPC_PORT_SYSTEM}"
+    grpc_port = "${GRPC_PORT_NOTIFY}"
 
     [server.access_log]
     mode = "logger"
@@ -49,7 +49,7 @@
     level = "info"
     format = "json"
     output = "stdout"
-    file_path = "logs/system.log"
+    file_path = "logs/notify.log"
     max_size_mb = 100
     max_backups = 10
     max_age_day = 30
@@ -57,7 +57,7 @@
 
 [kafka]
     brokers = ["${KAFKA_BROKERS}"]
-    client_id = "nfxnews-system-service"
+    client_id = "nfxnews-notify-service"
 
     [kafka.network]
         max_open_requests = 1
@@ -71,7 +71,7 @@
         idempotent = true
 
     [kafka.consumer]
-        group_id = "nfxnews-system"
+        group_id = "nfxnews-notify"
         initial_offset = "latest"
         session_timeout_ms = 10000
         heartbeat_interval_ms = 3000
@@ -80,12 +80,14 @@
         return_errors = true
 
     [kafka.producer_topics]
-        system = "nfxnews.system"
-        system_poison = "nfxnews.system_poison"
+        notify = "nfxnews.notify"
+        notify_poison = "nfxnews.notify_poison"
 
     [kafka.consumer_topics]
-        system = "nfxnews.system"
-        system_poison = "nfxnews.system_poison"
+        notify = "nfxnews.notify"
+        notify_poison = "nfxnews.notify_poison"
+        report = "nfxnews.report"
+        report_poison = "nfxnews.report_poison"
 
     [kafka.security]
         enabled = false

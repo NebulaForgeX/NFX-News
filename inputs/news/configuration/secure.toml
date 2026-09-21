@@ -1,4 +1,4 @@
-# NFX-News News Service (prod)
+# NFX-News News Service (secure)
 
 [server]
     name = "News Service"

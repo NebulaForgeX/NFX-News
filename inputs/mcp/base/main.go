@@ -18,7 +18,7 @@ import (
 )
 
 func main() {
-	envStr := flag.String("env", "dev", "Environment (dev/prod)")
+	envStr := flag.String("env", "dev", "Environment (dev/secure)")
 	flag.Parse()
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)

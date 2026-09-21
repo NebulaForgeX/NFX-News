@@ -1,10 +1,10 @@
-# NFX-News Crawl Service (prod)
+# NFX-News Report Service (secure)
 
 [server]
-    name = "Crawl Service"
+    name = "Report Service"
     host = "0.0.0.0"
     http_port = "${HTTP_PORT}"
-    grpc_port = "${GRPC_PORT_CRAWL}"
+    grpc_port = "${GRPC_PORT_REPORT}"
 
     [server.access_log]
     mode = "logger"
@@ -49,7 +49,7 @@
     level = "info"
     format = "json"
     output = "stdout"
-    file_path = "logs/crawl.log"
+    file_path = "logs/report.log"
     max_size_mb = 100
     max_backups = 10
     max_age_day = 30
@@ -57,7 +57,7 @@
 
 [kafka]
     brokers = ["${KAFKA_BROKERS}"]
-    client_id = "nfxnews-crawl-service"
+    client_id = "nfxnews-report-service"
 
     [kafka.network]
         max_open_requests = 1
@@ -71,7 +71,7 @@
         idempotent = true
 
     [kafka.consumer]
-        group_id = "nfxnews-crawl"
+        group_id = "nfxnews-report"
         initial_offset = "latest"
         session_timeout_ms = 10000
         heartbeat_interval_ms = 3000
@@ -80,12 +80,12 @@
         return_errors = true
 
     [kafka.producer_topics]
-        crawl = "nfxnews.crawl"
-        crawl_poison = "nfxnews.crawl_poison"
+        report = "nfxnews.report"
+        report_poison = "nfxnews.report_poison"
 
     [kafka.consumer_topics]
-        crawl = "nfxnews.crawl"
-        crawl_poison = "nfxnews.crawl_poison"
+        report = "nfxnews.report"
+        report_poison = "nfxnews.report_poison"
 
     [kafka.security]
         enabled = false
