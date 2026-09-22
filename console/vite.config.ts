@@ -23,9 +23,11 @@ const nfxUiRoot = resolveNfxUiRoot(root);
 export default defineConfig(({ mode, command }) => {
   const env = loadNfxConsoleEnv(root, mode);
   const port = Number(env.VITE_PORT) || 5174;
-  const hasApiUrl = Boolean(env.VITE_API_URL);
-  const proxyTarget = env.VITE_DEV_API_PROXY_TARGET || env.VITE_API_URL || "http://192.168.1.64/nfx-news";
-  const identityTarget = env.VITE_IDENTITY_API_URL || "http://192.168.1.64/nfx-identity";
+  const apiUrl = (env.VITE_API_URL || "").replace(/\/$/, "");
+  const identityUrl = (env.VITE_IDENTITY_API_URL || "").replace(/\/$/, "");
+  const apiIsPath = apiUrl.startsWith("/");
+  const identityIsPath = identityUrl.startsWith("/");
+  const edgeOrigin = (env.VITE_DEV_API_PROXY_TARGET || "http://192.168.1.64").replace(/\/$/, "");
 
   return {
     base: nfxConsoleBase(env),
@@ -48,17 +50,11 @@ export default defineConfig(({ mode, command }) => {
     server: {
       ...nfxViteDevServer(env, port),
       fs: { allow: [root, nfxUiRoot] },
-      ...(command === "serve" && !hasApiUrl
+      ...(command === "serve" && (apiIsPath || identityIsPath)
         ? {
             proxy: {
-              "/source": { target: proxyTarget, changeOrigin: true },
-              "/news": { target: proxyTarget, changeOrigin: true },
-              "/crawl": { target: proxyTarget, changeOrigin: true },
-              "/report": { target: proxyTarget, changeOrigin: true },
-              "/notify": { target: proxyTarget, changeOrigin: true },
-              "/mcp": { target: proxyTarget, changeOrigin: true },
-              "/auth": { target: identityTarget, changeOrigin: true },
-              "/asset": { target: identityTarget, changeOrigin: true },
+              ...(apiIsPath ? { [apiUrl]: { target: edgeOrigin, changeOrigin: true } } : {}),
+              ...(identityIsPath ? { [identityUrl]: { target: edgeOrigin, changeOrigin: true } } : {}),
             },
           }
         : {}),

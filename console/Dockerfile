@@ -3,8 +3,8 @@
 # This file is the prod image only (ENV=secure / docker-compose.yml).
 FROM node:22-alpine AS deps
 WORKDIR /app
-ARG VITE_API_URL=http://192.168.1.64/nfx-news
-ARG VITE_IDENTITY_API_URL=http://192.168.1.64/nfx-identity
+ARG VITE_API_URL=/nfx-news
+ARG VITE_IDENTITY_API_URL=/nfx-identity
 ARG VITE_BASE=/console/nfx-news/
 ENV VITE_API_URL=${VITE_API_URL}
 ENV VITE_IDENTITY_API_URL=${VITE_IDENTITY_API_URL}
