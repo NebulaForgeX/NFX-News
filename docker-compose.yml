@@ -304,15 +304,38 @@ services:
       traefik.project: "nfx-news"
       traefik.docker.network: nfx-edge
       traefik.http.services.news-console-secure.loadbalancer.server.port: "${CONSOLE_PORT}"
+      traefik.http.middlewares.news-console-root-secure.redirectregex.regex: ^https?://[^/]+/?$$
+      traefik.http.middlewares.news-console-root-secure.redirectregex.replacement: https://${TRAEFIK_CONSOLE_HOST}/console/nfx-news/
+      traefik.http.middlewares.news-console-root-secure.redirectregex.permanent: "true"
       traefik.http.routers.news-console-secure.entrypoints: web
-      traefik.http.routers.news-console-secure.rule: PathPrefix(`/console/nfx-news`)
+      traefik.http.routers.news-console-secure.rule: "HostRegexp(`^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$$`) && PathPrefix(`/console/nfx-news`)"
       traefik.http.routers.news-console-secure.service: news-console-secure
       traefik.http.routers.news-console-secure.priority: "25"
       traefik.http.routers.news-console-secure-tls.entrypoints: websecure
-      traefik.http.routers.news-console-secure-tls.rule: PathPrefix(`/console/nfx-news`)
+      traefik.http.routers.news-console-secure-tls.rule: "HostRegexp(`^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$$`) && PathPrefix(`/console/nfx-news`)"
       traefik.http.routers.news-console-secure-tls.service: news-console-secure
       traefik.http.routers.news-console-secure-tls.tls: "true"
       traefik.http.routers.news-console-secure-tls.priority: "25"
+      traefik.http.routers.news-console-host-secure.entrypoints: web
+      traefik.http.routers.news-console-host-secure.rule: Host(`${TRAEFIK_CONSOLE_HOST}`) && PathPrefix(`/console/nfx-news`)
+      traefik.http.routers.news-console-host-secure.service: news-console-secure
+      traefik.http.routers.news-console-host-secure.priority: "200"
+      traefik.http.routers.news-console-host-secure-tls.entrypoints: websecure
+      traefik.http.routers.news-console-host-secure-tls.rule: Host(`${TRAEFIK_CONSOLE_HOST}`) && PathPrefix(`/console/nfx-news`)
+      traefik.http.routers.news-console-host-secure-tls.service: news-console-secure
+      traefik.http.routers.news-console-host-secure-tls.tls: "true"
+      traefik.http.routers.news-console-host-secure-tls.priority: "200"
+      traefik.http.routers.news-console-root-secure.entrypoints: web
+      traefik.http.routers.news-console-root-secure.rule: Host(`${TRAEFIK_CONSOLE_HOST}`) && Path(`/`)
+      traefik.http.routers.news-console-root-secure.middlewares: news-console-root-secure
+      traefik.http.routers.news-console-root-secure.service: news-console-secure
+      traefik.http.routers.news-console-root-secure.priority: "210"
+      traefik.http.routers.news-console-root-secure-tls.entrypoints: websecure
+      traefik.http.routers.news-console-root-secure-tls.rule: Host(`${TRAEFIK_CONSOLE_HOST}`) && Path(`/`)
+      traefik.http.routers.news-console-root-secure-tls.middlewares: news-console-root-secure
+      traefik.http.routers.news-console-root-secure-tls.service: news-console-secure
+      traefik.http.routers.news-console-root-secure-tls.tls: "true"
+      traefik.http.routers.news-console-root-secure-tls.priority: "210"
     restart: always
     networks:
       - nfx-news
