@@ -9,6 +9,8 @@
   "emptySessions": "Aucune session",
   "emptySessionsHint": "Lancez un crawl pour voir le statut.",
   "allSources": "Toutes les sources",
+  "home": "Accueil",
+  "interval": "Intervalle",
   "status": "Statut",
   "source": "Source",
   "itemCount": "Éléments",

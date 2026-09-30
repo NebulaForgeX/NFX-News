@@ -9,6 +9,8 @@
   "emptySessions": "No crawl sessions",
   "emptySessionsHint": "Trigger a crawl to see status here.",
   "allSources": "All sources",
+  "home": "Home",
+  "interval": "Interval",
   "status": "Status",
   "source": "Source",
   "itemCount": "Items",

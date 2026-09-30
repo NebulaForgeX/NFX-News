@@ -25,6 +25,7 @@ const CrawlPage = memo(() => {
   const detail = useCrawlSession(selectedId);
   const crawlable = useMemo(() => (sources ?? []).filter((source) => !source.redirect), [sources]);
   const sourceName = (id?: string) => crawlable.find((source) => source.id === id)?.name || id || t("allSources");
+  const selectedSource = sourceId === "all" ? undefined : crawlable.find((source) => source.id === sourceId);
 
   const onTrigger = () => {
     void trigger.mutateAsync(sourceId === "all" ? undefined : sourceId).then((session) => {
@@ -56,6 +57,12 @@ const CrawlPage = memo(() => {
             <Button onClick={onTrigger} disabled={trigger.isPending}>
               {sourceId === "all" ? t("triggerAll") : t("trigger")}
             </Button>
+            {selectedSource ? (
+              <Text size="1" color="gray">
+                {t("home")}: {selectedSource.home || "—"} · {t("interval")}:{" "}
+                {selectedSource.intervalMs ? `${Math.round(selectedSource.intervalMs / 1000)}s` : "—"}
+              </Text>
+            ) : null}
           </Flex>
         }
       />
