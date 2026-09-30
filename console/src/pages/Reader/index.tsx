@@ -55,7 +55,7 @@ function SortableColumn({
                   {[source.title || source.type, source.column].filter(Boolean).join(" · ")}
                 </span>
               </div>
-              <div className={styles.headActions}>
+              <Flex gap="1" flexShrink="0">
                 {source.home ? (
                   <Button size="1" variant="ghost" asChild>
                     <a href={source.home} target="_blank" rel="noreferrer">
@@ -69,7 +69,7 @@ function SortableColumn({
                 <Button size="1" variant="ghost" onClick={() => onHide(source.id)}>
                   {t("hide")}
                 </Button>
-              </div>
+              </Flex>
             </Flex>
           </Box>
         </Box>
@@ -182,7 +182,7 @@ const ReaderPage = memo(() => {
 
   return (
     <PageFrame maxWidth="100%" fullHeight>
-      <div className={styles.shell}>
+      <Flex direction="column" gap="3" className={styles.shell}>
         <PageHeader
           icon={FileDescriptionIcon}
           title={t("title")}
@@ -202,8 +202,8 @@ const ReaderPage = memo(() => {
             </Flex>
           }
         />
-        <div className={styles.toolbar}>
-          <div className={styles.chips}>
+        <Flex wrap="wrap" align="center" gap="2">
+          <Flex wrap="wrap" gap="2" flexGrow="1">
             <Button size="1" variant={columnFilter === "" ? "solid" : "outline"} onClick={() => onFilter("")}>
               {t("allColumns")}
             </Button>
@@ -224,8 +224,8 @@ const ReaderPage = memo(() => {
                 {t("showHidden", { count: hidden.length })}
               </Button>
             ) : null}
-          </div>
-        </div>
+          </Flex>
+        </Flex>
         {q ? (
           <div className={styles.searchPanelHairline}>
             <div className={styles.searchPanelPy}>
@@ -268,7 +268,7 @@ const ReaderPage = memo(() => {
             </SortableContext>
           </DndContext>
         )}
-      </div>
+      </Flex>
     </PageFrame>
   );
 });

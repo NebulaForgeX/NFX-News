@@ -9,6 +9,8 @@
   "emptySessions": "还没有爬取会话",
   "emptySessionsHint": "触发一次爬取后会出现状态。",
   "allSources": "全部来源",
+  "home": "主页",
+  "interval": "间隔",
   "status": "状态",
   "source": "来源",
   "itemCount": "条数",
