@@ -405,7 +405,6 @@ min-height: 0;
 .logoutHit > *,
 .menuIconDotSize > *,
 .menuDotSize > *,
-.collapsedSubmenuSize > *,
 .flyoutSize > *,
 .flyoutClip > * {
   height: 100%;
