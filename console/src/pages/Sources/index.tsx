@@ -44,7 +44,8 @@ const SourcesPage = memo(() => {
           </Flex>
         }
       />
-      <Section pb="3">
+      <Box style={{ borderBottom: "1px solid var(--gray-a4)" }}>
+      <Section py="2">
         <Flex gap="2" wrap="wrap">
           <Button size="1" variant={column === "" ? "solid" : "outline"} onClick={() => setColumn("")}>
             {t("allColumns")}
@@ -56,6 +57,7 @@ const SourcesPage = memo(() => {
           ))}
         </Flex>
       </Section>
+      </Box>
       <DataTable
         loading={isLoading}
         empty={t("empty")}

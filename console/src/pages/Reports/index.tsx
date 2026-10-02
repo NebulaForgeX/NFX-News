@@ -1,6 +1,6 @@
 import { FileDescriptionIcon, HashtagIcon } from "nfx-ui/icons";
 import { memo, useMemo, useState } from "react";
-import { Section, Badge, Button, Flex, Select, Text, TextField } from "@radix-ui/themes";
+import { Badge, Box, Button, Container, Flex, Section, Select, Text, TextField } from "@radix-ui/themes";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { DataTable, EmptyState, PageHeader, SectionBlock } from "@/components";
@@ -54,7 +54,9 @@ const ReportsPage = memo(() => {
       />
       <Flex direction="column" gap="6">
         <SectionBlock title={t("keywords")}>
-          <Section pb="3">
+          <Box style={{ background: "var(--color-panel-solid)", border: "1px solid var(--gray-a5)", borderRadius: "var(--radius-3)", boxShadow: "var(--shadow-2)" }}>
+          <Section py="3">
+          <Container px="3">
           <Flex gap="2" wrap="wrap">
             <TextField.Root value={groupName} onChange={(e) => setGroupName(e.target.value)} placeholder={t("group")} />
             <TextField.Root value={word} onChange={(e) => setWord(e.target.value)} placeholder={t("wordHint")} />
@@ -87,7 +89,9 @@ const ReportsPage = memo(() => {
               {t("add")}
             </Button>
           </Flex>
+          </Container>
           </Section>
+          </Box>
           {keywordsLoading || grouped.length === 0 ? (
             <EmptyState icon={HashtagIcon} title={t("emptyKeywords")} />
           ) : (

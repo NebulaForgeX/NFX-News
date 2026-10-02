@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { Box, Table } from "@radix-ui/themes";
+import { Box, Flex, Spinner, Table, Text } from "@radix-ui/themes";
 import { UnorderedListIcon } from "nfx-ui/icons";
 
 import EmptyState from "./EmptyState";
@@ -23,7 +23,16 @@ type DataTableProps<T> = {
 
 export function DataTable<T>({ columns, rows, rowKey, empty, loading, onRowClick }: DataTableProps<T>) {
   if (loading) {
-    return <EmptyState icon={UnorderedListIcon} title={empty ?? "…"} />;
+    return (
+      <Section py="6">
+        <Flex align="center" justify="center" gap="2">
+          <Spinner />
+          <Text size="2" color="gray">
+            {empty ?? "…"}
+          </Text>
+        </Flex>
+      </Section>
+    );
   }
   if (!rows.length) {
     return <EmptyState icon={UnorderedListIcon} title={empty ?? "—"} />;
