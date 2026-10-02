@@ -1,7 +1,7 @@
 import { AnimatedIcon, ArrowNarrowRightIcon } from "nfx-ui/icons";
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
-import { Box, Button, Container, Flex, Grid, Heading, Link, Section, Text } from "@radix-ui/themes";
+import { Button, Container, Flex, Grid, Heading, Link, Section, Text } from "@radix-ui/themes";
 import gsap from "gsap";
 import { APP_NAME } from "nfx-ui/config";
 import { AuthSignupPlatformEnum, LanguageEnum } from "nfx-ui/enums";

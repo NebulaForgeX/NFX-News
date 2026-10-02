@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { Box, Flex, Spinner, Table, Text } from "@radix-ui/themes";
+import { Box, Flex, Section, Spinner, Table, Text } from "@radix-ui/themes";
 import { UnorderedListIcon } from "nfx-ui/icons";
 
 import EmptyState from "./EmptyState";
