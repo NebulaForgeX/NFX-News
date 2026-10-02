@@ -1,0 +1,16 @@
+syntax = "proto3";
+package common.schema;
+
+option go_package = "nfxnews/protos/gen/common/schema;schemapb";
+
+message ClearSchemaRequest {}
+
+message ClearSchemaResponse {
+  bool success = 1;
+  optional string error_message = 2;
+  int32 tables_cleared = 3;
+}
+
+service SchemaService {
+  rpc ClearSchema (ClearSchemaRequest) returns (ClearSchemaResponse);
+}

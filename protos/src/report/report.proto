@@ -1,0 +1,45 @@
+syntax = "proto3";
+package report;
+
+option go_package = "nfxnews/protos/gen/report;reportpb";
+
+message Keyword {
+  string id = 1;
+  string group_name = 2;
+  string word = 3;
+  string kind = 4;
+  int32 count_limit = 5;
+}
+
+message GenerateReportRequest {
+  string mode = 1;
+}
+
+message GenerateReportResponse {
+  string report_id = 1;
+  int32 item_count = 2;
+}
+
+message GetReportRequest {
+  string report_id = 1;
+}
+
+message GetReportResponse {
+  string id = 1;
+  string mode = 2;
+  string title = 3;
+  string payload_json = 4;
+  int32 item_count = 5;
+}
+
+message ListKeywordsRequest {}
+
+message ListKeywordsResponse {
+  repeated Keyword keywords = 1;
+}
+
+service ReportService {
+  rpc GenerateReport (GenerateReportRequest) returns (GenerateReportResponse);
+  rpc GetReport (GetReportRequest) returns (GetReportResponse);
+  rpc ListKeywords (ListKeywordsRequest) returns (ListKeywordsResponse);
+}

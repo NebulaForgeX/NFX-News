@@ -1,0 +1,16 @@
+{
+  "title": "Reader",
+  "subtitle": "Ranked columns. Drag a header to reorder. Hide sources you do not need.",
+  "search": "Search headlines",
+  "refresh": "Refresh",
+  "refreshAll": "Refresh all",
+  "results": "Search results",
+  "emptySources": "No sources",
+  "emptySourcesHint": "Trigger a crawl or wait for scheduled fetch.",
+  "emptyColumn": "No headlines",
+  "emptySearch": "No matching headlines",
+  "home": "Site",
+  "hide": "Hide",
+  "allColumns": "All",
+  "showHidden": "Show hidden ({{count}})"
+}

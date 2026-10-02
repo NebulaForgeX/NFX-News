@@ -1,0 +1,104 @@
+{
+  "title": "Connexion",
+  "masthead": {
+    "edition": "Édition du matin"
+  },
+  "wire": {
+    "world": {
+      "name": "Fil monde",
+      "meta": "Copie de bureau",
+      "items": [
+        {
+          "title": "Les canaux restent classés jusqu'à ce que vous les masquiez.",
+          "meta": "Lecteur"
+        },
+        {
+          "title": "Les bureaux mots-clés compilent les instantanés du jour.",
+          "meta": "Rapports"
+        },
+        {
+          "title": "Les sessions de crawl tirent les sources à l'heure.",
+          "meta": "Crawl"
+        },
+        {
+          "title": "Notify envoie vers les outils que vous utilisez déjà.",
+          "meta": "Notify"
+        }
+      ]
+    },
+    "desk": {
+      "name": "Pupitre",
+      "meta": "Comment la console marche",
+      "items": [
+        {
+          "title": "Un Account NFX. Plusieurs Profile.",
+          "meta": "Identité"
+        },
+        {
+          "title": "HTTP via Edge. Kafka sur Stack.",
+          "meta": "Infra"
+        },
+        {
+          "title": "Les outils MCP lisent le même corpus.",
+          "meta": "MCP"
+        }
+      ]
+    }
+  },
+  "form": {
+    "column": "Pupitre de connexion",
+    "columnMeta": "Continuer l'édition",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "vous@exemple.com",
+    "passwordLabel": "Mot de passe",
+    "passwordPlaceholder": "Entrez votre mot de passe",
+    "showPassword": "Afficher",
+    "hidePassword": "Masquer",
+    "rememberMe": "Se souvenir de moi",
+    "submit": "Se connecter",
+    "phoneLabel": "Téléphone",
+    "phonePlaceholder": "+15551234567",
+    "channelEmail": "E-mail",
+    "channelPhone": "Téléphone",
+    "validation": {
+      "emailRequired": "L'e-mail est requis",
+      "emailInvalid": "Entrez un e-mail valide",
+      "phoneRequired": "Le téléphone est requis",
+      "phoneInvalid": "Entrez un numéro valide",
+      "passwordRequired": "Le mot de passe est requis"
+    }
+  },
+  "promo": {
+    "column": "Nouveau correspondant",
+    "columnMeta": "Délivrer un badge",
+    "blurb": "Pas encore de pupitre ? Créez un Account, vérifiez le fil, puis choisissez un Profile.",
+    "createAccount": "Créer un compte"
+  },
+  "selectProfile": {
+    "eyebrow": "Tableau d'affectation",
+    "title": "Quel pupitre continue ?",
+    "subtitle": "Un Account peut porter plusieurs Profile. Choisissez la colonne où vous filez.",
+    "back": "Retour à la connexion",
+    "kind": {
+      "authority": "Authority",
+      "community": "Community"
+    },
+    "kindHint": {
+      "authority": "Modération et rôles",
+      "community": "Usage quotidien"
+    },
+    "roles": {
+      "pulser": "Pulser",
+      "tester": "Testeur",
+      "creator": "Créateur",
+      "reviewer": "Réviseur",
+      "moderator": "Modérateur",
+      "inspector": "Inspecteur",
+      "supporter": "Support",
+      "auditor": "Auditeur",
+      "administrator": "Administrateur",
+      "owner": "Propriétaire",
+      "forger": "Forger"
+    }
+  }
+}

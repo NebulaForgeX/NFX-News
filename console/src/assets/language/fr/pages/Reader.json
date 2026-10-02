@@ -1,0 +1,16 @@
+{
+  "title": "Lecteur",
+  "subtitle": "Colonnes classées. Glissez l'en-tête pour réordonner. Masquez les sources inutiles.",
+  "search": "Rechercher",
+  "refresh": "Actualiser",
+  "refreshAll": "Tout actualiser",
+  "results": "Résultats",
+  "emptySources": "Aucune source",
+  "emptySourcesHint": "Lancez un crawl ou attendez le fetch planifié.",
+  "emptyColumn": "Aucun titre",
+  "emptySearch": "Aucun résultat",
+  "home": "Site",
+  "hide": "Masquer",
+  "allColumns": "Tout",
+  "showHidden": "Afficher masqués ({{count}})"
+}

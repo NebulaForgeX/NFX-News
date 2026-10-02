@@ -1,0 +1,17 @@
+{
+  "title": "Sources",
+  "subtitle": "Catalog from GET /source/sources. Redirect rows are aliases; fetch the target id.",
+  "search": "Filter catalog",
+  "allColumns": "All",
+  "empty": "No sources",
+  "name": "Name",
+  "id": "ID",
+  "feedTitle": "Title",
+  "column": "Column",
+  "type": "Type",
+  "interval": "Interval",
+  "redirect": "Redirect",
+  "home": "Home",
+  "open": "Open",
+  "fetch": "Fetch"
+}

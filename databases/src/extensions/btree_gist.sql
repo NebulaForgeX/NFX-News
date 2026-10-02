@@ -1,0 +1,4 @@
+-- Active: 1768427124487@@192.168.1.64@10105@postgres
+CREATE EXTENSION IF NOT EXISTS "btree_gist"
+WITH
+  SCHEMA "public";

@@ -1,0 +1,25 @@
+{
+  "title": "Sessions de crawl",
+  "subtitle": "Lancer un crawl pour une source ou tout le catalogue.",
+  "sourceId": "Source",
+  "trigger": "Lancer",
+  "triggerAll": "Tout lancer",
+  "detail": "Détail de session",
+  "sessions": "Sessions récentes",
+  "emptySessions": "Aucune session",
+  "emptySessionsHint": "Lancez un crawl pour voir le statut.",
+  "allSources": "Toutes les sources",
+  "home": "Accueil",
+  "interval": "Intervalle",
+  "status": "Statut",
+  "source": "Source",
+  "itemCount": "Éléments",
+  "startedAt": "Début",
+  "finishedAt": "Fin",
+  "error": "Erreur",
+  "statusValue": {
+    "running": "en cours",
+    "ok": "ok",
+    "failed": "échec"
+  }
+}

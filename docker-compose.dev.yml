@@ -1,0 +1,549 @@
+name: nfx-news-dev
+
+# HTTP 入口只有 NFX-Edge（先启动 Edge：共享网络 nfx-edge + Traefik）。
+# 本栈不跑 reverse-proxy。traefik.project 由 Edge LabelRegex 发现。
+# Must start NFX-Edge first (creates nfx-edge). This stack has no reverse-proxy.
+
+services:
+  source-base:
+    image: nfx-news-source-base:dev
+    container_name: NFX-News-Source-Base-Dev
+    build:
+      context: .
+      dockerfile: inputs/source/configuration/Dockerfile.Base
+      target: dev
+    environment:
+      - ENV=dev
+    command: [ "air", "-c", "inputs/source/base/.air.toml" ]
+    expose:
+      - "${HTTP_PORT}"
+      - "${GRPC_PORT_SOURCE}"
+    ports:
+      - "${GRPC_EXT_PORT_SOURCE}:${GRPC_PORT_SOURCE}"
+    labels:
+      traefik.enable: "true"
+      traefik.project: "nfx-news"
+      traefik.docker.network: nfx-edge
+      traefik.http.services.news-source-base.loadbalancer.server.port: "${HTTP_PORT}"
+      traefik.http.routers.news-source-base.entrypoints: web
+      traefik.http.middlewares.nfx-news-source-gw.stripprefix.prefixes: ${API_GATEWAY_PREFIX}
+      traefik.http.routers.news-source-base.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_SOURCE}`)
+      traefik.http.routers.news-source-base.priority: "20"
+      traefik.http.routers.news-source-base.middlewares: nfx-news-source-gw
+      traefik.http.routers.news-source-base.service: news-source-base
+      traefik.http.routers.news-source-base-tls.entrypoints: websecure
+      traefik.http.routers.news-source-base-tls.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_SOURCE}`)
+      traefik.http.routers.news-source-base-tls.priority: "20"
+      traefik.http.routers.news-source-base-tls.middlewares: nfx-news-source-gw
+      traefik.http.routers.news-source-base-tls.service: news-source-base
+      traefik.http.routers.news-source-base-tls.tls: "true"
+    volumes:
+      - ./static:/app/static
+      - ./data:/app/data
+      - ./assets:/app/assets
+      - ./errors/langs:/app/errors/langs
+      - ./messages/langs:/app/messages/langs
+    develop:
+      watch:
+        - action: sync
+          path: inputs/source/base
+          target: /app/inputs/source/base
+        - action: sync
+          path: inputs/source/configuration
+          target: /app/inputs/source/configuration
+        - action: sync
+          path: modules/source
+          target: /app/modules/source
+        - action: sync
+          path: enums
+          target: /app/enums
+        - action: sync
+          path: errors/src
+          target: /app/errors/src
+        - action: sync
+          path: pkgs
+          target: /app/pkgs
+        - action: sync
+          path: protos
+          target: /app/protos
+        - action: sync
+          path: go.mod
+          target: /app/go.mod
+        - action: sync
+          path: go.sum
+          target: /app/go.sum
+        - action: sync
+          path: .env
+          target: /app/.env
+        - action: rebuild
+          path: inputs/source/configuration/Dockerfile.Base
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - nfx-news
+      - nfx-edge
+      - nfx-stack
+
+  news-base:
+    image: nfx-news-news-base:dev
+    container_name: NFX-News-News-Base-Dev
+    build:
+      context: .
+      dockerfile: inputs/news/configuration/Dockerfile.Base
+      target: dev
+    environment:
+      - ENV=dev
+    command: [ "air", "-c", "inputs/news/base/.air.toml" ]
+    expose:
+      - "${HTTP_PORT}"
+      - "${GRPC_PORT_NEWS}"
+    ports:
+      - "${GRPC_EXT_PORT_NEWS}:${GRPC_PORT_NEWS}"
+    labels:
+      traefik.enable: "true"
+      traefik.project: "nfx-news"
+      traefik.docker.network: nfx-edge
+      traefik.http.services.news-base.loadbalancer.server.port: "${HTTP_PORT}"
+      traefik.http.routers.news-base.entrypoints: web
+      traefik.http.middlewares.nfx-news-news-gw.stripprefix.prefixes: ${API_GATEWAY_PREFIX}
+      traefik.http.routers.news-base.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_NEWS}`)
+      traefik.http.routers.news-base.priority: "20"
+      traefik.http.routers.news-base.middlewares: nfx-news-news-gw
+      traefik.http.routers.news-base.service: news-base
+      traefik.http.routers.news-base-tls.entrypoints: websecure
+      traefik.http.routers.news-base-tls.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_NEWS}`)
+      traefik.http.routers.news-base-tls.priority: "20"
+      traefik.http.routers.news-base-tls.middlewares: nfx-news-news-gw
+      traefik.http.routers.news-base-tls.service: news-base
+      traefik.http.routers.news-base-tls.tls: "true"
+    volumes:
+      - ./static:/app/static
+      - ./data:/app/data
+      - ./assets:/app/assets
+      - ./errors/langs:/app/errors/langs
+      - ./messages/langs:/app/messages/langs
+    develop:
+      watch:
+        - action: sync
+          path: inputs/news/base
+          target: /app/inputs/news/base
+        - action: sync
+          path: inputs/news/configuration
+          target: /app/inputs/news/configuration
+        - action: sync
+          path: modules/news
+          target: /app/modules/news
+        - action: sync
+          path: enums
+          target: /app/enums
+        - action: sync
+          path: errors/src
+          target: /app/errors/src
+        - action: sync
+          path: pkgs
+          target: /app/pkgs
+        - action: sync
+          path: protos
+          target: /app/protos
+        - action: sync
+          path: go.mod
+          target: /app/go.mod
+        - action: sync
+          path: go.sum
+          target: /app/go.sum
+        - action: sync
+          path: .env
+          target: /app/.env
+        - action: rebuild
+          path: inputs/news/configuration/Dockerfile.Base
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - nfx-news
+      - nfx-edge
+      - nfx-stack
+
+  crawl-base:
+    image: nfx-news-crawl-base:dev
+    container_name: NFX-News-Crawl-Base-Dev
+    build:
+      context: .
+      dockerfile: inputs/crawl/configuration/Dockerfile.Base
+      target: dev
+    environment:
+      - ENV=dev
+    command: [ "air", "-c", "inputs/crawl/base/.air.toml" ]
+    expose:
+      - "${HTTP_PORT}"
+      - "${GRPC_PORT_CRAWL}"
+    ports:
+      - "${GRPC_EXT_PORT_CRAWL}:${GRPC_PORT_CRAWL}"
+    labels:
+      traefik.enable: "true"
+      traefik.project: "nfx-news"
+      traefik.docker.network: nfx-edge
+      traefik.http.services.news-crawl-base.loadbalancer.server.port: "${HTTP_PORT}"
+      traefik.http.routers.news-crawl-base.entrypoints: web
+      traefik.http.middlewares.nfx-news-crawl-gw.stripprefix.prefixes: ${API_GATEWAY_PREFIX}
+      traefik.http.routers.news-crawl-base.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_CRAWL}`)
+      traefik.http.routers.news-crawl-base.priority: "20"
+      traefik.http.routers.news-crawl-base.middlewares: nfx-news-crawl-gw
+      traefik.http.routers.news-crawl-base.service: news-crawl-base
+      traefik.http.routers.news-crawl-base-tls.entrypoints: websecure
+      traefik.http.routers.news-crawl-base-tls.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_CRAWL}`)
+      traefik.http.routers.news-crawl-base-tls.priority: "20"
+      traefik.http.routers.news-crawl-base-tls.middlewares: nfx-news-crawl-gw
+      traefik.http.routers.news-crawl-base-tls.service: news-crawl-base
+      traefik.http.routers.news-crawl-base-tls.tls: "true"
+    volumes:
+      - ./static:/app/static
+      - ./data:/app/data
+      - ./assets:/app/assets
+      - ./errors/langs:/app/errors/langs
+      - ./messages/langs:/app/messages/langs
+    develop:
+      watch:
+        - action: sync
+          path: inputs/crawl/base
+          target: /app/inputs/crawl/base
+        - action: sync
+          path: inputs/crawl/configuration
+          target: /app/inputs/crawl/configuration
+        - action: sync
+          path: modules/crawl
+          target: /app/modules/crawl
+        - action: sync
+          path: enums
+          target: /app/enums
+        - action: sync
+          path: errors/src
+          target: /app/errors/src
+        - action: sync
+          path: pkgs
+          target: /app/pkgs
+        - action: sync
+          path: protos
+          target: /app/protos
+        - action: sync
+          path: go.mod
+          target: /app/go.mod
+        - action: sync
+          path: go.sum
+          target: /app/go.sum
+        - action: sync
+          path: .env
+          target: /app/.env
+        - action: rebuild
+          path: inputs/crawl/configuration/Dockerfile.Base
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - nfx-news
+      - nfx-edge
+      - nfx-stack
+
+  report-base:
+    image: nfx-news-report-base:dev
+    container_name: NFX-News-Report-Base-Dev
+    build:
+      context: .
+      dockerfile: inputs/report/configuration/Dockerfile.Base
+      target: dev
+    environment:
+      - ENV=dev
+    command: [ "air", "-c", "inputs/report/base/.air.toml" ]
+    expose:
+      - "${HTTP_PORT}"
+      - "${GRPC_PORT_REPORT}"
+    ports:
+      - "${GRPC_EXT_PORT_REPORT}:${GRPC_PORT_REPORT}"
+    labels:
+      traefik.enable: "true"
+      traefik.project: "nfx-news"
+      traefik.docker.network: nfx-edge
+      traefik.http.services.news-report-base.loadbalancer.server.port: "${HTTP_PORT}"
+      traefik.http.routers.news-report-base.entrypoints: web
+      traefik.http.middlewares.nfx-news-report-gw.stripprefix.prefixes: ${API_GATEWAY_PREFIX}
+      traefik.http.routers.news-report-base.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_REPORT}`)
+      traefik.http.routers.news-report-base.priority: "20"
+      traefik.http.routers.news-report-base.middlewares: nfx-news-report-gw
+      traefik.http.routers.news-report-base.service: news-report-base
+      traefik.http.routers.news-report-base-tls.entrypoints: websecure
+      traefik.http.routers.news-report-base-tls.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_REPORT}`)
+      traefik.http.routers.news-report-base-tls.priority: "20"
+      traefik.http.routers.news-report-base-tls.middlewares: nfx-news-report-gw
+      traefik.http.routers.news-report-base-tls.service: news-report-base
+      traefik.http.routers.news-report-base-tls.tls: "true"
+    volumes:
+      - ./static:/app/static
+      - ./data:/app/data
+      - ./assets:/app/assets
+      - ./errors/langs:/app/errors/langs
+      - ./messages/langs:/app/messages/langs
+    develop:
+      watch:
+        - action: sync
+          path: inputs/report/base
+          target: /app/inputs/report/base
+        - action: sync
+          path: inputs/report/configuration
+          target: /app/inputs/report/configuration
+        - action: sync
+          path: modules/report
+          target: /app/modules/report
+        - action: sync
+          path: enums
+          target: /app/enums
+        - action: sync
+          path: errors/src
+          target: /app/errors/src
+        - action: sync
+          path: pkgs
+          target: /app/pkgs
+        - action: sync
+          path: protos
+          target: /app/protos
+        - action: sync
+          path: go.mod
+          target: /app/go.mod
+        - action: sync
+          path: go.sum
+          target: /app/go.sum
+        - action: sync
+          path: .env
+          target: /app/.env
+        - action: rebuild
+          path: inputs/report/configuration/Dockerfile.Base
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - nfx-news
+      - nfx-edge
+      - nfx-stack
+
+  notify-base:
+    image: nfx-news-notify-base:dev
+    container_name: NFX-News-Notify-Base-Dev
+    build:
+      context: .
+      dockerfile: inputs/notify/configuration/Dockerfile.Base
+      target: dev
+    environment:
+      - ENV=dev
+    command: [ "air", "-c", "inputs/notify/base/.air.toml" ]
+    expose:
+      - "${HTTP_PORT}"
+      - "${GRPC_PORT_NOTIFY}"
+    ports:
+      - "${GRPC_EXT_PORT_NOTIFY}:${GRPC_PORT_NOTIFY}"
+    labels:
+      traefik.enable: "true"
+      traefik.project: "nfx-news"
+      traefik.docker.network: nfx-edge
+      traefik.http.services.news-notify-base.loadbalancer.server.port: "${HTTP_PORT}"
+      traefik.http.routers.news-notify-base.entrypoints: web
+      traefik.http.middlewares.nfx-news-notify-gw.stripprefix.prefixes: ${API_GATEWAY_PREFIX}
+      traefik.http.routers.news-notify-base.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_NOTIFY}`)
+      traefik.http.routers.news-notify-base.priority: "20"
+      traefik.http.routers.news-notify-base.middlewares: nfx-news-notify-gw
+      traefik.http.routers.news-notify-base.service: news-notify-base
+      traefik.http.routers.news-notify-base-tls.entrypoints: websecure
+      traefik.http.routers.news-notify-base-tls.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_NOTIFY}`)
+      traefik.http.routers.news-notify-base-tls.priority: "20"
+      traefik.http.routers.news-notify-base-tls.middlewares: nfx-news-notify-gw
+      traefik.http.routers.news-notify-base-tls.service: news-notify-base
+      traefik.http.routers.news-notify-base-tls.tls: "true"
+    volumes:
+      - ./static:/app/static
+      - ./data:/app/data
+      - ./assets:/app/assets
+      - ./errors/langs:/app/errors/langs
+      - ./messages/langs:/app/messages/langs
+    develop:
+      watch:
+        - action: sync
+          path: inputs/notify/base
+          target: /app/inputs/notify/base
+        - action: sync
+          path: inputs/notify/configuration
+          target: /app/inputs/notify/configuration
+        - action: sync
+          path: modules/notify
+          target: /app/modules/notify
+        - action: sync
+          path: enums
+          target: /app/enums
+        - action: sync
+          path: errors/src
+          target: /app/errors/src
+        - action: sync
+          path: pkgs
+          target: /app/pkgs
+        - action: sync
+          path: protos
+          target: /app/protos
+        - action: sync
+          path: go.mod
+          target: /app/go.mod
+        - action: sync
+          path: go.sum
+          target: /app/go.sum
+        - action: sync
+          path: .env
+          target: /app/.env
+        - action: rebuild
+          path: inputs/notify/configuration/Dockerfile.Base
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - nfx-news
+      - nfx-edge
+      - nfx-stack
+
+  mcp-base:
+    image: nfx-news-mcp-base:dev
+    container_name: NFX-News-Mcp-Base-Dev
+    build:
+      context: .
+      dockerfile: inputs/mcp/configuration/Dockerfile.Base
+      target: dev
+    environment:
+      - ENV=dev
+    command: [ "air", "-c", "inputs/mcp/base/.air.toml" ]
+    expose:
+      - "${HTTP_PORT}"
+      - "${GRPC_PORT_MCP}"
+    ports:
+      - "${GRPC_EXT_PORT_MCP}:${GRPC_PORT_MCP}"
+    labels:
+      traefik.enable: "true"
+      traefik.project: "nfx-news"
+      traefik.docker.network: nfx-edge
+      traefik.http.services.news-mcp-base.loadbalancer.server.port: "${HTTP_PORT}"
+      traefik.http.routers.news-mcp-base.entrypoints: web
+      traefik.http.middlewares.nfx-news-mcp-gw.stripprefix.prefixes: ${API_GATEWAY_PREFIX}
+      traefik.http.routers.news-mcp-base.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_MCP}`)
+      traefik.http.routers.news-mcp-base.priority: "20"
+      traefik.http.routers.news-mcp-base.middlewares: nfx-news-mcp-gw
+      traefik.http.routers.news-mcp-base.service: news-mcp-base
+      traefik.http.routers.news-mcp-base-tls.entrypoints: websecure
+      traefik.http.routers.news-mcp-base-tls.rule: PathPrefix(`${API_GATEWAY_PREFIX}${API_PREFIX_PATH_MCP}`)
+      traefik.http.routers.news-mcp-base-tls.priority: "20"
+      traefik.http.routers.news-mcp-base-tls.middlewares: nfx-news-mcp-gw
+      traefik.http.routers.news-mcp-base-tls.service: news-mcp-base
+      traefik.http.routers.news-mcp-base-tls.tls: "true"
+    volumes:
+      - ./static:/app/static
+      - ./data:/app/data
+      - ./assets:/app/assets
+      - ./errors/langs:/app/errors/langs
+      - ./messages/langs:/app/messages/langs
+    develop:
+      watch:
+        - action: sync
+          path: inputs/mcp/base
+          target: /app/inputs/mcp/base
+        - action: sync
+          path: inputs/mcp/configuration
+          target: /app/inputs/mcp/configuration
+        - action: sync
+          path: modules/mcp
+          target: /app/modules/mcp
+        - action: sync
+          path: enums
+          target: /app/enums
+        - action: sync
+          path: errors/src
+          target: /app/errors/src
+        - action: sync
+          path: pkgs
+          target: /app/pkgs
+        - action: sync
+          path: protos
+          target: /app/protos
+        - action: sync
+          path: go.mod
+          target: /app/go.mod
+        - action: sync
+          path: go.sum
+          target: /app/go.sum
+        - action: sync
+          path: .env
+          target: /app/.env
+        - action: rebuild
+          path: inputs/mcp/configuration/Dockerfile.Base
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - nfx-news
+      - nfx-edge
+      - nfx-stack
+
+
+  console:
+    image: node:22-bookworm-slim
+    container_name: NFX-News-Console-Dev
+    working_dir: /app
+    volumes:
+      - ./console:/app
+    command: ["node", "node_modules/vite/bin/vite.js", "--mode", "dev", "--host", "0.0.0.0"]
+    environment:
+      VITE_API_URL: ${VITE_API_URL}
+      VITE_IDENTITY_API_URL: ${VITE_IDENTITY_API_URL}
+      VITE_PORT: ${VITE_PORT}
+      VITE_BASE: ${VITE_BASE}
+      DOCKER: "1"
+    expose:
+      - "${VITE_PORT}"
+    labels:
+      traefik.enable: "true"
+      traefik.project: "nfx-news"
+      traefik.docker.network: nfx-edge
+      traefik.http.services.news-console.loadbalancer.server.port: "${VITE_PORT}"
+      traefik.http.middlewares.news-console-root.redirectregex.regex: ^https?://[^/]+/?$$
+      traefik.http.middlewares.news-console-root.redirectregex.replacement: https://${TRAEFIK_CONSOLE_HOST}/console/nfx-news/
+      traefik.http.middlewares.news-console-root.redirectregex.permanent: "true"
+      traefik.http.routers.news-console.entrypoints: web
+      traefik.http.routers.news-console.rule: "HostRegexp(`^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$$`) && PathPrefix(`/console/nfx-news`)"
+      traefik.http.routers.news-console.service: news-console
+      traefik.http.routers.news-console.priority: "25"
+      traefik.http.routers.news-console-tls.entrypoints: websecure
+      traefik.http.routers.news-console-tls.rule: "HostRegexp(`^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$$`) && PathPrefix(`/console/nfx-news`)"
+      traefik.http.routers.news-console-tls.service: news-console
+      traefik.http.routers.news-console-tls.tls: "true"
+      traefik.http.routers.news-console-tls.priority: "25"
+      traefik.http.routers.news-console-host.entrypoints: web
+      traefik.http.routers.news-console-host.rule: Host(`${TRAEFIK_CONSOLE_HOST}`) && PathPrefix(`/console/nfx-news`)
+      traefik.http.routers.news-console-host.service: news-console
+      traefik.http.routers.news-console-host.priority: "200"
+      traefik.http.routers.news-console-host-tls.entrypoints: websecure
+      traefik.http.routers.news-console-host-tls.rule: Host(`${TRAEFIK_CONSOLE_HOST}`) && PathPrefix(`/console/nfx-news`)
+      traefik.http.routers.news-console-host-tls.service: news-console
+      traefik.http.routers.news-console-host-tls.tls: "true"
+      traefik.http.routers.news-console-host-tls.priority: "200"
+      traefik.http.routers.news-console-root.entrypoints: web
+      traefik.http.routers.news-console-root.rule: Host(`${TRAEFIK_CONSOLE_HOST}`) && Path(`/`)
+      traefik.http.routers.news-console-root.middlewares: news-console-root
+      traefik.http.routers.news-console-root.service: news-console
+      traefik.http.routers.news-console-root.priority: "210"
+      traefik.http.routers.news-console-root-tls.entrypoints: websecure
+      traefik.http.routers.news-console-root-tls.rule: Host(`${TRAEFIK_CONSOLE_HOST}`) && Path(`/`)
+      traefik.http.routers.news-console-root-tls.middlewares: news-console-root
+      traefik.http.routers.news-console-root-tls.service: news-console
+      traefik.http.routers.news-console-root-tls.tls: "true"
+      traefik.http.routers.news-console-root-tls.priority: "210"
+    init: true
+    networks:
+      - nfx-news
+      - nfx-edge
+
+networks:
+  nfx-news:
+    name: nfx-news
+    driver: bridge
+  nfx-edge:
+    external: true
+    name: nfx-edge
+  nfx-stack:
+    external: true
+    name: nfx-stack

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<users>
+	<user>PLEASE_REPLACE_WITH_YOUR_BING_VERIFICATION_CODE</user>
+</users>
+
+<!--
+  Bing Webmaster Tools Verification File
+
+  To verify your site ownership with Bing:
+  1. Go to https://www.bing.com/webmasters
+  2. Add your site: https://console.nfx.com
+  3. Choose "XML File" verification method
+  4. Copy the verification code provided by Bing
+  5. Replace "PLEASE_REPLACE_WITH_YOUR_BING_VERIFICATION_CODE" above
+  6. Upload this file to your public folder
+  7. Verify in Bing Webmaster Tools
+
+  Note: Keep this file in /public folder for verification to work.
+-->
+

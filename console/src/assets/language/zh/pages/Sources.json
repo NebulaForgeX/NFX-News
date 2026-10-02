@@ -1,0 +1,17 @@
+{
+  "title": "来源",
+  "subtitle": "目录来自 GET /source/sources。redirect 行是别名，请抓取目标 ID。",
+  "search": "筛选目录",
+  "allColumns": "全部",
+  "empty": "没有来源",
+  "name": "名称",
+  "id": "ID",
+  "feedTitle": "标题",
+  "column": "栏目",
+  "type": "类型",
+  "interval": "间隔",
+  "redirect": "重定向",
+  "home": "主页",
+  "open": "打开",
+  "fetch": "抓取"
+}

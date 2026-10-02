@@ -1,0 +1,56 @@
+{
+  "title": "创建账号",
+  "ticker": "加入稿件台 · 核验电讯 · 打开阅读栏",
+  "ticket": {
+    "kicker": "通讯员证件",
+    "title": "签发 {{name}} 通行证",
+    "subtitle": "这是一张发稿单，不是左右营销分屏。核验邮箱、设置密码，然后进入阅读栏。"
+  },
+  "briefing": {
+    "kicker": "派工",
+    "title": "发稿前",
+    "steps": [
+      {
+        "rank": "01",
+        "title": "核验邮箱",
+        "body": "我们会把六位电讯码发到证件上的地址。"
+      },
+      {
+        "rank": "02",
+        "title": "设置密码",
+        "body": "与 NFX 其他产品同一份 Account，之后不用再注册。"
+      },
+      {
+        "rank": "03",
+        "title": "打开阅读",
+        "body": "分栏、报告与抓取都在这张通行证后面。"
+      }
+    ]
+  },
+  "emailLabel": "邮箱",
+  "emailPlaceholder": "you@example.com",
+  "emailHint": "我们会向此地址发送 6 位验证码。",
+  "codeLabel": "电讯码",
+  "codePlaceholder": "6 位验证码",
+  "sendCode": "发送验证码",
+  "passwordLabel": "密码",
+  "passwordPlaceholder": "设置密码",
+  "confirmLabel": "确认密码",
+  "confirmPlaceholder": "再次输入密码",
+  "showPassword": "显示密码",
+  "hidePassword": "隐藏密码",
+  "rememberMe": "记住我",
+  "submit": "签发证件",
+  "hasAccount": "已有台位？",
+  "signIn": "登录",
+  "validation": {
+    "emailRequired": "请输入邮箱",
+    "emailInvalid": "邮箱格式不正确",
+    "codeRequired": "请输入验证码",
+    "codeInvalid": "请输入 6 位验证码",
+    "passwordRequired": "请输入密码",
+    "passwordMin": "密码至少 8 位",
+    "confirmRequired": "请确认密码",
+    "passwordMismatch": "两次密码不一致"
+  }
+}

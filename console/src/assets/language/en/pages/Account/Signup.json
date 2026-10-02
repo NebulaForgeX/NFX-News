@@ -1,0 +1,56 @@
+{
+  "title": "Create account",
+  "ticker": "Join the desk · Verify the wire · Open the reader",
+  "ticket": {
+    "kicker": "Correspondent credentials",
+    "title": "Issue a pass to {{name}}",
+    "subtitle": "This is a copy ticket, not a marketing split. Verify the address, set a password, then the Reader board opens."
+  },
+  "briefing": {
+    "kicker": "Assignment",
+    "title": "Before you file",
+    "steps": [
+      {
+        "rank": "01",
+        "title": "Verify email",
+        "body": "We send a six-character code to the address on the ticket."
+      },
+      {
+        "rank": "02",
+        "title": "Set a password",
+        "body": "Same Account as the rest of NFX. No second signup later."
+      },
+      {
+        "rank": "03",
+        "title": "Open Reader",
+        "body": "Columns, reports, and crawl sit behind this pass."
+      }
+    ]
+  },
+  "emailLabel": "Email",
+  "emailPlaceholder": "you@example.com",
+  "emailHint": "We send a 6-character code to this address.",
+  "codeLabel": "Wire code",
+  "codePlaceholder": "6-character code",
+  "sendCode": "Send code",
+  "passwordLabel": "Password",
+  "passwordPlaceholder": "Choose a password",
+  "confirmLabel": "Confirm password",
+  "confirmPlaceholder": "Re-enter your password",
+  "showPassword": "Show password",
+  "hidePassword": "Hide password",
+  "rememberMe": "Remember me",
+  "submit": "Issue credentials",
+  "hasAccount": "Already on the desk?",
+  "signIn": "Sign in",
+  "validation": {
+    "emailRequired": "Email is required",
+    "emailInvalid": "Enter a valid email",
+    "codeRequired": "Verification code is required",
+    "codeInvalid": "Enter the 6-character code",
+    "passwordRequired": "Password is required",
+    "passwordMin": "Password must be at least 8 characters",
+    "confirmRequired": "Confirm your password",
+    "passwordMismatch": "Passwords do not match"
+  }
+}

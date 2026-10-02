@@ -1,0 +1,17 @@
+{
+  "title": "Sources",
+  "subtitle": "Catalogue GET /source/sources. Les lignes redirect sont des alias ; fetchez l'id cible.",
+  "search": "Filtrer",
+  "allColumns": "Tout",
+  "empty": "Aucune source",
+  "name": "Nom",
+  "id": "ID",
+  "feedTitle": "Titre",
+  "column": "Colonne",
+  "type": "Type",
+  "interval": "Intervalle",
+  "redirect": "Redirection",
+  "home": "Accueil",
+  "open": "Ouvrir",
+  "fetch": "Fetch"
+}

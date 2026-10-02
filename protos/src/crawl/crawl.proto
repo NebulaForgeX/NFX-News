@@ -1,0 +1,33 @@
+syntax = "proto3";
+package crawl;
+
+option go_package = "nfxnews/protos/gen/crawl;crawlpb";
+
+message TriggerCrawlRequest {
+  string source_id = 1;
+}
+
+message TriggerCrawlResponse {
+  string session_id = 1;
+}
+
+message GetSessionRequest {
+  string session_id = 1;
+}
+
+message CrawlSession {
+  string id = 1;
+  string source_id = 2;
+  string status = 3;
+  int32 item_count = 4;
+  string error_message = 5;
+}
+
+message GetSessionResponse {
+  CrawlSession session = 1;
+}
+
+service CrawlService {
+  rpc TriggerCrawl (TriggerCrawlRequest) returns (TriggerCrawlResponse);
+  rpc GetSession (GetSessionRequest) returns (GetSessionResponse);
+}

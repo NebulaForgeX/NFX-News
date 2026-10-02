@@ -1,0 +1,46 @@
+{
+  "CHANNEL_CREATED": {
+    "title": "Channel saved",
+    "body": "The notification channel has been saved"
+  },
+  "CRAWL_TRIGGERED": {
+    "title": "Crawl started",
+    "body": "The crawl has been triggered"
+  },
+  "KEYWORD_ADDED": {
+    "title": "Keyword added",
+    "body": "The keyword has been added"
+  },
+  "NOTIFY_DISPATCHED": {
+    "title": "Notification queued",
+    "body": "The notification has been queued"
+  },
+  "NOTIFY_REPORT_PUSH": {
+    "title": "News report",
+    "body": "A new filtered news report is available"
+  },
+  "PREFERENCES_UPDATED": {
+    "title": "Preferences updated",
+    "body": "News preferences have been saved"
+  },
+  "REPORT_CURRENT_READY": {
+    "title": "Current report ready",
+    "body": "Your current hotspot report is ready"
+  },
+  "REPORT_DAILY_READY": {
+    "title": "Daily report ready",
+    "body": "Your daily news report is ready"
+  },
+  "REPORT_GENERATED": {
+    "title": "Report generated",
+    "body": "The report has been generated"
+  },
+  "REPORT_INCREMENTAL_READY": {
+    "title": "Incremental report ready",
+    "body": "New titles since the last crawl are ready"
+  },
+  "SYSTEM_INITIALIZED": {
+    "title": "System initialized",
+    "body": "NFX News is ready"
+  }
+}
