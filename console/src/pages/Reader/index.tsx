@@ -1,6 +1,6 @@
 import { FileDescriptionIcon, MagnifierIcon, RefreshIcon } from "nfx-ui/icons";
 import { memo, useEffect, useMemo, useState } from "react";
-import { Box, Button, Flex, Text, TextField } from "@radix-ui/themes";
+import { Container, Box, Section, Button, Flex, Text, TextField } from "@radix-ui/themes";
 import { DndContext, closestCenter, type DragEndEvent } from "@dnd-kit/core";
 import { SortableContext, arrayMove, horizontalListSortingStrategy, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -43,18 +43,23 @@ function SortableColumn({
   const rows = items ?? [];
   const color = sourceColorVar(source.color);
   return (
-    <div ref={setNodeRef} className={styles.column} style={{ transform: CSS.Transform.toString(transform), transition }} {...attributes}>
-      <Box className={styles.columnHeader}>
-        <Box className={styles.columnHeaderPx}>
-          <Box className={styles.columnHeaderPy}>
+    <Flex ref={setNodeRef} direction="column" className={`${styles.columnSize} ${styles.columnEdge}`} style={{ transform: CSS.Transform.toString(transform), transition }} {...attributes}>
+      <Flex direction="column" minHeight="0" className={styles.column}>
+      <Flex direction="column" flexShrink="0" className={styles.columnHeader}>
+        <Container className={styles.columnHeaderPx}>
+          <Section className={styles.columnHeaderPy}>
             <Flex align="start" gap="2">
-              <span className={styles.rail} style={{ background: color }} />
-              <div className={styles.headText} {...listeners}>
+              <Section className={`${styles.railItem} ${styles.railOffset}`}>
+                <Box className={`${styles.railSize} ${styles.railRadius}`} style={{ background: color }} />
+              </Section>
+              <Flex direction="column" gap="1" minWidth="0" flexGrow="1" className={styles.headText} {...listeners}>
                 <span className={styles.headName}>{source.name || source.id}</span>
-                <span className={styles.headMeta}>
-                  {[source.title || source.type, source.column].filter(Boolean).join(" · ")}
-                </span>
-              </div>
+                <Section className={styles.headMetaSpace}>
+                  <span className={styles.headMeta}>
+                    {[source.title || source.type, source.column].filter(Boolean).join(" · ")}
+                  </span>
+                </Section>
+              </Flex>
               <Flex gap="1" flexShrink="0">
                 {source.home ? (
                   <Button size="1" variant="ghost" asChild>
@@ -71,10 +76,10 @@ function SortableColumn({
                 </Button>
               </Flex>
             </Flex>
-          </Box>
-        </Box>
-      </Box>
-      <div className={styles.list}>
+          </Section>
+        </Container>
+      </Flex>
+      <Flex direction="column" minHeight="0" className={styles.list}>
         {rows.length === 0 ? (
           <EmptyState icon={FileDescriptionIcon} title={t("emptyColumn")} />
         ) : (
@@ -87,25 +92,34 @@ function SortableColumn({
               rel="noreferrer"
               title={item.extra?.hover || item.title}
             >
-              <Box className={styles.itemPx}>
-                <Box className={styles.itemPy}>
+              <Container className={styles.itemPx}>
+                <Section className={styles.itemPy}>
                   <Flex gap="2">
-                    <span className={styles.rank}>{String(index + 1).padStart(2, "0")}</span>
-                    <span className={styles.body}>
-                      <span className={styles.title}>
-                        {item.extra?.icon?.url ? <img className={styles.flag} src={item.extra.icon.url} alt="" /> : null}
-                        {item.title}
-                      </span>
-                      <span className={styles.meta}>{[item.extra?.info, itemTime(item)].filter(Boolean).join(" · ")}</span>
-                    </span>
+                    <Flex className={styles.rank}>
+                      <span>{String(index + 1).padStart(2, "0")}</span>
+                    </Flex>
+                    <Flex direction="column" gap="1" minWidth="0" className={styles.body}>
+                      <Flex align="center" gap="1">
+                        {item.extra?.icon?.url ? (
+                          <span className={styles.flagSize}>
+                            <img className={styles.flagImage} src={item.extra.icon.url} alt="" />
+                          </span>
+                        ) : null}
+                        <span className={styles.title}>{item.title}</span>
+                      </Flex>
+                      <Section className={styles.metaSpace}>
+                        <span className={styles.meta}>{[item.extra?.info, itemTime(item)].filter(Boolean).join(" · ")}</span>
+                      </Section>
+                    </Flex>
                   </Flex>
-                </Box>
-              </Box>
+                </Section>
+              </Container>
             </a>
           ))
         )}
-      </div>
-    </div>
+      </Flex>
+      </Flex>
+    </Flex>
   );
 }
 
@@ -227,18 +241,18 @@ const ReaderPage = memo(() => {
           </Flex>
         </Flex>
         {q ? (
-          <div className={styles.searchPanelHairline}>
-            <div className={styles.searchPanelPy}>
-              <div className={styles.searchPanel}>
-            <Text size="1" color="gray" mb="2">
+          <Box className={styles.searchPanelHairline}>
+            <Section className={styles.searchPanelPy}>
+              <Box className={styles.searchPanel}>
+            <Section mb="2"><Text size="1" color="gray">
               {t("results")}
-            </Text>
+            </Text></Section>
             {searchRows.length === 0 ? (
               <EmptyState icon={MagnifierIcon} title={t("emptySearch")} />
             ) : (
               searchRows.map((item) => (
                 <a key={item.id} className={styles.searchRow} href={item.mobileUrl || item.url} target="_blank" rel="noreferrer">
-                  <Box className={styles.searchRowPy}>
+                  <Section className={styles.searchRowPy}>
                     <Flex gap="2" align="center">
                       <Text size="1" color="gray" style={{ minWidth: 88 }}>
                         {sourceById.get(item.sourceId)?.name || item.sourceId}
@@ -248,23 +262,23 @@ const ReaderPage = memo(() => {
                         {itemTime(item)}
                       </Text>
                     </Flex>
-                  </Box>
+                  </Section>
                 </a>
               ))
             )}
-              </div>
-            </div>
-          </div>
+              </Box>
+            </Section>
+          </Box>
         ) : visible.length === 0 ? (
           <EmptyState icon={FileDescriptionIcon} title={t("emptySources")} description={t("emptySourcesHint")} />
         ) : (
           <DndContext collisionDetection={closestCenter} onDragEnd={onDragEnd}>
             <SortableContext items={ids} strategy={horizontalListSortingStrategy}>
-              <div className={styles.board}>
+              <Flex className={styles.board}>
                 {visible.map((source) => (
                   <SortableColumn key={source.id} source={source} onFetch={(id) => void refresh.mutateAsync(id)} onHide={onHide} />
                 ))}
-              </div>
+              </Flex>
             </SortableContext>
           </DndContext>
         )}

@@ -1,26 +1,22 @@
-.page {
+.pageStack {
   display: flex;
   flex-direction: column;
   min-height: 100dvh;
+}.pageFill {
   background: var(--color-background);
+}.pageInk {
   color: var(--gray-12);
-}
-
-.ticker {
+}.tickerRule {
   border-bottom: 1px solid var(--gray-a5);
+}.tickerFill {
   background: var(--gray-2);
+}.ticker {
   flex-shrink: 0;
-}
-
-.tickerPx {
-  padding-inline: 16px;
-}
-
-.tickerPy {
-  padding-block: 8px;
-}
-
-.tickerText {
+}.tickerPx {
+  padding-inline: var(--space-4);
+}.tickerPy {
+  padding-block: var(--space-2);
+}.tickerText {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -30,189 +26,139 @@
   text-transform: uppercase;
   font-weight: 650;
   color: var(--accent-11);
-}
-
-.body {
-  display: flex;
-  align-items: stretch;
+}.body {
   flex: 1 1 auto;
   min-height: 0;
-}
-
-.ticket {
+}.ticketSize {
   flex: 1 1 56%;
   min-width: 0;
+}.ticketEdge {
   border-right: 1px dashed var(--gray-a6);
-}
-
-.ticketPx {
-  padding-inline: 32px;
-}
-
-.ticketPy {
-  padding-block: 28px 32px;
-}
-
-.kicker {
+}.ticketPx {
+  padding-inline: var(--space-6);
+}.ticketPy {
+  padding-block: var(--space-6) var(--space-6);
+}.kicker {
   font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   font-weight: 650;
   color: var(--accent-11);
-}
-
-.headline {
+}.headline {
   font-family: var(--heading-font-family), sans-serif;
   font-size: clamp(28px, 4vw, 40px);
   font-weight: 700;
   letter-spacing: -0.04em;
   line-height: 1.1;
   max-width: 16ch;
-  margin: 8px 0 10px;
-}
-
-.lede {
+}.lede {
   font-size: 14px;
   line-height: 1.5;
   color: var(--gray-10);
   max-width: 46ch;
-  margin-bottom: 24px;
-}
-
-.form {
+}.form {
   max-width: 440px;
-}
-
-.wireRow {
+}.wireRow {
   display: flex;
   gap: var(--space-2);
   align-items: stretch;
-}
-
-.wireRow > :first-child {
+}.wireRow > :first-child {
   flex: 1 1 auto;
   min-width: 0;
-}
-
-.hint {
+}.hint {
   font-size: 11px;
   color: var(--gray-9);
-}
-
-.signIn {
-  margin-top: 8px;
+}.headlineBefore {
+  margin-top: var(--space-2);
+}.headlineAfter {
+  margin-bottom: var(--space-3);
+}.ledeSpace {
+  margin-bottom: var(--space-5);
+}.briefTitleBefore {
+  margin-top: var(--space-2);
+}.briefTitleAfter {
+  margin-bottom: var(--space-4);
+}.signInSpace {
+  margin-top: var(--space-2);
+}.signIn {
   font-size: 13px;
   color: var(--gray-9);
-}
-
-.briefing {
+}.briefingSize {
   flex: 0 0 36%;
   min-width: 260px;
+}.briefingFill {
   background: var(--gray-2);
-}
-
-.briefingPx {
-  padding-inline: 24px;
-}
-
-.briefingPy {
-  padding-block: 28px;
-}
-
-.briefKicker {
+}.briefingPx {
+  padding-inline: var(--space-5);
+}.briefingPy {
+  padding-block: var(--space-6);
+}.briefKicker {
   font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--gray-9);
-}
-
-.briefTitle {
+}.briefTitle {
   font-family: var(--heading-font-family), sans-serif;
   font-size: 20px;
   font-weight: 700;
   letter-spacing: -0.03em;
-  margin: 6px 0 18px;
-}
-
-.step {
+}.step {
   border-top: 1px solid var(--gray-a4);
-}
-
-.stepPy {
-  padding-block: 14px;
-}
-
-.stepGrid {
+}.stepPy {
+  padding-block: var(--space-3);
+}.stepGrid {
   display: grid;
   grid-template-columns: 2.2em 1fr;
   gap: var(--space-3);
-}
-
-.stepRank {
+}.stepRank {
   font-size: 12px;
   font-variant-numeric: tabular-nums;
   color: var(--accent-11);
   font-weight: 650;
-  padding-top: 2px;
-}
-
-.stepTitle {
+}.stepTitle {
   display: block;
   font-size: 14px;
   font-weight: 650;
   line-height: 1.3;
-}
-
-.stepBody {
+}.stepBody {
   display: block;
-  margin-top: 4px;
   font-size: 12px;
   line-height: 1.45;
   color: var(--gray-9);
-}
-
-@media (max-width: 960px) {
+}@media (max-width: 960px) {
   .body {
     flex-direction: column;
-  }
-
-  .ticket {
+  }.ticketEdge {
     border-right: 0;
-  }
-
-  .ticketPx {
-    padding-inline: 16px;
-  }
-
-  .ticketPy {
-    padding-block: 20px 24px;
-  }
-
-  .briefing {
+  }.ticketPx {
+    padding-inline: var(--space-4);
+  }.ticketPy {
+    padding-block: var(--space-5) var(--space-5);
+  }.briefingSize {
     flex: 0 0 auto;
     min-width: 0;
+  }.briefingRule {
     border-top: 1px solid var(--gray-a5);
-  }
-
-  .briefingPx {
-    padding-inline: 16px;
-  }
-
-  .briefingPy {
-    padding-block: 16px;
-  }
-
-  .briefTitle {
-    flex: 1 1 100%;
-    margin-bottom: 8px;
-  }
-
-  .step {
+  }.briefingPx {
+    padding-inline: var(--space-4);
+  }.briefingPy {
+    padding-block: var(--space-4);
+  }.briefTitleAfter {
+    margin-bottom: var(--space-2);
+  }.step {
     flex: 1 1 180px;
     border-top: 0;
-  }
+  }.stepPy {
+    padding-block: var(--space-2);
+  }}
 
-  .stepPy {
-    padding-block: 8px;
-  }
+.ticketEdge > *,
+.briefingFill > *,
+.pageStack > *,
+.body > *,
+.headline > *,
+.lede > *,
+.stepTitle > *,
+.stepBody > * {
+  height: 100%;
 }

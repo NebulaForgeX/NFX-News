@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { Table } from "@radix-ui/themes";
+import { Box, Table } from "@radix-ui/themes";
 import { UnorderedListIcon } from "nfx-ui/icons";
 
 import EmptyState from "./EmptyState";
@@ -29,7 +29,8 @@ export function DataTable<T>({ columns, rows, rowKey, empty, loading, onRowClick
     return <EmptyState icon={UnorderedListIcon} title={empty ?? "—"} />;
   }
   return (
-    <Table.Root size="2">
+    <Box overflow="hidden" style={{ borderRadius: "var(--radius-3)", background: "var(--color-panel-solid)", boxShadow: "var(--shadow-2)" }}>
+    <Table.Root size="2" variant="surface">
       <Table.Header>
         <Table.Row>
           {columns.map((column) => (
@@ -55,5 +56,6 @@ export function DataTable<T>({ columns, rows, rowKey, empty, loading, onRowClick
         ))}
       </Table.Body>
     </Table.Root>
+    </Box>
   );
 }

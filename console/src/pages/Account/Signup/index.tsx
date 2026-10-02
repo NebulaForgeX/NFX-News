@@ -1,7 +1,7 @@
 import { AnimatedIcon, ArrowNarrowRightIcon } from "nfx-ui/icons";
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
-import { Box, Button, Flex, Heading, Link, Text } from "@radix-ui/themes";
+import { Box, Button, Container, Flex, Grid, Heading, Link, Section, Text } from "@radix-ui/themes";
 import gsap from "gsap";
 import { APP_NAME } from "nfx-ui/config";
 import { AuthSignupPlatformEnum, LanguageEnum } from "nfx-ui/enums";
@@ -67,32 +67,38 @@ export default function SignupPage() {
   const steps = Array.isArray(stepsRaw) ? (stepsRaw as BriefStep[]) : [];
 
   return (
-    <main ref={pageRef} className={styles.page}>
-      <Box className={styles.ticker}>
-        <Box className={styles.tickerPx}>
-          <Box className={styles.tickerPy}>
+    <Flex asChild direction="column" ref={pageRef} className={styles.pageStack}>
+    <main>
+      <Flex direction="column" flexGrow="1" className={`${styles.pageFill} ${styles.pageInk}`}>
+      <Flex direction="column" flexShrink="0" className={`${styles.ticker} ${styles.tickerRule} ${styles.tickerFill}`}>
+        <Container className={styles.tickerPx}>
+          <Section className={styles.tickerPy}>
             <Flex align="center" justify="between" gap="4">
               <span className={styles.tickerText}>{t("ticker")}</span>
               <AuthToolbar />
             </Flex>
-          </Box>
-        </Box>
-      </Box>
+          </Section>
+        </Container>
+      </Flex>
 
-      <div className={styles.body}>
-        <Box asChild className={`${styles.ticket} js-ticket`}>
+      <Flex align="stretch" className={styles.body}>
+        <Flex asChild direction="column" align="stretch" className={`${styles.ticketSize} ${styles.ticketEdge} js-ticket`}>
           <section>
-            <Box className={styles.ticketPx}>
-              <Box className={styles.ticketPy}>
+            <Container className={styles.ticketPx}>
+              <Section className={styles.ticketPy}>
                 <Text as="span" className={styles.kicker}>
                   {t("ticket.kicker")}
                 </Text>
-                <Heading as="h1" size="7" className={styles.headline}>
-                  {t("ticket.title", { name: APP_NAME })}
-                </Heading>
-                <Text as="p" className={styles.lede}>
-                  {t("ticket.subtitle")}
-                </Text>
+                <Section className={`${styles.headlineBefore} ${styles.headlineAfter}`}>
+                  <Heading as="h1" size="7" className={styles.headline}>
+                    {t("ticket.title", { name: APP_NAME })}
+                  </Heading>
+                </Section>
+                <Section className={styles.ledeSpace}>
+                  <Text as="p" className={styles.lede}>
+                    {t("ticket.subtitle")}
+                  </Text>
+                </Section>
 
                 <FormProvider {...form}>
                   <Flex asChild direction="column" gap="4">
@@ -127,6 +133,7 @@ export default function SignupPage() {
                         <AnimatedIcon icon={ArrowNarrowRightIcon} size={16} />
                       </Button>
 
+                      <Section className={styles.signInSpace}>
                       <p className={styles.signIn}>
                         {t("hasAccount")}{" "}
                         <Link
@@ -141,38 +148,43 @@ export default function SignupPage() {
                           {t("signIn")}
                         </Link>
                       </p>
+                      </Section>
                     </form>
                   </Flex>
                 </FormProvider>
-              </Box>
-            </Box>
+              </Section>
+            </Container>
           </section>
-        </Box>
+        </Flex>
 
-        <Box asChild className={`${styles.briefing} js-brief`}>
+        <Flex asChild direction="column" align="stretch" className={`${styles.briefingSize} ${styles.briefingFill} ${styles.briefingRule} js-brief`}>
           <aside>
-            <Box className={styles.briefingPx}>
-              <Box className={styles.briefingPy}>
+            <Container className={styles.briefingPx}>
+              <Section className={styles.briefingPy}>
                 <span className={styles.briefKicker}>{t("briefing.kicker")}</span>
-                <h2 className={styles.briefTitle}>{t("briefing.title")}</h2>
+                <Section className={`${styles.briefTitleBefore} ${styles.briefTitleAfter}`}>
+                  <h2 className={styles.briefTitle}>{t("briefing.title")}</h2>
+                </Section>
                 {steps.map((step) => (
-                  <Box key={step.rank} className={`${styles.step} js-step`}>
-                    <Box className={styles.stepPy}>
-                      <div className={styles.stepGrid}>
+                  <Flex key={step.rank} direction="column" className={`${styles.step} js-step`}>
+                    <Section className={styles.stepPy}>
+                      <Grid className={styles.stepGrid}>
                         <span className={styles.stepRank}>{step.rank}</span>
-                        <span>
+                        <Flex direction="column" gap="1">
                           <span className={styles.stepTitle}>{step.title}</span>
                           <span className={styles.stepBody}>{step.body}</span>
-                        </span>
-                      </div>
-                    </Box>
-                  </Box>
+                        </Flex>
+                      </Grid>
+                    </Section>
+                  </Flex>
                 ))}
-              </Box>
-            </Box>
+              </Section>
+            </Container>
           </aside>
-        </Box>
-      </div>
+        </Flex>
+      </Flex>
+      </Flex>
     </main>
+    </Flex>
   );
 }

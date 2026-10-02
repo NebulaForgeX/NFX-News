@@ -1,6 +1,6 @@
 import { FilledBellIcon } from "nfx-ui/icons";
 import { memo, useMemo, useState } from "react";
-import { Badge, Box, Button, Flex, Select, Switch, Text, TextField } from "@radix-ui/themes";
+import { Section, Badge, Button, Flex, Select, Switch, Text, TextField } from "@radix-ui/themes";
 import { useTranslation } from "react-i18next";
 import { DataTable, PageHeader, SectionBlock } from "@/components";
 import { PageFrame } from "@/layouts";
@@ -76,7 +76,7 @@ const NotifyPage = memo(() => {
       <PageHeader icon={FilledBellIcon} title={t("title")} description={t("webhookHint")} />
       <Flex direction="column" gap="6">
         <SectionBlock title={t("channels")}>
-          <Box pb="4">
+          <Section pb="4">
           <Flex direction="column" gap="3">
             <Flex gap="2" wrap="wrap" align="center">
               <Select.Root value={kind} onValueChange={(v) => onKindChange(v as NotifyKind)}>
@@ -124,7 +124,7 @@ const NotifyPage = memo(() => {
               })}
             </Flex>
           </Flex>
-          </Box>
+          </Section>
           <DataTable
             loading={channelsLoading}
             empty={t("emptyChannels")}
