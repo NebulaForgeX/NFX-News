@@ -216,6 +216,8 @@ const ReaderPage = memo(() => {
             </Flex>
           }
         />
+        <Box style={{ borderBottom: "1px solid var(--gray-a4)" }}>
+        <Section py="2">
         <Flex wrap="wrap" align="center" gap="2">
           <Flex wrap="wrap" gap="2" flexGrow="1">
             <Button size="1" variant={columnFilter === "" ? "solid" : "outline"} onClick={() => onFilter("")}>
@@ -240,6 +242,8 @@ const ReaderPage = memo(() => {
             ) : null}
           </Flex>
         </Flex>
+        </Section>
+        </Box>
         {q ? (
           <Box className={styles.searchPanelHairline}>
             <Section className={styles.searchPanelPy}>
