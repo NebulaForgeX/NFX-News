@@ -16,7 +16,6 @@ vars:
   ENV: '{{.ENV | default "dev"}}'
   ENV_FILE: '{{if eq .ENV "secure"}}.secure.env{{else}}.env{{end}}'
   APP_COMPOSE: '{{if eq .ENV "secure"}}docker-compose.yml{{else}}docker-compose.dev.yml{{end}}'
-  EDGE_NETWORK: nfx-edge
 
 tasks:
   start:
@@ -112,7 +111,7 @@ tasks:
         export POSTGRES_USER="${POSTGRES_USER:-$POSTGRESQL_USER}"
         export POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-$POSTGRESQL_PASSWORD}"
         export POSTGRES_HOST="${ATLAS_POSTGRES_HOST:-${POSTGRESQL_DATABASE_HOST:-192.168.1.64}}"
-        export POSTGRES_PORT="${ATLAS_POSTGRES_PORT:-${POSTGRESQL_DATABASE_PORT:-10104}}"
+        export POSTGRES_PORT="${ATLAS_POSTGRES_PORT:-${POSTGRESQL_DATABASE_PORT:-10004}}"
         if [[ "{{.ENV}}" == "secure" ]]; then
           export POSTGRES_DB="${POSTGRES_DB:-${POSTGRESQL_NAME:-$POSTGRESQL_NAME_PROD}}"
         else
@@ -135,7 +134,7 @@ tasks:
         export POSTGRES_USER="${POSTGRES_USER:-$POSTGRESQL_USER}"
         export POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-$POSTGRESQL_PASSWORD}"
         export POSTGRES_HOST="${ATLAS_POSTGRES_HOST:-${POSTGRESQL_DATABASE_HOST:-192.168.1.64}}"
-        export POSTGRES_PORT="${ATLAS_POSTGRES_PORT:-${POSTGRESQL_DATABASE_PORT:-10104}}"
+        export POSTGRES_PORT="${ATLAS_POSTGRES_PORT:-${POSTGRESQL_DATABASE_PORT:-10004}}"
         if [[ "{{.ENV}}" == "secure" ]]; then
           export POSTGRES_DB="${POSTGRES_DB:-${POSTGRESQL_NAME:-$POSTGRESQL_NAME_PROD}}"
         else
@@ -158,7 +157,7 @@ tasks:
         export POSTGRES_USER="${POSTGRES_USER:-$POSTGRESQL_USER}"
         export POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-$POSTGRESQL_PASSWORD}"
         export POSTGRES_HOST="${ATLAS_POSTGRES_HOST:-${POSTGRESQL_DATABASE_HOST:-192.168.1.64}}"
-        export POSTGRES_PORT="${ATLAS_POSTGRES_PORT:-${POSTGRESQL_DATABASE_PORT:-10104}}"
+        export POSTGRES_PORT="${ATLAS_POSTGRES_PORT:-${POSTGRESQL_DATABASE_PORT:-10004}}"
         if [[ "{{.ENV}}" == "secure" ]]; then
           export POSTGRES_DB="${POSTGRES_DB:-${POSTGRESQL_NAME:-$POSTGRESQL_NAME_PROD}}"
         else
@@ -189,7 +188,7 @@ tasks:
         export POSTGRES_USER="${POSTGRES_USER:-$POSTGRESQL_USER}"
         export POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-$POSTGRESQL_PASSWORD}"
         export POSTGRES_HOST="${ATLAS_POSTGRES_HOST:-${POSTGRESQL_DATABASE_HOST:-192.168.1.64}}"
-        export POSTGRES_PORT="${ATLAS_POSTGRES_PORT:-${POSTGRESQL_DATABASE_PORT:-10104}}"
+        export POSTGRES_PORT="${ATLAS_POSTGRES_PORT:-${POSTGRESQL_DATABASE_PORT:-10004}}"
         if [[ "{{.ENV}}" == "secure" ]]; then
           export POSTGRES_DB="${POSTGRES_DB:-${POSTGRESQL_NAME:-$POSTGRESQL_NAME_PROD}}"
         else
@@ -227,18 +226,10 @@ tasks:
       - npm install
 
   run:
-    desc: "Generate langs then start source/news/crawl/report/notify/mcp + console (ENV=dev|secure). Requires NFX-Edge network {{.EDGE_NETWORK}}."
+    desc: "Generate langs then start source/news/crawl/report/notify/mcp + console (ENV=dev|secure). Publishes NAS_IP host ports. Traefik is NFX-Edge."
     cmds:
       - go run ./errors/cmd/gen_langs/ {{.ERRORS_DIR}} {{if eq .ENV "secure"}}--prod{{end}}
       - go run ./messages/cmd/gen_langs/ {{.MESSAGES_DIR}}
-      - |
-        echo "==> ensure docker network {{.EDGE_NETWORK}}"
-        if sudo docker network inspect {{.EDGE_NETWORK}}; then
-          echo "  network {{.EDGE_NETWORK}} already exists"
-        else
-          echo "ERROR: Docker network {{.EDGE_NETWORK}} missing. Start NFX-Edge first."
-          exit 1
-        fi
       - |
         ENV_ARGS=(--env-file "{{.ENV_FILE}}")
         echo "==> compose env: {{.ENV_FILE}}"
@@ -261,14 +252,6 @@ tasks:
     cmds:
       - go run ./errors/cmd/gen_langs/ {{.ERRORS_DIR}} {{if eq .ENV "secure"}}--prod{{end}}
       - go run ./messages/cmd/gen_langs/ {{.MESSAGES_DIR}}
-      - |
-        echo "==> ensure docker network {{.EDGE_NETWORK}}"
-        if sudo docker network inspect {{.EDGE_NETWORK}}; then
-          echo "  network {{.EDGE_NETWORK}} already exists"
-        else
-          echo "ERROR: Docker network {{.EDGE_NETWORK}} missing. Start NFX-Edge first."
-          exit 1
-        fi
       - |
         ENV_ARGS=(--env-file "{{.ENV_FILE}}")
         svcs=(source-base news-base crawl-base report-base notify-base mcp-base)

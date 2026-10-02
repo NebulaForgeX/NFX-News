@@ -95,7 +95,7 @@ kafka:
   enabled: false # 是否启用 Kafka，设置为 true 后每次抓取数据会自动发送到 Kafka
   bootstrap_servers: "Resources-Kafka:9092" # Kafka 服务器地址
     # Docker 内部访问（推荐）: Resources-Kafka:9092 (需要加入 resources 网络)
-    # 宿主机外部访问: localhost:10109 或实际 IP:10109 (根据 Resources/docker-compose.yml 中的 KAFKA_EXTERNAL_PORT 配置)
+    # 宿主机外部访问: localhost:10009 或实际 IP:10009 (根据 Resources/docker-compose.yml 中的 KAFKA_EXTERNAL_PORT 配置)
   event_topic: "trendradar.crawl_server" # 事件 topic（参考 Sjgz-Backend 设计）
   event_poison_topic: "trendradar.crawl_server_poison" # 死信队列 topic
   consumer_group_id: "trendradar-crawl-server" # 消费者组 ID

@@ -107,13 +107,13 @@
     errors_langs_path = "errors/langs"
 
 [grpc_client]
-    auth_addr = "${GRPC_HOST_AUTH}:${GRPC_PORT_AUTH}"
-    source_addr = "${GRPC_HOST_SOURCE}:${GRPC_PORT_SOURCE}"
-    news_addr = "${GRPC_HOST_NEWS}:${GRPC_PORT_NEWS}"
-    crawl_addr = "${GRPC_HOST_CRAWL}:${GRPC_PORT_CRAWL}"
-    report_addr = "${GRPC_HOST_REPORT}:${GRPC_PORT_REPORT}"
-    notify_addr = "${GRPC_HOST_NOTIFY}:${GRPC_PORT_NOTIFY}"
-    mcp_addr = "${GRPC_HOST_MCP}:${GRPC_PORT_MCP}"
+    auth_addr = "${GRPC_HOST_AUTH}:${GRPC_EXT_PORT_AUTH}"
+    source_addr = "${GRPC_HOST_SOURCE}:${GRPC_EXT_PORT_SOURCE}"
+    news_addr = "${GRPC_HOST_NEWS}:${GRPC_EXT_PORT_NEWS}"
+    crawl_addr = "${GRPC_HOST_CRAWL}:${GRPC_EXT_PORT_CRAWL}"
+    report_addr = "${GRPC_HOST_REPORT}:${GRPC_EXT_PORT_REPORT}"
+    notify_addr = "${GRPC_HOST_NOTIFY}:${GRPC_EXT_PORT_NOTIFY}"
+    mcp_addr = "${GRPC_HOST_MCP}:${GRPC_EXT_PORT_MCP}"
 
 [otel]
     enabled = true
