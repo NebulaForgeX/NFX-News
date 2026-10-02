@@ -3,7 +3,7 @@ import type { Login } from "nfx-ui/types";
 
 import { useMemo, useRef } from "react";
 import { useGSAP } from "@gsap/react";
-import { Avatar, Badge, Box, Button, Flex, Heading, Spinner, Text } from "@radix-ui/themes";
+import { Section, Container, Avatar, Badge, Box, Button, Flex, Heading, Spinner, Text } from "@radix-ui/themes";
 import gsap from "gsap";
 import { ProfileKind, ProfileKindEnum } from "nfx-ui/enums";
 import { useSelectProfile } from "nfx-ui/hooks";
@@ -47,11 +47,10 @@ export default function SelectDesk({ profiles, onBack }: SelectDeskProps) {
   }, [profiles]);
 
   return (
-    <Flex ref={pageRef} direction="column" className={styles.page} asChild>
-      <Box>
-        <Box className={styles.masthead}>
-          <Box className={styles.mastheadPx}>
-            <Box className={styles.mastheadPy}>
+    <Flex ref={pageRef} direction="column" className={`${styles.pageClip} ${styles.pageFill} ${styles.pageInk}`}>
+        <Flex direction="column" flexShrink="0" className={styles.masthead}>
+          <Container className={styles.mastheadPx}>
+            <Section className={styles.mastheadPy}>
               <Flex asChild align="start" justify="between" gap="4">
                 <header>
                   <Flex direction="column" gap="1" className={styles.lead}>
@@ -73,22 +72,24 @@ export default function SelectDesk({ profiles, onBack }: SelectDeskProps) {
                   </Flex>
                 </header>
               </Flex>
-            </Box>
-          </Box>
-        </Box>
+            </Section>
+          </Container>
+        </Flex>
 
-        <Flex className={styles.board}>
+        <Flex align="stretch" className={styles.board}>
           {groups.map((group) => {
             const isAuthority = group.kind === ProfileKindEnum.AUTHORITY;
             const kindLabel = t(`selectProfile.kind.${group.kind}`);
             return (
-              <Box key={group.kind} asChild className={`${styles.column} js-desk-col`}>
+              <Flex asChild key={group.kind} direction="column" minHeight="0" align="stretch" className={`${styles.column} ${styles.columnSize} ${styles.columnEdge} js-desk-col`}>
                 <section>
-                  <Box className={styles.columnHeader}>
-                    <Box className={styles.columnHeaderPx}>
-                      <Box className={styles.columnHeaderPy}>
+                  <Flex direction="column" flexShrink="0" className={styles.columnHeader}>
+                    <Container className={styles.columnHeaderPx}>
+                      <Section className={styles.columnHeaderPy}>
                         <Flex align="start" gap="2">
-                          <Box className={`${styles.rail} ${group.rail}`} />
+                          <Section className={`${styles.railItem} ${styles.railOffset}`}>
+                            <Box className={`${styles.railSize} ${styles.railRadius} ${group.rail}`} />
+                          </Section>
                           <Box>
                             <Flex align="center" gap="2">
                               <AnimatedIcon icon={isAuthority ? ShieldCheck : UsersIcon} size={14} />
@@ -96,15 +97,17 @@ export default function SelectDesk({ profiles, onBack }: SelectDeskProps) {
                                 {kindLabel}
                               </Text>
                             </Flex>
+                            <Section className={styles.headMetaSpace}>
                             <Text as="span" className={styles.headMeta}>
                               {t(`selectProfile.kindHint.${group.kind}`)}
                             </Text>
+                            </Section>
                           </Box>
                         </Flex>
-                      </Box>
-                    </Box>
-                  </Box>
-                  <Box className={styles.list}>
+                    </Section>
+                    </Container>
+                  </Flex>
+                  <Flex direction="column" minHeight="0" className={styles.list}>
                     {group.items.map((profile, index) => {
                       const name = resolveAccountDisplayName(profile.displayName, profile.profileId);
                       const initial = resolveAccountInitial(profile.displayName, profile.profileId);
@@ -116,7 +119,7 @@ export default function SelectDesk({ profiles, onBack }: SelectDeskProps) {
                           key={`${kind}:${profile.profileId}`}
                           type="button"
                           variant="ghost"
-                          className={styles.item}
+                          className={`${styles.itemHit} ${styles.itemPadX} ${styles.itemPadY} ${styles.itemFill}`}
                           disabled={selectProfile.isPending}
                           onClick={async () => {
                             await selectProfile.mutateAsync({
@@ -129,12 +132,13 @@ export default function SelectDesk({ profiles, onBack }: SelectDeskProps) {
                             });
                           }}
                         >
-                          <Box className={styles.itemPx}>
-                            <Box className={styles.itemPy}>
+                          <Box className={`${styles.itemRule} ${styles.itemWide}`}>
+                          <Container className={styles.itemPx}>
+                            <Section className={styles.itemPy}>
                               <Flex align="start" gap="2" width="100%">
-                                <Text as="span" className={styles.rank}>
-                                  {String(index + 1).padStart(2, "0")}
-                                </Text>
+                                <Flex className={styles.rank}>
+                                  <Text as="span">{String(index + 1).padStart(2, "0")}</Text>
+                                </Flex>
                                 <Avatar size="2" radius="none" fallback={initial} src={profile.avatarImageId ? buildImageUrl(profile.avatarImageId) : undefined} />
                                 <Flex direction="column" gap="1" className={styles.body}>
                                   <Text as="span" className={styles.name}>
@@ -155,22 +159,22 @@ export default function SelectDesk({ profiles, onBack }: SelectDeskProps) {
                                     </Flex>
                                   ) : null}
                                 </Flex>
-                                <Box className={styles.chevron}>
+                                <Flex align="center" className={styles.chevron}>
                                   {selectProfile.isPending ? <Spinner size="1" /> : <AnimatedIcon icon={RightChevron} size={16} />}
-                                </Box>
+                                </Flex>
                               </Flex>
-                            </Box>
+                            </Section>
+                          </Container>
                           </Box>
                         </Button>
                       );
                     })}
-                  </Box>
+                  </Flex>
                 </section>
-              </Box>
+              </Flex>
             );
           })}
         </Flex>
-      </Box>
     </Flex>
   );
 }

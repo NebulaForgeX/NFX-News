@@ -1,184 +1,144 @@
-.page {
-  display: flex;
-  flex-direction: column;
+.pageFill {
+  background: var(--color-background);
+}.pageInk {
+  color: var(--gray-12);
+}.pageClip {
   height: 100dvh;
   max-height: 100dvh;
   overflow: hidden;
-  background: var(--color-background);
-  color: var(--gray-12);
-}
-
-.masthead {
+}.masthead {
   border-bottom: 1px solid var(--gray-a5);
   flex-shrink: 0;
-}
-
-.mastheadPx {
-  padding-inline: 20px;
-}
-
-.mastheadPy {
-  padding-block: 16px 12px;
-}
-
-.lead {
+}.mastheadPx {
+  padding-inline: var(--space-5);
+}.mastheadPy {
+  padding-block: var(--space-4) var(--space-3);
+}.lead {
   min-width: 0;
-}
-
-.kicker {
+}.kicker {
   font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--accent-11);
   font-weight: 650;
-}
-
-.title {
+}.title {
   font-family: var(--heading-font-family), sans-serif;
   font-size: 22px;
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.15;
-}
-
-.subtitle {
+}.subtitle {
   font-size: 13px;
   color: var(--gray-9);
   line-height: 1.4;
-}
-
-.actions {
+}.actions {
   flex-shrink: 0;
-}
-
-.board {
-  display: flex;
-  align-items: stretch;
+}.board {
   flex: 1 1 auto;
   min-height: 0;
   overflow-x: auto;
-}
-
-.column {
+}.columnSize {
   flex: 1 1 360px;
   min-width: 280px;
-  display: flex;
-  flex-direction: column;
+}.column {
   min-height: 0;
+}.columnEdge {
   border-right: 1px solid var(--gray-a4);
-}
-
-.columnHeader {
+}.columnHeader {
   border-bottom: 1px solid var(--gray-a4);
   flex-shrink: 0;
-}
-
-.columnHeaderPx {
-  padding-inline: 14px;
-}
-
-.columnHeaderPy {
-  padding-block: 12px 10px;
-}
-
-.rail {
+}.columnHeaderPx {
+  padding-inline: var(--space-3);
+}.columnHeaderPy {
+  padding-block: var(--space-3) var(--space-3);
+}.railItem {
+  flex-shrink: 0;
+}.railOffset {
+  margin-top: 2px;
+}.railSize {
   width: 3px;
   min-height: 28px;
-  border-radius: 2px;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.railCommunity {
+}.railRadius {
+  border-radius: var(--radius-1);
+  min-height: 28px;
+}.railCommunity {
   background: var(--accent-9);
-}
-
-.railAuthority {
+}.railAuthority {
   background: var(--amber-9);
-}
-
-.headName {
+}.headName {
   display: block;
   font-size: 13px;
   font-weight: 650;
   line-height: 1.3;
-}
-
-.headMeta {
-  display: block;
+}.headMetaSpace {
   margin-top: 2px;
+}.headMeta {
+  display: block;
   font-size: 11px;
   color: var(--gray-9);
-}
-
-.list {
+}.list {
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
-}
-
-.item {
+}.itemHit {
+  width: 100%;
   height: auto;
-  width: 100%;
   justify-content: flex-start;
-  padding: 0;
-  border: 0;
-  border-bottom: 1px solid var(--gray-a3);
-  border-radius: 0;
-  background: transparent;
-  color: inherit;
   text-align: left;
-}
-
-.itemPx {
-  padding-inline: 14px;
+  color: inherit;
+}.itemPadX {
+  padding-inline: 0;
+}.itemPadY {
+  padding-block: 0;
+}.itemRule {
+  border-bottom: 1px solid var(--gray-a3);
+}.itemFill {
+  background: transparent;
+}.itemPx {
+  padding-inline: var(--space-3);
+}.itemWide {
   width: 100%;
-}
-
-.itemPy {
-  padding-block: 12px;
-  width: 100%;
-}
-
-.item:hover:not(:disabled) {
+}.itemPy {
+  padding-block: var(--space-3);
+}.itemHit:hover:not(:disabled) .itemFill {
   background: var(--gray-a2);
-}
-
-.item:disabled {
+}.item:disabled {
   opacity: 0.65;
   cursor: not-allowed;
-}
-
-.rank {
+}.rank {
   flex: 0 0 1.7em;
   font-size: 11px;
   font-variant-numeric: tabular-nums;
   color: var(--gray-8);
-  padding-top: 8px;
-}
-
-.body {
+}.body {
   min-width: 0;
   flex: 1 1 auto;
-}
-
-.name {
+}.name {
   font-size: 14px;
   font-weight: 650;
   line-height: 1.3;
-}
-
-.place {
+}.place {
   font-size: 11px;
   color: var(--gray-9);
-}
-
-.roles {
+}.roles {
   flex-wrap: wrap;
-}
-
-.chevron {
+}.chevron {
   flex-shrink: 0;
   align-self: center;
   color: var(--gray-8);
+}
+
+.columnEdge > *,
+.pageClip > *,
+.title > *,
+.subtitle > *,
+.board > *,
+.column > *,
+.railSize > *,
+.railRadius > *,
+.headName > *,
+.list > *,
+.itemHit > *,
+.name > * {
+  height: 100%;
 }

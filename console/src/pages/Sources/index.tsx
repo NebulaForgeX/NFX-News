@@ -1,6 +1,6 @@
 import { GlobeIcon, RefreshIcon } from "nfx-ui/icons";
 import { memo, useMemo, useState } from "react";
-import { Badge, Box, Button, Flex, Link, Text, TextField } from "@radix-ui/themes";
+import { Box, Section, Badge, Button, Flex, Link, Text, TextField } from "@radix-ui/themes";
 import { useTranslation } from "react-i18next";
 import { DataTable, PageHeader } from "@/components";
 import { PageFrame } from "@/layouts";
@@ -44,7 +44,7 @@ const SourcesPage = memo(() => {
           </Flex>
         }
       />
-      <Box pb="3">
+      <Section pb="3">
         <Flex gap="2" wrap="wrap">
           <Button size="1" variant={column === "" ? "solid" : "outline"} onClick={() => setColumn("")}>
             {t("allColumns")}
@@ -55,7 +55,7 @@ const SourcesPage = memo(() => {
             </Button>
           ))}
         </Flex>
-      </Box>
+      </Section>
       <DataTable
         loading={isLoading}
         empty={t("empty")}
@@ -67,7 +67,7 @@ const SourcesPage = memo(() => {
             header: t("name"),
             render: (row: SourceMeta) => (
               <Flex align="center" gap="2">
-                <span style={{ width: 8, height: 8, borderRadius: 99, background: sourceColorVar(row.color), flexShrink: 0 }} />
+                <Box width="8px" height="8px" minWidth="8px" style={{ borderRadius: "var(--radius-full)", background: sourceColorVar(row.color) }} />
                 <Text size="2" weight="medium">
                   {row.name || row.id}
                 </Text>

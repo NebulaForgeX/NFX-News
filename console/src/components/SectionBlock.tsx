@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { Box, Flex, Heading, Text } from "@radix-ui/themes";
+import { Box, Section, Flex, Heading, Text } from "@radix-ui/themes";
 
 type SectionBlockProps = {
   title: string;
@@ -18,9 +18,11 @@ export function SectionBlock({ title, description, actions, children }: SectionB
             {title}
           </Heading>
           {description ? (
-            <Text as="p" size="1" color="gray" mt="1">
-              {description}
-            </Text>
+            <Section mt="1">
+              <Text as="p" size="1" color="gray">
+                {description}
+              </Text>
+            </Section>
           ) : null}
         </Box>
         {actions ? (
@@ -30,9 +32,9 @@ export function SectionBlock({ title, description, actions, children }: SectionB
         ) : null}
       </Flex>
       <Box style={{ borderTop: "1px solid var(--gray-a4)" }}>
-        <Box pt="3">
+        <Section pt="3">
           {children}
-        </Box>
+        </Section>
       </Box>
     </Flex>
   );
