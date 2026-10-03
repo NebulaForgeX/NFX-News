@@ -75,6 +75,7 @@
     "createAccount": "Créer un compte"
   },
   "selectProfile": {
+    "switching": "Changement de profil…",
     "eyebrow": "Tableau d'affectation",
     "title": "Quel pupitre continue ?",
     "subtitle": "Un Account peut porter plusieurs Profile. Choisissez la colonne où vous filez.",

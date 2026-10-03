@@ -75,6 +75,7 @@
     "createAccount": "Create an account"
   },
   "selectProfile": {
+    "switching": "Switching profile…",
     "eyebrow": "Assignment board",
     "title": "Which desk continues?",
     "subtitle": "One Account can hold more than one Profile. Pick the column you file under.",

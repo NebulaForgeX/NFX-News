@@ -1,6 +1,8 @@
 import type { CreateI18nResourcesResult, NameSpacesMap, Resources } from "nfx-ui/languages";
 
-import enHooks from "./en/hooks.json";
+import enLayout from "./en/layout.json";
+import enPreference from "./en/preference.json";
+import enTheme from "./en/theme.json";
 import enLanguage from "./en/language.json";
 import enLogin from "./en/pages/Account/Login.json";
 import enSignup from "./en/pages/Account/Signup.json";
@@ -15,7 +17,9 @@ import enUserProfileEdit from "./en/pages/User/Profile/Edit.json";
 import enUserProfileIdentities from "./en/pages/User/Profile/Identities.json";
 import enUserProfileOverview from "./en/pages/User/Profile/Overview.json";
 import enUserSetting from "./en/pages/User/Setting.json";
-import frHooks from "./fr/hooks.json";
+import frLayout from "./fr/layout.json";
+import frPreference from "./fr/preference.json";
+import frTheme from "./fr/theme.json";
 import frLanguage from "./fr/language.json";
 import frLogin from "./fr/pages/Account/Login.json";
 import frSignup from "./fr/pages/Account/Signup.json";
@@ -30,7 +34,9 @@ import frUserProfileEdit from "./fr/pages/User/Profile/Edit.json";
 import frUserProfileIdentities from "./fr/pages/User/Profile/Identities.json";
 import frUserProfileOverview from "./fr/pages/User/Profile/Overview.json";
 import frUserSetting from "./fr/pages/User/Setting.json";
-import zhHooks from "./zh/hooks.json";
+import zhLayout from "./zh/layout.json";
+import zhPreference from "./zh/preference.json";
+import zhTheme from "./zh/theme.json";
 import zhLanguage from "./zh/language.json";
 import zhLogin from "./zh/pages/Account/Login.json";
 import zhSignup from "./zh/pages/Account/Signup.json";
@@ -64,7 +70,9 @@ const PAGE = {
 
 const BUILTIN_I18N_NAMESPACES_MAP: NameSpacesMap = {
   language: "language",
-  hooks: "hooks",
+  theme: "theme",
+  layout: "layout",
+  preference: "preference",
   ...PAGE,
 };
 
@@ -72,7 +80,9 @@ export function getBuiltinI18nBundles(): CreateI18nResourcesResult {
   const RESOURCES: Resources = {
     en: {
       language: enLanguage,
-      hooks: enHooks,
+      theme: enTheme,
+      layout: enLayout,
+      preference: enPreference,
       [PAGE.Login]: enLogin,
       [PAGE.Signup]: enSignup,
       [PAGE.UserSetting]: enUserSetting,
@@ -89,7 +99,9 @@ export function getBuiltinI18nBundles(): CreateI18nResourcesResult {
     },
     zh: {
       language: zhLanguage,
-      hooks: zhHooks,
+      theme: zhTheme,
+      layout: zhLayout,
+      preference: zhPreference,
       [PAGE.Login]: zhLogin,
       [PAGE.Signup]: zhSignup,
       [PAGE.UserSetting]: zhUserSetting,
@@ -106,7 +118,9 @@ export function getBuiltinI18nBundles(): CreateI18nResourcesResult {
     },
     fr: {
       language: frLanguage,
-      hooks: frHooks,
+      theme: frTheme,
+      layout: frLayout,
+      preference: frPreference,
       [PAGE.Login]: frLogin,
       [PAGE.Signup]: frSignup,
       [PAGE.UserSetting]: frUserSetting,

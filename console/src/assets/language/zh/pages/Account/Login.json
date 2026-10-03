@@ -75,6 +75,7 @@
     "createAccount": "创建账号"
   },
   "selectProfile": {
+    "switching": "正在切换档案…",
     "eyebrow": "派稿板",
     "title": "用哪一栏继续？",
     "subtitle": "一份 Account 可以持有多个 Profile。选你发稿的那一列。",

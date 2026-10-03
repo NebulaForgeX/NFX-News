@@ -25,7 +25,12 @@ export type SelectDeskProps = {
 
 export default function SelectDesk({ profiles, onBack }: SelectDeskProps) {
   const { t } = useTranslation("pages.Account.Login");
-  const selectProfile = useSelectProfile();
+  const selectProfile = useSelectProfile({
+    switchingMsg: t("selectProfile.switching"),
+    onCommit: () => {
+      routerEventEmitter.navigate({ to: ROUTES.READER, replace: true });
+    },
+  });
   const pageRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
@@ -124,11 +129,7 @@ export default function SelectDesk({ profiles, onBack }: SelectDeskProps) {
                           onClick={async () => {
                             await selectProfile.mutateAsync({
                               profileId: profile.profileId,
-                              kind,
-                            });
-                            routerEventEmitter.navigate({
-                              to: ROUTES.USER_OVERVIEW,
-                              replace: true,
+                              kind: profile.kind,
                             });
                           }}
                         >

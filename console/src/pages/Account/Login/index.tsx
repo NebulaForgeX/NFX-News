@@ -26,8 +26,8 @@ type WireItem = { title: string; meta: string };
 
 export default function LoginPage() {
   const { t, i18n } = useTranslation("pages.Account.Login");
-  const emailForm = useInitLoginForm();
-  const phoneForm = useInitLoginWithPhoneForm();
+  const emailForm = useInitLoginForm(t);
+  const phoneForm = useInitLoginWithPhoneForm(t);
   const loginEmail = useLoginWithEmail();
   const loginPhone = useLoginWithPhone();
   const [profiles, setProfiles] = useState<Login.ProfileItem[]>([]);
@@ -52,7 +52,7 @@ export default function LoginPage() {
       setProfiles(list);
       return;
     }
-    routerEventEmitter.navigate({ to: ROUTES.USER_OVERVIEW, replace: true });
+    routerEventEmitter.navigate({ to: ROUTES.READER, replace: true });
   };
 
   const onEmail: SubmitHandler<LoginFormData> = async (data) => {
